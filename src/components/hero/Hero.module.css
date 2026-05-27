@@ -1,0 +1,132 @@
+.hero {
+  display: grid;
+  /* Reserve only the visible card width (503px) in layout so the left text
+     column has enough room and remains visually centered. The SVG wrapper
+     still renders at 669px for shadows/rotation and is positioned separately. */
+  grid-template-columns: minmax(0, 1fr) var(--frame-card-width);
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  /* Keep a 44px gap between navbar and content. */
+  padding-block: 44px 0;
+}
+
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .content {
+    align-items: center;
+    justify-self: center;
+    text-align: center;
+  }
+
+  .eyebrow {
+    align-self: center;
+    text-align: center;
+  }
+
+  .headlineLine:last-child {
+    white-space: nowrap;
+    font-size: clamp(32px, 8.8vw, 40px);
+    line-height: 1.12;
+  }
+
+  .action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 44px;
+  }
+}
+
+/* ---------- Left column ---------- */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 632px;
+  justify-self: start;
+  align-self: center;
+}
+
+.eyebrow {
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+}
+
+.headline {
+  margin-top: 18px;
+}
+
+.headlineLine {
+  display: block;
+}
+
+.subtext {
+  margin-top: 18px;
+  color: var(--color-text);
+  max-width: 560px;
+}
+
+.action {
+  margin-top: 44px;
+}
+
+.buttonIcon {
+  display: block;
+}
+
+/* ---------- Right column ---------- */
+
+.media {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--frame-card-width);
+  height: var(--frame-card-height);
+  justify-self: end;
+}
+
+/* The SVG export contains transparent bounds around the rotated card.
+   Reposition it so the visible card perfectly fills the 503×564 media box. */
+.mediaFrame {
+  position: absolute;
+  left: -86px;
+  top: -11px;
+}
+
+/* Callout: top-left of the frame, sitting slightly above the image with
+   the arrow curving down toward the card corner. */
+.hoverLabel {
+  position: absolute;
+  left: 0;
+  transform: translateX(calc(-100% - 12px));
+  top: -24px;
+  z-index: 2;
+}
+
+@media (max-width: 960px) {
+  .media {
+    width: 100%;
+    max-width: var(--frame-card-width);
+    height: auto;
+    justify-self: center;
+    margin-top: 64px;
+  }
+
+  .mediaFrame {
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+
+  .hoverLabel {
+    transform: none;
+    left: 0;
+    top: -56px;
+  }
+}

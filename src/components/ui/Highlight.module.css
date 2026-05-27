@@ -1,0 +1,43 @@
+.highlight {
+  position: relative;
+  display: inline-block;
+  padding: 0 14px;
+  background: var(--color-highlight);
+  border: 1px solid var(--color-highlight-border);
+  /* Negative left margin so the highlight visually starts at the same x
+     as the surrounding heading (compensates for the padding). */
+  margin-inline-start: -14px;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Four small selection-handle squares — white fill with the same dark
+   yellow border as the highlight outline, centered on each corner. */
+.handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--color-white-primary);
+  border: 1.5px solid var(--color-highlight-border);
+  border-radius: 1px;
+}
+
+.handle[data-corner='tl'] {
+  top: -5px;
+  left: -5px;
+}
+.handle[data-corner='tr'] {
+  top: -5px;
+  right: -5px;
+}
+.handle[data-corner='bl'] {
+  bottom: -5px;
+  left: -5px;
+}
+.handle[data-corner='br'] {
+  bottom: -5px;
+  right: -5px;
+}

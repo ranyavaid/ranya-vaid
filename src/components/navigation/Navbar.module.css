@@ -1,0 +1,42 @@
+.navbar {
+  background: transparent;
+  padding-block: var(--space-6);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.brand {
+  color: var(--color-text);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--h4-size);
+  line-height: var(--h4-line);
+  letter-spacing: var(--h4-tracking);
+  font-weight: var(--weight-regular);
+}
+
+.items {
+  display: flex;
+  align-items: center;
+  /* 40px between adjacent nav items, as specified. */
+  gap: 40px;
+}
+
+@media (max-width: 640px) {
+  .row {
+    justify-content: center;
+  }
+
+  .brand {
+    text-align: center;
+  }
+
+  .items {
+    display: none;
+  }
+}

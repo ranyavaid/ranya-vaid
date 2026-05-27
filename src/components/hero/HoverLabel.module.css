@@ -1,0 +1,38 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.text {
+  color: var(--color-blue);
+  transform: rotate(-8.73deg);
+  transform-origin: bottom left;
+  white-space: nowrap;
+}
+
+.mobileText {
+  display: none;
+}
+
+/* Arrow sits below the text and curves down toward the frame. */
+.arrow {
+  display: block;
+  width: 61px;
+  height: 68px;
+  margin-top: 2px;
+  margin-left: 18px;
+  transform: rotate(-8.73deg);
+  transform-origin: top left;
+}
+
+@media (max-width: 960px) {
+  .desktopText {
+    display: none;
+  }
+
+  .mobileText {
+    display: inline;
+  }
+}

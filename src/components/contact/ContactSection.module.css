@@ -1,0 +1,134 @@
+.section {
+  margin-top: var(--section-gap);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heading {
+  color: var(--color-black-primary);
+}
+
+.subtext {
+  margin-top: 16px;
+  color: var(--color-black-secondary);
+  max-width: 640px;
+}
+
+.content {
+  margin-top: 50px;
+  width: 100%;
+  max-width: 620px;
+  margin-inline: auto;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--color-white-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  color: inherit;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: #cfcfcf;
+}
+
+.cardLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.icon {
+  position: absolute;
+  inset: 0;
+  width: 32px;
+  height: 32px;
+  display: block;
+  transition: opacity 180ms ease;
+}
+
+.iconStack {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.iconDefault {
+  opacity: 1;
+}
+
+.iconHover {
+  opacity: 0;
+}
+
+.label {
+  color: var(--color-black-primary);
+  font-family: var(--font-mono);
+  font-size: var(--h4-size);
+  line-height: var(--h4-line);
+  letter-spacing: var(--h4-tracking);
+  font-weight: var(--weight-regular);
+  transition: color 180ms ease;
+}
+
+.value {
+  color: var(--color-black-secondary);
+  text-align: right;
+  margin-left: var(--space-5);
+  transition: color 180ms ease;
+}
+
+.card:hover .label,
+.card:hover .value,
+.card:focus-visible .label,
+.card:focus-visible .value {
+  color: var(--color-blue);
+}
+
+.card:hover .iconDefault,
+.card:focus-visible .iconDefault {
+  opacity: 0;
+}
+
+.card:hover .iconHover,
+.card:focus-visible .iconHover {
+  opacity: 1;
+}
+
+@media (max-width: 1080px) {
+  .content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .value {
+    margin-left: 44px;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+}

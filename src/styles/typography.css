@@ -1,0 +1,124 @@
+/* =========================================================================
+   Typography
+   Provides both semantic tag styling (h1..h4, p) and utility classes
+   (.h1, .body-1, .button) so the same scale can be applied anywhere.
+   ========================================================================= */
+
+h1,
+h2,
+h3,
+h4,
+.h1,
+.h2,
+.h3,
+.h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+}
+
+h1,
+.h1 {
+  font-weight: var(--weight-medium);
+  font-size: var(--h1-size);
+  line-height: var(--h1-line);
+  letter-spacing: var(--h1-tracking);
+}
+
+h2,
+.h2 {
+  font-weight: var(--weight-medium);
+  font-size: var(--h2-size);
+  line-height: var(--h2-line);
+  letter-spacing: var(--h2-tracking);
+}
+
+h3,
+.h3 {
+  font-weight: var(--weight-regular);
+  font-size: var(--h3-size);
+  line-height: var(--h3-line);
+  letter-spacing: var(--h3-tracking);
+}
+
+h4,
+.h4 {
+  font-weight: var(--weight-regular);
+  font-size: var(--h4-size);
+  line-height: var(--h4-line);
+  letter-spacing: var(--h4-tracking);
+}
+
+p,
+.body-1,
+.body-2,
+.body-3 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--weight-regular);
+  color: var(--color-text);
+}
+
+p,
+.body-1 {
+  font-size: var(--body1-size);
+  line-height: var(--body1-line);
+}
+
+.body-2 {
+  font-size: var(--body2-size);
+  line-height: var(--body2-line);
+}
+
+.body-3 {
+  font-size: var(--body3-size);
+  line-height: var(--body3-line);
+}
+
+.button-text {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  font-size: var(--button-size);
+  line-height: var(--button-line);
+}
+
+.handwritten {
+  font-family: var(--font-handwritten);
+  font-weight: var(--weight-bold);
+  font-size: var(--handwritten-size);
+  line-height: var(--handwritten-line);
+  color: var(--color-text);
+}
+
+/* Responsive scaling — keep desktop sizes up to 1024px, then trim down
+   gracefully on tablets and phones so headings stay readable. */
+@media (max-width: 1024px) {
+  h1,
+  .h1 {
+    font-size: 48px;
+    line-height: 56px;
+  }
+  h2,
+  .h2 {
+    font-size: 40px;
+    line-height: 48px;
+  }
+  h3,
+  .h3 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  h1,
+  .h1 {
+    font-size: 36px;
+    line-height: 44px;
+  }
+  h2,
+  .h2 {
+    font-size: 30px;
+    line-height: 38px;
+  }
+}

@@ -1,0 +1,27 @@
+.section {
+  margin-top: var(--section-gap);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heading {
+  color: var(--color-black-primary);
+}
+
+.subtext {
+  margin-top: 16px;
+  color: var(--color-black-secondary);
+  max-width: 640px;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  margin-top: 50px;
+  border-radius: 20px;
+}

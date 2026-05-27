@@ -1,0 +1,38 @@
+.section {
+  margin-top: var(--section-gap);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 608px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.heading {
+  color: var(--color-black-primary);
+}
+
+.subtext {
+  color: var(--color-black-secondary);
+  max-width: 608px;
+  margin-inline: auto;
+}
+
+.notebooks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-items: center;
+  gap: 24px;
+  margin-top: 50px;
+}
+
+@media (max-width: 960px) {
+  .notebooks {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 32px;
+  }
+}

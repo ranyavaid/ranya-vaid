@@ -1,0 +1,149 @@
+/* =========================================================================
+   Design Tokens
+   The single source of truth for colors, fonts, spacing, and layout.
+   Change a value here and it updates everywhere across the site.
+   ========================================================================= */
+
+:root {
+  /* ---------- Colors ---------- */
+  --color-black-primary: #1a1a1a;
+  --color-black-secondary: #555555;
+  --color-white-primary: #ffffff;
+  --color-white-secondary: #f2f2f2;
+  --color-stroke: #dfdfdf;
+  --color-blue: #0054f3;
+  --color-dot: #cfcfcf;
+  --color-highlight: #f9eece;
+  --color-highlight-border: #e1ac01;
+  --color-button-bg: #edf3ff;
+  --color-button-bg-hover: #dfe9ff;
+
+  /* Semantic aliases — use these in components so we can re-theme easily */
+  --color-text: var(--color-black-primary);
+  --color-text-muted: var(--color-black-secondary);
+  --color-bg: var(--color-white-primary);
+  --color-bg-alt: var(--color-white-secondary);
+  --color-border: var(--color-stroke);
+  --color-accent: var(--color-blue);
+
+  /* ---------- Font families ---------- */
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-handwritten: 'Caveat', 'Segoe Script', cursive;
+
+  /* ---------- Font weights ---------- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---------- Typography scale (font-size / line-height / letter-spacing) ---------- */
+  --h1-size: 62px;
+  --h1-line: 74px;
+  --h1-tracking: 0.01em;
+
+  --h2-size: 54px;
+  --h2-line: 64px;
+  --h2-tracking: 0.01em;
+
+  --h3-size: 24px;
+  --h3-line: 32px;
+  --h3-tracking: 0.01em;
+
+  --h4-size: 20px;
+  --h4-line: 30px;
+  --h4-tracking: 0.01em;
+
+  --body1-size: 18px;
+  --body1-line: 28px;
+
+  --body2-size: 16px;
+  --body2-line: 22px;
+
+  --body3-size: 14px;
+  --body3-line: 22px;
+
+  --button-size: 18px;
+  --button-line: 24px;
+
+  --handwritten-size: 26px;
+  --handwritten-line: 32px;
+
+  /* ---------- Layout ----------
+     The page max-width is 1440px (the design width).
+     On a 1440px screen we want 100px of breathing room on each side, so the
+     content area is 1240px wide. Below 1440px we scale the side gutters
+     proportionally (100/1440 ≈ 6.94vw) down to a 20px minimum on mobile. */
+  --page-max-width: 1440px;
+  --content-max-width: 1240px;
+  --page-gutter: clamp(20px, 6.94vw, 100px);
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Vertical space between page sections */
+  --section-gap: 140px;
+
+  /* ---------- Misc ---------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* ---------- "Key-press" shadow ----------
+     A hard offset shadow (no blur) that gives buttons a tactile keyboard
+     feel. The hover variant lifts the key; on press the shadow collapses
+     and the button moves down to meet the surface. */
+  --shadow-key: 0 4px 0 var(--color-black-primary);
+  --shadow-key-hover: 0 6px 0 var(--color-black-primary);
+
+  /* ---------- Photo frame (hero) ----------
+     Card size from Figma. The SVG viewBox is larger (669×846) to include
+     rotation + drop-shadow padding; render at that size so the card
+     itself lands at exactly 503×564. */
+  --frame-card-width: 503px;
+  --frame-card-height: 564px;
+  --frame-svg-width: 669px;
+  --frame-svg-height: 846px;
+
+  /* ---------- Background dotted pattern ----------
+     A CSS-only dot grid.
+       --dot-size   : visible diameter of each dot
+       --dot-gap    : empty space between dots
+       --color-dot  : dot color
+       --dot-opacity: dot opacity (0–1)
+     The tile size and radial radius are derived from those so the numbers
+     you write here match what you'd describe in design
+     ("4px dots, 2px gap, 20% opacity"). */
+  --dot-size: 4px;
+  --dot-gap: 2px;
+  --dot-opacity: 0.2;
+  --bg-dotted-image: radial-gradient(
+    circle,
+    color-mix(
+        in srgb,
+        var(--color-dot) calc(var(--dot-opacity) * 100%),
+        transparent
+      )
+      calc(var(--dot-size) / 2),
+    transparent calc(var(--dot-size) / 2)
+  );
+  --bg-dotted-size: calc(var(--dot-size) + var(--dot-gap))
+    calc(var(--dot-size) + var(--dot-gap));
+}
+
+@media (max-width: 960px) {
+  :root {
+    --section-gap: 88px;
+  }
+}
