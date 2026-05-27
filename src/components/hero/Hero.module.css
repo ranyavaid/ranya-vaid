@@ -34,6 +34,14 @@
     line-height: 1.12;
   }
 
+  .headlineLine + .headlineLine {
+    margin-top: 8px;
+  }
+
+  .subtext {
+    margin-top: 4px;
+  }
+
   .action {
     width: 100%;
     display: flex;

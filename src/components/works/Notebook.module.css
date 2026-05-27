@@ -240,6 +240,11 @@
     right: 8.25%;
     bottom: 7.2%;
   }
+
+  .title {
+    font-size: clamp(16px, 4.5vw, 18px);
+    line-height: 1.35;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
