@@ -8,6 +8,9 @@
   align-items: center;
   gap: 16px;
   text-align: center;
+  width: 100%;
+  max-width: 608px;
+  margin-inline: auto;
 }
 
 .heading {
@@ -16,7 +19,7 @@
 
 .subtext {
   color: var(--color-black-secondary);
-  max-width: 540px;
+  max-width: 608px;
 }
 
 .logos {
