@@ -1,6 +1,7 @@
 import { Container } from '../layout/Container'
 import { NavLink } from './NavLink'
 import styles from './Navbar.module.css'
+import type { MouseEvent } from 'react'
 
 type NavItem = { label: string; href: string }
 
@@ -18,11 +19,27 @@ const NAV_ITEMS: NavItem[] = [
  * `Container`.
  */
 export function Navbar() {
+  const handleBrandClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return
+    }
+
+    event.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <header className={styles.navbar}>
       <Container>
         <nav className={styles.row} aria-label="Primary">
-          <a href="#top" className={`h3 ${styles.brand}`}>
+          <a href="#top" onClick={handleBrandClick} className={`h3 ${styles.brand}`}>
             Ranya Vaid
           </a>
 

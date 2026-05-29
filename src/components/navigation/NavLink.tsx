@@ -1,9 +1,29 @@
-import type { ReactNode } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import styles from './NavLink.module.css'
 
 type NavLinkProps = {
   href: string
   children: ReactNode
+}
+
+function scrollToHashTarget(href: string) {
+  if (!href.startsWith('#')) {
+    return false
+  }
+
+  const targetId = href.slice(1)
+  if (targetId === 'top' || targetId.length === 0) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return true
+  }
+
+  const target = document.getElementById(targetId)
+  if (!target) {
+    return false
+  }
+
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  return true
 }
 
 /**
@@ -14,8 +34,25 @@ type NavLinkProps = {
  * "draws in" from the start of the word.
  */
 export function NavLink({ href, children }: NavLinkProps) {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return
+    }
+
+    if (scrollToHashTarget(href)) {
+      event.preventDefault()
+    }
+  }
+
   return (
-    <a href={href} className={`h3 ${styles.link}`}>
+    <a href={href} onClick={handleClick} className={`h3 ${styles.link}`}>
       <span className={styles.label}>{children}</span>
     </a>
   )
