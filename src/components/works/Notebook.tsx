@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { Link } from 'react-router-dom'
 import type { WorkCase } from './worksData'
 import styles from './Notebook.module.css'
 
@@ -19,22 +20,13 @@ export function Notebook({
   title,
 }: NotebookProps) {
   const isExternalLink = /^https?:\/\//.test(href)
-
-  return (
-    <a
-      href={href}
-      target={isExternalLink ? '_blank' : undefined}
-      rel={isExternalLink ? 'noreferrer' : undefined}
-      aria-label={title}
-      className={styles.notebook}
-      style={
-        {
-          '--notebook-back': backColor,
-          '--notebook-front': frontColor,
-          '--notebook-front-shadow': frontShadow,
-        } as CSSProperties
-      }
-    >
+  const notebookStyle = {
+    '--notebook-back': backColor,
+    '--notebook-front': frontColor,
+    '--notebook-front-shadow': frontShadow,
+  } as CSSProperties
+  const notebookContent = (
+    <>
       <div className={styles.back} aria-hidden="true" />
 
       <div className={styles.movableImage}>
@@ -66,6 +58,32 @@ export function Notebook({
           <p className={`h3 ${styles.title}`}>{title}</p>
         </div>
       </div>
-    </a>
+    </>
+  )
+
+  if (isExternalLink) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={title}
+        className={styles.notebook}
+        style={notebookStyle}
+      >
+        {notebookContent}
+      </a>
+    )
+  }
+
+  return (
+    <Link
+      to={href}
+      aria-label={title}
+      className={styles.notebook}
+      style={notebookStyle}
+    >
+      {notebookContent}
+    </Link>
   )
 }

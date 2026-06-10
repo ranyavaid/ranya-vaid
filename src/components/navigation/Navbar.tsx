@@ -1,3 +1,4 @@
+import { Link, useLocation } from 'react-router-dom'
 import { Container } from '../layout/Container'
 import { NavLink } from './NavLink'
 import styles from './Navbar.module.css'
@@ -19,7 +20,8 @@ const NAV_ITEMS: NavItem[] = [
  * `Container`.
  */
 export function Navbar() {
-  const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+  const { pathname: rawPathname } = useLocation()
+  const pathname = rawPathname.replace(/\/+$/, '') || '/'
   const isHomePage = pathname === '/'
   const isAdnetCaseStudy = pathname === '/works/adnet-design-system'
   const navItems = NAV_ITEMS.map((item) => ({
@@ -55,7 +57,9 @@ export function Navbar() {
           aria-label="Primary"
         >
           {isAdnetCaseStudy ? (
-            <NavLink href="/">Back to home</NavLink>
+            <Link to="/" className={`h3 ${styles.backHome}`}>
+              Back to home
+            </Link>
           ) : (
             <>
               <a

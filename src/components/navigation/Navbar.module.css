@@ -14,7 +14,8 @@
   justify-content: flex-start;
 }
 
-.brand {
+.brand,
+.backHome {
   color: var(--color-text);
   white-space: nowrap;
   font-family: var(--font-mono);
@@ -22,6 +23,7 @@
   line-height: var(--h4-line);
   letter-spacing: var(--h4-tracking);
   font-weight: var(--weight-regular);
+  text-decoration: none;
 }
 
 .items {
