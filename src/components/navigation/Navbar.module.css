@@ -10,6 +10,10 @@
   gap: var(--space-5);
 }
 
+.rowCaseStudy {
+  justify-content: flex-start;
+}
+
 .brand {
   color: var(--color-text);
   white-space: nowrap;
@@ -28,7 +32,7 @@
 }
 
 @media (max-width: 640px) {
-  .row {
+  .row:not(.rowCaseStudy) {
     justify-content: center;
   }
 

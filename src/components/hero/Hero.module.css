@@ -6,7 +6,7 @@
   grid-template-columns: minmax(0, 1fr) var(--frame-card-width);
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: 60px;
   /* Keep a 44px gap between navbar and content. */
   padding-block: 44px 0;
 }
@@ -57,6 +57,7 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
+  min-width: 520px;
   max-width: 632px;
   justify-self: start;
   align-self: center;
@@ -115,6 +116,53 @@
   transform: translateX(calc(-100% - 12px));
   top: -24px;
   z-index: 2;
+}
+
+@media (max-width: 1280px) {
+  .hero {
+    grid-template-columns: minmax(460px, 1fr) var(--frame-card-width);
+    gap: 60px;
+  }
+
+  .content {
+    min-width: 460px;
+  }
+}
+
+@media (max-width: 1140px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .content {
+    min-width: 0;
+    align-items: center;
+    justify-self: center;
+    text-align: center;
+  }
+
+  .eyebrow {
+    align-self: center;
+    text-align: center;
+  }
+
+  .media {
+    justify-self: center;
+    margin-top: 64px;
+  }
+
+  .mediaFrame {
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+
+  .hoverLabel {
+    transform: none;
+    left: 0;
+    top: -56px;
+  }
 }
 
 @media (max-width: 960px) {

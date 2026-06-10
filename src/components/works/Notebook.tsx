@@ -18,11 +18,13 @@ export function Notebook({
   tag,
   title,
 }: NotebookProps) {
+  const isExternalLink = /^https?:\/\//.test(href)
+
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noreferrer"
+      target={isExternalLink ? '_blank' : undefined}
+      rel={isExternalLink ? 'noreferrer' : undefined}
       aria-label={title}
       className={styles.notebook}
       style={

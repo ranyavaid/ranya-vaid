@@ -19,7 +19,19 @@ const NAV_ITEMS: NavItem[] = [
  * `Container`.
  */
 export function Navbar() {
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+  const isHomePage = pathname === '/'
+  const isAdnetCaseStudy = pathname === '/works/adnet-design-system'
+  const navItems = NAV_ITEMS.map((item) => ({
+    ...item,
+    href: isHomePage ? item.href : `/${item.href}`,
+  }))
+
   const handleBrandClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!isHomePage) {
+      return
+    }
+
     if (
       event.defaultPrevented ||
       event.button !== 0 ||
@@ -38,18 +50,31 @@ export function Navbar() {
   return (
     <header className={styles.navbar}>
       <Container>
-        <nav className={styles.row} aria-label="Primary">
-          <a href="#top" onClick={handleBrandClick} className={`h3 ${styles.brand}`}>
-            Ranya Vaid
-          </a>
+        <nav
+          className={`${styles.row} ${isAdnetCaseStudy ? styles.rowCaseStudy : ''}`}
+          aria-label="Primary"
+        >
+          {isAdnetCaseStudy ? (
+            <NavLink href="/">Back to home</NavLink>
+          ) : (
+            <>
+              <a
+                href={isHomePage ? '#top' : '/'}
+                onClick={handleBrandClick}
+                className={`h3 ${styles.brand}`}
+              >
+                Ranya Vaid
+              </a>
 
-          <ul className={styles.items}>
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <NavLink href={item.href}>{item.label}</NavLink>
-              </li>
-            ))}
-          </ul>
+              <ul className={styles.items}>
+                {navItems.map((item) => (
+                  <li key={item.href}>
+                    <NavLink href={item.href}>{item.label}</NavLink>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </nav>
       </Container>
     </header>
