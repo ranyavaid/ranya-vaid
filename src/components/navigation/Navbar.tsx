@@ -58,6 +58,9 @@ export function Navbar() {
         >
           {isAdnetCaseStudy ? (
             <Link to="/" className={`h3 ${styles.backHome}`}>
+              <span className={styles.backHomeIcon} aria-hidden="true">
+                arrow_back_ios
+              </span>
               Back to home
             </Link>
           ) : (

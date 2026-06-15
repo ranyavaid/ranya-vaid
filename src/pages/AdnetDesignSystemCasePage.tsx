@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Container } from '../components/layout/Container'
+import { ScrollGifCanvas } from './ProcessGifCanvas'
 import styles from './AdnetDesignSystemCasePage.module.css'
 
 const IMPACT_CARDS = [
@@ -31,23 +32,23 @@ const IMPACT_CARDS = [
 
 export function AdnetDesignSystemCasePage() {
   const processFigureRef = useRef<HTMLDivElement | null>(null)
-  const processVideoRef = useRef<HTMLVideoElement | null>(null)
+  const [processStarted, setProcessStarted] = useState(false)
   const stateLayerFigureRef = useRef<HTMLDivElement | null>(null)
   const [stateLayerStarted, setStateLayerStarted] = useState(false)
+  const foundationsFigureRef = useRef<HTMLDivElement | null>(null)
+  const [foundationsStarted, setFoundationsStarted] = useState(false)
 
   useEffect(() => {
     const target = processFigureRef.current
-    const video = processVideoRef.current
-    if (!target || !video) return
+    if (!target) return
 
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries
-        if (!entry?.isIntersecting) return
+        if (!entry?.isIntersecting || processStarted) return
 
         target.classList.add(styles.processVisible)
-        video.loop = true
-        void video.play().catch(() => {})
+        setProcessStarted(true)
         observer.unobserve(target)
       },
       { threshold: 0.25 }
@@ -55,7 +56,7 @@ export function AdnetDesignSystemCasePage() {
 
     observer.observe(target)
     return () => observer.disconnect()
-  }, [])
+  }, [processStarted])
 
   useEffect(() => {
     const section = stateLayerFigureRef.current
@@ -75,6 +76,25 @@ export function AdnetDesignSystemCasePage() {
     observer.observe(section)
     return () => observer.disconnect()
   }, [stateLayerStarted])
+
+  useEffect(() => {
+    const section = foundationsFigureRef.current
+    if (!section) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+        if (!entry?.isIntersecting || foundationsStarted) return
+
+        setFoundationsStarted(true)
+        observer.unobserve(section)
+      },
+      { threshold: 0.25 }
+    )
+
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [foundationsStarted])
 
   return (
     <main className={styles.casePage}>
@@ -203,15 +223,12 @@ export function AdnetDesignSystemCasePage() {
                     </p>
                   </div>
                   <div ref={processFigureRef} className={styles.processFigure}>
-                    <video
-                      ref={processVideoRef}
-                      src="/Adnet/process.mp4"
-                      className={styles.processImage}
+                    <ScrollGifCanvas
+                      src="/Adnet/Process.gif"
+                      shouldPlay={processStarted}
                       loop
-                      muted
-                      playsInline
-                      preload="metadata"
-                      aria-label="Adnet design system process flow animation"
+                      ariaLabel="Adnet design system process flow animation"
+                      className={styles.processImage}
                     />
                   </div>
                 </section>
@@ -347,15 +364,11 @@ export function AdnetDesignSystemCasePage() {
                   </div>
 
                   <div ref={stateLayerFigureRef} className={styles.stateLayerFigure}>
-                    <img
-                      src={
-                        stateLayerStarted
-                          ? '/Adnet/state-layer.gif'
-                          : '/Adnet/state-layer-still.png'
-                      }
-                      alt="State layer mapping: token tag, arrow, and usage text"
+                    <ScrollGifCanvas
+                      src="/Adnet/state-layer.gif"
+                      shouldPlay={stateLayerStarted}
+                      ariaLabel="State layer mapping: token tag, arrow, and usage text"
                       className={styles.stateLayerImage}
-                      draggable={false}
                     />
                   </div>
 
@@ -380,7 +393,7 @@ export function AdnetDesignSystemCasePage() {
 
                   <div className={styles.tokenArchitectureFigure}>
                     <img
-                      src="/Adnet/state-layer.svg"
+                      src="/Adnet/token-structure.svg"
                       alt="Token architecture flow from primitive tokens to semantic tokens and state layers"
                       className={styles.tokenArchitectureImage}
                       draggable={false}
@@ -396,12 +409,13 @@ export function AdnetDesignSystemCasePage() {
                     </p>
                   </div>
 
-                  <div className={styles.foundationsFigure}>
-                    <img
+                  <div ref={foundationsFigureRef} className={styles.foundationsFigure}>
+                    <ScrollGifCanvas
                       src="/Adnet/foundations.gif"
-                      alt="Foundations animation"
+                      shouldPlay={foundationsStarted}
+                      loop
+                      ariaLabel="Foundations animation"
                       className={styles.foundationsImage}
-                      draggable={false}
                     />
                   </div>
                 </section>

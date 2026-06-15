@@ -176,21 +176,22 @@
   color: var(--color-black-primary);
 }
 
-.processFigure,
 .trackerFigure,
-.stateLayerFigure,
 .tokenArchitectureFigure,
-.foundationsFigure,
-.componentsFigure,
 .handoffFigure {
   width: min(818px, calc(100vw - (2 * var(--page-gutter))));
   margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  border: 1px solid var(--color-stroke);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .processFigure {
+  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
   margin-top: var(--case-block-gap);
-  /* Crop baked-in letterbox from process.mp4 (1920x912 content @ y=84). */
-  aspect-ratio: 1920 / 912;
+  aspect-ratio: 1945 / 937;
+  border: 1px solid var(--color-stroke);
   border-radius: 12px;
   overflow: hidden;
   opacity: 0;
@@ -208,22 +209,17 @@
   height: 100%;
   max-width: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   pointer-events: none;
 }
 
 .trackerImage,
-.stateLayerImage,
-.tokenArchitectureImage,
-.foundationsImage,
-.componentsImage,
 .handoffImage {
   width: 100%;
   height: auto;
   max-width: 100%;
   display: block;
-  border-radius: 12px;
 }
 
 .trackerFigure {
@@ -241,7 +237,7 @@
   padding: 12px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-stroke);
-  background: color-mix(in srgb, var(--color-white-secondary) 92%, transparent);
+  background: #fff;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -252,7 +248,9 @@
   width: 100%;
   height: auto;
   max-width: 100%;
+  display: block;
   border-radius: 12px;
+  background: #ebf8ff;
 }
 
 .tokenCardTitle {
@@ -283,19 +281,82 @@
 }
 
 .stateLayerFigure {
-  margin-top: var(--case-block-gap);
+  width: min(608px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(608px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  margin-top: 32px;
+  aspect-ratio: 608 / 172;
+  border: 1px solid var(--color-stroke);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .stateLayerImage {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  display: block;
   object-fit: contain;
+  object-position: center;
+  pointer-events: none;
 }
 
-.tokenArchitectureFigure,
 .foundationsFigure {
   margin-top: 0;
+  width: min(818px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  aspect-ratio: 1558 / 1098;
+  border: 1px solid var(--color-stroke);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.componentsFigure,
+.foundationsImage {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
+.tokenArchitectureFigure {
+  aspect-ratio: 818 / 572;
+  border: 1px solid var(--color-stroke);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tokenArchitectureImage {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
+.componentsFigure {
+  margin-top: var(--case-block-gap);
+  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  aspect-ratio: 1456 / 630;
+  border: 1px solid var(--color-stroke);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.componentsImage {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
 .handoffFigure {
   margin-top: var(--case-block-gap);
 }
