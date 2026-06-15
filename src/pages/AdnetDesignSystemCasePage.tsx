@@ -224,7 +224,7 @@ export function AdnetDesignSystemCasePage() {
                   </div>
                   <div ref={processFigureRef} className={styles.processFigure}>
                     <ScrollGifCanvas
-                      src="/Adnet/Process.gif"
+                      src="/Adnet/process.gif"
                       shouldPlay={processStarted}
                       loop
                       ariaLabel="Adnet design system process flow animation"
