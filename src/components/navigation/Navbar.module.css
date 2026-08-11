@@ -30,6 +30,20 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  transition: color 200ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.backHome:hover,
+.backHome:focus-visible {
+  color: var(--color-blue);
+}
+
+.backHome:active {
+  color: color-mix(in srgb, var(--color-blue) 78%, black);
+}
+
+.backHome:focus {
+  outline: none;
 }
 
 .backHomeIcon {
@@ -38,11 +52,40 @@
     'FILL' 0,
     'wght' 300,
     'GRAD' 0,
-    'opsz' 22;
-  font-size: 22px;
+    'opsz' 20;
+  font-size: 20px;
   line-height: 1;
   font-weight: normal;
   letter-spacing: normal;
+}
+
+.backHomeLabel {
+  position: relative;
+  display: inline-block;
+}
+
+/* Blue strikethrough that draws in left → right on hover/focus, matching
+   the primary nav links. */
+.backHomeLabel::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 2px;
+  background: var(--color-blue);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 280ms cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+}
+
+.backHome:hover .backHomeLabel::after,
+.backHome:focus-visible .backHomeLabel::after {
+  transform: scaleX(1);
+}
+
+.backHome:active .backHomeLabel::after {
+  background: color-mix(in srgb, var(--color-blue) 78%, black);
 }
 
 .items {

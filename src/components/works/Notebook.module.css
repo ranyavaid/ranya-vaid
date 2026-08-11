@@ -9,6 +9,24 @@
   overflow: visible;
   color: inherit;
   text-decoration: none;
+
+  /*
+   * Shared pocket-meta anchor derived from the tallest card (OKR title, ~5 lines
+   * at 300px). Keeps badge+title top aligned across cards; the longest block still
+   * sits 20px above the card bottom.
+   */
+  --notebook-pocket-bottom: 20px;
+  --notebook-tag-height: calc(var(--body3-line) + 10px);
+  --notebook-meta-gap: 12px;
+  --notebook-title-lines: 5;
+  --notebook-title-line-height: var(--h4-line);
+  --notebook-pocket-meta-top: calc(
+    100% - var(--notebook-pocket-bottom) - var(--notebook-tag-height) -
+      var(--notebook-meta-gap) -
+      (var(--notebook-title-lines) * var(--notebook-title-line-height))
+  );
+  /* Optical offset: diagonal pocket reads tighter above the badge */
+  --notebook-pocket-meta-nudge: 22px;
 }
 
 .notebook:hover,
@@ -149,11 +167,11 @@
   position: absolute;
   left: 8.25%;
   right: 8.25%;
-  bottom: 7.2%;
+  top: calc(var(--notebook-pocket-meta-top) + var(--notebook-pocket-meta-nudge));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--notebook-meta-gap);
   z-index: 4;
 }
 
@@ -210,7 +228,22 @@
   pointer-events: none;
 }
 
+@media (max-width: 1280px) {
+  .notebook {
+    --notebook-title-line-height: 28px;
+  }
+
+  .title {
+    font-size: 18px;
+    line-height: 28px;
+  }
+}
+
 @media (max-width: 960px) {
+  .notebook {
+    --notebook-title-line-height: 24.3px;
+  }
+
   .title {
     font-size: clamp(16px, 4.5vw, 18px);
     line-height: 1.35;

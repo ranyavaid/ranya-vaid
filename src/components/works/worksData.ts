@@ -37,11 +37,11 @@ export const FEATURED_CASES: WorkCase[] = [
     frontColor: '#8FD6FF',
     frontShadow: '0 -13px 24px rgba(1, 98, 153, 0.23)',
     tag: 'Design System',
-    title: "Reducing Design & Development Friction Through Adnet's Design System",
+    title: "Reducing 50% Design-to-dev Friction With Adnet's Design System",
   },
   {
     id: 'okr-alignment',
-    href: 'https://www.figma.com/deck/Wct7RvUxgFwGMZKuGUCSIE',
+    href: '/works/improving-organizational-hierarchy',
     imageLayers: [
       {
         src: '/ALignment-1.png',
@@ -53,7 +53,7 @@ export const FEATURED_CASES: WorkCase[] = [
     frontColor: '#FFE78F',
     frontShadow: '0 -6px 22px rgba(0, 0, 0, 0.12)',
     tag: 'Product Design',
-    title: 'Improving Organizational Alignment Through Connected Goals',
+    title: 'Solving disconnected goals through Goal Alignment for 2x faster contribution tracking',
   },
   {
     id: 'trip-planning',

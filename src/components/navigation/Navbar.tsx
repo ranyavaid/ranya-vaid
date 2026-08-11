@@ -23,7 +23,7 @@ export function Navbar() {
   const { pathname: rawPathname } = useLocation()
   const pathname = rawPathname.replace(/\/+$/, '') || '/'
   const isHomePage = pathname === '/'
-  const isAdnetCaseStudy = pathname === '/works/adnet-design-system'
+  const isCaseStudyPage = pathname.startsWith('/works/')
   const navItems = NAV_ITEMS.map((item) => ({
     ...item,
     href: isHomePage ? item.href : `/${item.href}`,
@@ -53,15 +53,15 @@ export function Navbar() {
     <header className={styles.navbar}>
       <Container>
         <nav
-          className={`${styles.row} ${isAdnetCaseStudy ? styles.rowCaseStudy : ''}`}
+          className={`${styles.row} ${isCaseStudyPage ? styles.rowCaseStudy : ''}`}
           aria-label="Primary"
         >
-          {isAdnetCaseStudy ? (
+          {isCaseStudyPage ? (
             <Link to="/" className={`h3 ${styles.backHome}`}>
               <span className={styles.backHomeIcon} aria-hidden="true">
                 arrow_back_ios
               </span>
-              Back to home
+              <span className={styles.backHomeLabel}>Back to home</span>
             </Link>
           ) : (
             <>
