@@ -1,29 +1,10 @@
 import type { MouseEvent, ReactNode } from 'react'
+import { scrollToHashTarget } from '../../utils/scrollReset'
 import styles from './NavLink.module.css'
 
 type NavLinkProps = {
   href: string
   children: ReactNode
-}
-
-function scrollToHashTarget(href: string) {
-  if (!href.startsWith('#')) {
-    return false
-  }
-
-  const targetId = href.slice(1)
-  if (targetId === 'top' || targetId.length === 0) {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    return true
-  }
-
-  const target = document.getElementById(targetId)
-  if (!target) {
-    return false
-  }
-
-  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  return true
 }
 
 /**
@@ -46,7 +27,7 @@ export function NavLink({ href, children }: NavLinkProps) {
       return
     }
 
-    if (scrollToHashTarget(href)) {
+    if (href.startsWith('#') && scrollToHashTarget(href, 'smooth')) {
       event.preventDefault()
     }
   }
