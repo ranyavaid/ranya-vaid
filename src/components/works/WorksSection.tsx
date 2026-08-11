@@ -20,10 +20,17 @@ export function WorksSection() {
         </p>
       </header>
 
-      <div className={styles.notebooks} aria-label="Featured case folders">
-        {FEATURED_CASES.map((workCase) => (
-          <Notebook key={workCase.id} {...workCase} />
-        ))}
+      <div
+        className={styles.notebooksScroller}
+        aria-label="Featured case folders"
+      >
+        <div className={styles.notebooksTrack}>
+          {FEATURED_CASES.map((workCase) => (
+            <div key={workCase.id} className={styles.notebookItem}>
+              <Notebook {...workCase} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

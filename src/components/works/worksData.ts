@@ -57,7 +57,7 @@ export const FEATURED_CASES: WorkCase[] = [
   },
   {
     id: 'trip-planning',
-    href: 'https://www.figma.com/deck/lF9u4QRzAezs84y74bsP9c',
+    href: '/works/trip-planning',
     imageLayers: [
       {
         src: '/trip-planning-1.png',
@@ -74,5 +74,22 @@ export const FEATURED_CASES: WorkCase[] = [
     frontShadow: '0 -12px 41px rgba(168, 2, 122, 0.26)',
     tag: 'Design Exploration',
     title: 'Streamlining Trip Collaboration and Making Planning Frictionless',
+  },
+  {
+    id: 'ppn',
+    href: '/works/ppn',
+    imageLayers: [
+      {
+        src: '/PPN/cover_1.svg',
+        className: 'ppnOne',
+        alt: 'PPN service discovery primary screen',
+      },
+    ],
+    backColor: '#b8e6ff',
+    frontColor: '#8FD6FF',
+    frontShadow: '0 -13px 24px rgba(1, 98, 153, 0.23)',
+    tag: 'Product Design',
+    title:
+      'Building Trust in Local Service Discovery Through a 7-Role Hybrid B2B2C Ecosystem',
   },
 ]

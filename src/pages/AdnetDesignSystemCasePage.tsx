@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Container } from '../components/layout/Container'
-import { ScrollGifCanvas } from './ProcessGifCanvas'
 import styles from './AdnetDesignSystemCasePage.module.css'
 
 const IMPACT_CARDS = [
@@ -32,6 +31,8 @@ const IMPACT_CARDS = [
 
 export function AdnetDesignSystemCasePage() {
   const processFigureRef = useRef<HTMLDivElement | null>(null)
+  const processVideoRef = useRef<HTMLVideoElement | null>(null)
+  const processFinishedRef = useRef(false)
   const [processStarted, setProcessStarted] = useState(false)
   const stateLayerFigureRef = useRef<HTMLDivElement | null>(null)
   const [stateLayerStarted, setStateLayerStarted] = useState(false)
@@ -56,6 +57,25 @@ export function AdnetDesignSystemCasePage() {
 
     observer.observe(target)
     return () => observer.disconnect()
+  }, [processStarted])
+
+  useEffect(() => {
+    if (!processStarted || processFinishedRef.current) return
+
+    const video = processVideoRef.current
+    if (!video) return
+
+    const tryPlay = () => {
+      if (processFinishedRef.current || video.ended) return
+      void video.play().catch(() => {})
+    }
+
+    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      tryPlay()
+    } else {
+      video.addEventListener('loadedmetadata', tryPlay, { once: true })
+      return () => video.removeEventListener('loadedmetadata', tryPlay)
+    }
   }, [processStarted])
 
   useEffect(() => {
@@ -102,8 +122,8 @@ export function AdnetDesignSystemCasePage() {
         <header className={styles.textContainer}>
           <span className={`body-3 ${styles.tag}`}>Design System</span>
           <h2 className={styles.heading}>
-            Reducing Design &amp; Development Friction Through Adnet&apos;s
-            Design System
+            Reducing 50% Design-to-Dev Friction With Adnet&apos;s New Design
+            System
           </h2>
           <p className={`body-1 ${styles.body}`}>
             A foundation-first approach to bringing consistency, speed, and
@@ -222,14 +242,30 @@ export function AdnetDesignSystemCasePage() {
                       system.
                     </p>
                   </div>
-                  <div ref={processFigureRef} className={styles.processFigure}>
-                    <ScrollGifCanvas
-                      src="/Adnet/process.gif"
-                      shouldPlay={processStarted}
-                      loop
-                      ariaLabel="Adnet design system process flow animation"
-                      className={styles.processImage}
-                    />
+                  <div
+                    ref={processFigureRef}
+                    className={styles.processFigure}
+                    style={{ aspectRatio: '1945 / 937' }}
+                  >
+                    <div className={styles.processFigureSurface} aria-hidden="true" />
+                    <div className={styles.processFigureEntrance}>
+                      <div className={styles.figureClip}>
+                        {processStarted && (
+                          <video
+                            ref={processVideoRef}
+                            src="/Adnet/process.mp4"
+                            className={styles.processVideo}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            aria-label="Adnet design system process flow animation"
+                            onEnded={() => {
+                              processFinishedRef.current = true
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </section>
 
@@ -364,12 +400,14 @@ export function AdnetDesignSystemCasePage() {
                   </div>
 
                   <div ref={stateLayerFigureRef} className={styles.stateLayerFigure}>
-                    <ScrollGifCanvas
-                      src="/Adnet/state-layer.gif"
-                      shouldPlay={stateLayerStarted}
-                      ariaLabel="State layer mapping: token tag, arrow, and usage text"
-                      className={styles.stateLayerImage}
-                    />
+                    {stateLayerStarted && (
+                      <img
+                        src="/Adnet/state-layer.gif"
+                        alt="State layer mapping: token tag, arrow, and usage text"
+                        className={styles.stateLayerImage}
+                        draggable={false}
+                      />
+                    )}
                   </div>
 
                   <div
@@ -410,13 +448,14 @@ export function AdnetDesignSystemCasePage() {
                   </div>
 
                   <div ref={foundationsFigureRef} className={styles.foundationsFigure}>
-                    <ScrollGifCanvas
-                      src="/Adnet/foundations.gif"
-                      shouldPlay={foundationsStarted}
-                      loop
-                      ariaLabel="Foundations animation"
-                      className={styles.foundationsImage}
-                    />
+                    {foundationsStarted && (
+                      <img
+                        src="/Adnet/foundations.gif"
+                        alt="Foundations animation"
+                        className={styles.foundationsImage}
+                        draggable={false}
+                      />
+                    )}
                   </div>
                 </section>
 
@@ -477,7 +516,7 @@ export function AdnetDesignSystemCasePage() {
 
                   <div className={styles.handoffFigure}>
                     <img
-                      src="/Adnet/handoff.png"
+                      src="/Adnet/documentation.svg"
                       alt="Badge component documentation showing anatomy, states, and usage notes"
                       className={styles.handoffImage}
                       draggable={false}

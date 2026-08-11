@@ -176,50 +176,141 @@
   color: var(--color-black-primary);
 }
 
+/* Figure wrappers need an opaque surface color so the page dotted body
+   background cannot show through during entrance opacity compositing. */
+.figureClip,
 .trackerFigure,
 .tokenArchitectureFigure,
-.handoffFigure {
-  width: min(818px, calc(100vw - (2 * var(--page-gutter))));
-  margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
-  border: 1px solid var(--color-stroke);
+.handoffFigure,
+.stateLayerFigure,
+.foundationsFigure,
+.componentsFigure {
+  --figure-surface: #efefef;
   border-radius: 12px;
   overflow: hidden;
+  line-height: 0;
+  isolation: isolate;
+  background-color: var(--figure-surface);
+}
+
+.stateLayerFigure {
+  --figure-surface: #eeeeee;
+}
+
+.foundationsFigure {
+  --figure-surface: #f8f9fa;
+}
+
+.processFigure .figureClip {
+  --figure-surface: #efefef;
+  height: 100%;
+}
+
+.trackerFigure,
+.tokenArchitectureFigure,
+.handoffFigure,
+.foundationsFigure {
+  width: min(818px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
 }
 
 .processFigure {
+  position: relative;
   width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
   margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
   margin-top: var(--case-block-gap);
-  aspect-ratio: 1945 / 937;
-  border: 1px solid var(--color-stroke);
+  line-height: 0;
+}
+
+.processFigureSurface {
+  position: absolute;
+  inset: 0;
   border-radius: 12px;
-  overflow: hidden;
+  background-color: #efefef;
+  pointer-events: none;
+}
+
+.processFigureEntrance {
+  position: relative;
+  height: 100%;
   opacity: 0;
   transform: translateY(22px) scale(0.99);
   transition: opacity 560ms ease, transform 680ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.processVisible {
+.processVisible .processFigureEntrance {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-.processImage {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
+.stateLayerImage,
+.foundationsImage,
+.trackerImage,
+.handoffImage {
+  width: calc(100% + 2px);
+  max-width: none;
+  height: auto;
   display: block;
+  margin: -1px;
+  border-radius: 12px;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background-color: var(--figure-surface, #efefef);
+}
+
+.processVideo {
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  max-width: none;
+  display: block;
+  margin: -1px;
+  border-radius: 12px;
   object-fit: contain;
   object-position: center;
   pointer-events: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background-color: var(--figure-surface, #efefef);
 }
 
-.trackerImage,
-.handoffImage {
+.tokenArchitectureImage {
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  max-width: none;
+  display: block;
+  margin: -1px;
+  border-radius: 12px;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.componentsFigure {
+  margin-top: var(--case-block-gap);
+  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  overflow: visible;
+  height: auto;
+}
+
+.componentsImage {
   width: 100%;
   height: auto;
-  max-width: 100%;
   display: block;
+  margin: 0;
+  border-radius: 12px;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 
 .trackerFigure {
@@ -284,77 +375,14 @@
   width: min(608px, calc(100vw - (2 * var(--page-gutter))));
   margin-inline: calc((100% - min(608px, calc(100vw - (2 * var(--page-gutter))))) / 2);
   margin-top: 32px;
-  aspect-ratio: 608 / 172;
-  border: 1px solid var(--color-stroke);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.stateLayerImage {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  display: block;
-  object-fit: contain;
-  object-position: center;
-  pointer-events: none;
 }
 
 .foundationsFigure {
   margin-top: 0;
-  width: min(818px, calc(100vw - (2 * var(--page-gutter))));
-  margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
-  aspect-ratio: 1558 / 1098;
-  border: 1px solid var(--color-stroke);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.foundationsImage {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  display: block;
-  object-fit: contain;
-  object-position: center;
-  pointer-events: none;
 }
 
 .tokenArchitectureFigure {
   aspect-ratio: 818 / 572;
-  border: 1px solid var(--color-stroke);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.tokenArchitectureImage {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  display: block;
-  object-fit: contain;
-  object-position: center;
-  pointer-events: none;
-}
-
-.componentsFigure {
-  margin-top: var(--case-block-gap);
-  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
-  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
-  aspect-ratio: 1456 / 630;
-  border: 1px solid var(--color-stroke);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.componentsImage {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  display: block;
-  object-fit: contain;
-  object-position: center;
-  pointer-events: none;
 }
 
 .handoffFigure {
@@ -415,7 +443,6 @@
   height: 240px;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 1px solid var(--color-stroke);
   background: var(--color-white-primary);
   flex-shrink: 0;
 }
@@ -513,8 +540,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .processFigure,
-  .processVisible {
+  .processFigureEntrance {
     opacity: 1;
     transform: none;
     transition: none;

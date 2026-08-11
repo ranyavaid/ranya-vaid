@@ -21,24 +21,41 @@
   margin-inline: auto;
 }
 
-.notebooks {
+.notebooksScroller {
   --works-card-gap: 24px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--works-card-gap);
-  width: 100%;
+  --works-card-width: 388px;
   margin-top: 50px;
+  margin-inline: calc(-1 * var(--page-gutter));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--page-gutter);
 }
 
-@media (max-width: 1023px) {
-  .notebooks {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.notebooksScroller::-webkit-scrollbar {
+  display: none;
+}
+
+.notebooksTrack {
+  display: flex;
+  align-items: stretch;
+  gap: var(--works-card-gap);
+  width: max-content;
+  min-width: 100%;
+  padding-inline: var(--page-gutter);
+  padding-block: 4px 8px;
+}
+
+.notebookItem {
+  flex: 0 0 var(--works-card-width);
+  width: var(--works-card-width);
+  scroll-snap-align: start;
 }
 
 @media (max-width: 767px) {
-  .notebooks {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .notebooksScroller {
+    --works-card-width: min(388px, calc(100vw - (2 * var(--page-gutter)) - 32px));
   }
 }

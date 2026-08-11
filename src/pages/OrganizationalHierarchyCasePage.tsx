@@ -1229,7 +1229,7 @@ export function OrganizationalHierarchyCasePage() {
       void video.play().catch(() => {})
     }
 
-    tryPlay()
+      tryPlay()
     video.addEventListener('loadeddata', tryPlay)
     return () => video.removeEventListener('loadeddata', tryPlay)
   }, [])
@@ -1245,7 +1245,7 @@ export function OrganizationalHierarchyCasePage() {
 
         if (isBlockVisible && slideIndex === activeSlideIndex) {
           void video.play().catch(() => {})
-        } else {
+    } else {
           video.pause()
         }
       })
@@ -1471,7 +1471,7 @@ export function OrganizationalHierarchyCasePage() {
                         ))}
                       </div>
                     </article>
-                  </div>
+                    </div>
 
                   <div className={`${styles.bodyStack} ${styles.researchSynthesisStack}`}>
                     <p className={`body-2 ${styles.mainBody}`}>
@@ -1507,7 +1507,7 @@ export function OrganizationalHierarchyCasePage() {
                         execution, understand progress, and recognize contribution.
                       </p>
                     </div>
-                  </article>
+                    </article>
                 </section>
 
                 <section id="user-personas" className={styles.caseSection}>
@@ -1530,7 +1530,7 @@ export function OrganizationalHierarchyCasePage() {
                             draggable={false}
                           />
                         </div>
-                      </article>
+                    </article>
                     ))}
                   </div>
                 </section>
@@ -1551,8 +1551,8 @@ export function OrganizationalHierarchyCasePage() {
                       src="/okr%20Alignment/rollout.svg"
                       alt="Phased rollout plan for OKR alignment feature"
                       className={styles.rolloutImage}
-                      draggable={false}
-                    />
+                        draggable={false}
+                      />
                   </div>
                 </section>
 
@@ -1595,7 +1595,7 @@ export function OrganizationalHierarchyCasePage() {
                         </div>
                       ))}
                       </div>
-                    </div>
+                  </div>
 
                     <CaseCarouselControls
                       slideCount={RULE_CARDS.length}
@@ -1627,7 +1627,7 @@ export function OrganizationalHierarchyCasePage() {
                       className={`${styles.userFlowImage} ${styles.figureZoomableImage}`}
                       width={818}
                       height={381}
-                      draggable={false}
+                        draggable={false}
                       onClick={() =>
                         openZoomedImage({
                           src: USER_FLOW_IMAGE_SRC,
@@ -1681,7 +1681,7 @@ export function OrganizationalHierarchyCasePage() {
                               className={`${styles.designOptionImage} ${styles.figureZoomableImage}`}
                               width={818}
                               height={524}
-                              draggable={false}
+                      draggable={false}
                               onClick={
                                 entry.isClone
                                   ? undefined
@@ -1820,7 +1820,7 @@ export function OrganizationalHierarchyCasePage() {
                                   <p className={`body-2 ${styles.finalScreenCaption}`}>
                                     {entry.item.caption}
                                   </p>
-                                </div>
+                  </div>
                               </div>
                               )
                             })}
@@ -1867,12 +1867,12 @@ export function OrganizationalHierarchyCasePage() {
                         </p>
                         <div className={styles.impactCardSpacer} aria-hidden="true" />
                         <div className={styles.impactCardContent}>
-                          <p className={`h2 ${styles.impactCardMetric}`}>
-                            {card.metric}
-                          </p>
-                          <p className={`body-2 ${styles.impactCardBody}`}>
-                            {card.body}
-                          </p>
+                        <p className={`h2 ${styles.impactCardMetric}`}>
+                          {card.metric}
+                        </p>
+                        <p className={`body-2 ${styles.impactCardBody}`}>
+                          {card.body}
+                        </p>
                         </div>
                       </article>
                     ))}

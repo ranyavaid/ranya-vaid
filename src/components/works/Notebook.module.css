@@ -163,6 +163,17 @@
   z-index: 3;
 }
 
+/* Blue folder: PPN service discovery cover */
+.ppnOne {
+  --tx: -50%;
+  --ty: 0px;
+  --lift: -14px;
+  width: 340px;
+  left: 50%;
+  top: 12px;
+  z-index: 1;
+}
+
 .pocketMeta {
   position: absolute;
   left: 8.25%;

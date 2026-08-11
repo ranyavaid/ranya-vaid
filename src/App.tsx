@@ -4,6 +4,8 @@ import { ScrollToTop } from './components/navigation/ScrollToTop'
 import { Home } from './pages/Home'
 import { AdnetDesignSystemCasePage } from './pages/AdnetDesignSystemCasePage'
 import { OrganizationalHierarchyCasePage } from './pages/OrganizationalHierarchyCasePage'
+import { PpnCasePage } from './pages/PpnCasePage'
+import { TripPlanningCasePage } from './pages/TripPlanningCasePage'
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           path="/works/improving-organizational-hierarchy"
           element={<OrganizationalHierarchyCasePage />}
         />
+        <Route path="/works/ppn" element={<PpnCasePage />} />
+        <Route path="/works/trip-planning" element={<TripPlanningCasePage />} />
       </Routes>
     </>
   )
