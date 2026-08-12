@@ -56,6 +56,23 @@ export const FEATURED_CASES: WorkCase[] = [
     title: 'Solving disconnected goals through Goal Alignment for 2x faster contribution tracking',
   },
   {
+    id: 'ppn',
+    href: '/works/ppn',
+    imageLayers: [
+      {
+        src: '/PPN/cover_1.svg',
+        className: 'ppnOne',
+        alt: 'PPN service discovery primary screen',
+      },
+    ],
+    backColor: '#FFCCF1',
+    frontColor: '#FFB2EA',
+    frontShadow: '0 -12px 41px rgba(168, 2, 122, 0.26)',
+    tag: 'Product Design',
+    title:
+      'Building Trust in Local Service Discovery Through a 7-Role Hybrid B2B2C Ecosystem',
+  },
+  {
     id: 'trip-planning',
     href: '/works/trip-planning',
     imageLayers: [
@@ -69,27 +86,10 @@ export const FEATURED_CASES: WorkCase[] = [
         className: 'tripTwo',
       },
     ],
-    backColor: '#FFCCF1',
-    frontColor: '#FFB2EA',
-    frontShadow: '0 -12px 41px rgba(168, 2, 122, 0.26)',
-    tag: 'Design Exploration',
-    title: 'Streamlining Trip Collaboration and Making Planning Frictionless',
-  },
-  {
-    id: 'ppn',
-    href: '/works/ppn',
-    imageLayers: [
-      {
-        src: '/PPN/cover_1.svg',
-        className: 'ppnOne',
-        alt: 'PPN service discovery primary screen',
-      },
-    ],
     backColor: '#b8e6ff',
     frontColor: '#8FD6FF',
     frontShadow: '0 -13px 24px rgba(1, 98, 153, 0.23)',
-    tag: 'Product Design',
-    title:
-      'Building Trust in Local Service Discovery Through a 7-Role Hybrid B2B2C Ecosystem',
+    tag: 'Design Exploration',
+    title: 'Streamlining Trip Collaboration and Making Planning Frictionless',
   },
 ]

@@ -1,12 +1,122 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Notebook } from './Notebook'
 import { FEATURED_CASES } from './worksData'
 import styles from './WorksSection.module.css'
+
+type DragState = {
+  active: boolean
+  moved: boolean
+  startX: number
+  startScrollLeft: number
+}
+
+const DRAG_THRESHOLD_PX = 5
 
 /**
  * WorksSection
  * Featured case-study notebooks with project imagery and hover lift.
  */
 export function WorksSection() {
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const dragState = useRef<DragState>({
+    active: false,
+    moved: false,
+    startX: 0,
+    startScrollLeft: 0,
+  })
+  const [canScroll, setCanScroll] = useState(false)
+
+  const updateScrollability = useCallback(() => {
+    const scroller = scrollerRef.current
+    if (!scroller) return
+
+    setCanScroll(scroller.scrollWidth > scroller.clientWidth + 1)
+  }, [])
+
+  useEffect(() => {
+    const scroller = scrollerRef.current
+    if (!scroller) return
+
+    updateScrollability()
+
+    const onWheel = (event: WheelEvent) => {
+      if (scroller.scrollWidth <= scroller.clientWidth + 1) return
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return
+
+      event.preventDefault()
+      scroller.scrollLeft += event.deltaY
+    }
+
+    scroller.addEventListener('wheel', onWheel, { passive: false })
+
+    const resizeObserver = new ResizeObserver(updateScrollability)
+    resizeObserver.observe(scroller)
+
+    return () => {
+      scroller.removeEventListener('wheel', onWheel)
+      resizeObserver.disconnect()
+    }
+  }, [updateScrollability])
+
+  const onPointerDownCapture = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (!canScroll) return
+      if (event.pointerType === 'mouse' && event.button !== 0) return
+
+      const scroller = scrollerRef.current
+      if (!scroller) return
+
+      dragState.current = {
+        active: true,
+        moved: false,
+        startX: event.clientX,
+        startScrollLeft: scroller.scrollLeft,
+      }
+
+      scroller.setPointerCapture(event.pointerId)
+      scroller.classList.add(styles.notebooksScrollerDragging)
+    },
+    [canScroll]
+  )
+
+  const onPointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    const scroller = scrollerRef.current
+    const drag = dragState.current
+    if (!scroller || !drag.active) return
+
+    const delta = event.clientX - drag.startX
+    if (Math.abs(delta) > DRAG_THRESHOLD_PX) {
+      if (!drag.moved) {
+        drag.moved = true
+      }
+      event.preventDefault()
+    }
+
+    if (drag.moved) {
+      scroller.scrollLeft = drag.startScrollLeft - delta
+    }
+  }, [])
+
+  const endDrag = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    const scroller = scrollerRef.current
+    if (!scroller || !dragState.current.active) return
+
+    if (scroller.hasPointerCapture(event.pointerId)) {
+      scroller.releasePointerCapture(event.pointerId)
+    }
+
+    scroller.classList.remove(styles.notebooksScrollerDragging)
+    dragState.current.active = false
+  }, [])
+
+  const onClickCapture = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (!dragState.current.moved) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    dragState.current.moved = false
+  }, [])
+
   return (
     <section id="works" className={styles.section} aria-labelledby="works-heading">
       <header className={styles.header}>
@@ -21,8 +131,16 @@ export function WorksSection() {
       </header>
 
       <div
-        className={styles.notebooksScroller}
+        ref={scrollerRef}
+        className={`${styles.notebooksScroller} ${
+          canScroll ? styles.notebooksScrollerScrollable : styles.notebooksScrollerStatic
+        }`}
         aria-label="Featured case folders"
+        onPointerDownCapture={onPointerDownCapture}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={onClickCapture}
       >
         <div className={styles.notebooksTrack}>
           {FEATURED_CASES.map((workCase) => (

@@ -70,6 +70,8 @@ export function Notebook({
         aria-label={title}
         className={styles.notebook}
         style={notebookStyle}
+        draggable={false}
+        onDragStart={(event) => event.preventDefault()}
       >
         {notebookContent}
       </a>
@@ -82,6 +84,8 @@ export function Notebook({
       aria-label={title}
       className={styles.notebook}
       style={notebookStyle}
+      draggable={false}
+      onDragStart={(event) => event.preventDefault()}
     >
       {notebookContent}
     </Link>
