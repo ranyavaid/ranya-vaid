@@ -52,10 +52,23 @@
 }
 
 .imageStickyFrame {
+  position: relative;
+  isolation: isolate;
   width: 100%;
   /* Full-bleed cover locked to the 1440:518 design ratio. */
   aspect-ratio: 1440 / 518;
   overflow: hidden;
+}
+
+/* Banner hero must never expose zoom/lightbox affordances. */
+.imageScrollArea .figureZoomButton,
+.imageStickyFrame .figureZoomButton {
+  display: none !important;
+}
+
+.imageStickyFrame .caseVideo,
+.imageStickyFrame .caseImage {
+  cursor: default;
 }
 
 .caseImage,
@@ -282,6 +295,30 @@
   height: auto;
   transform: translate(var(--lightbox-pan-x, 0px), var(--lightbox-pan-y, 0px));
   will-change: transform;
+}
+
+.researchLightboxVideoStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(1080px, calc(100vw - 48px));
+  max-height: calc(100vh - 96px);
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.researchLightboxVideo {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 96px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  object-fit: contain;
 }
 
 .figureZoomableImage {
@@ -801,6 +838,7 @@
 }
 
 .finalScreenFrame {
+  position: relative;
   width: 100%;
   height: 743px;
   padding: 60px 90px;
@@ -819,6 +857,44 @@
     #e5ffe8 78%,
     #fff3b0 100%
   );
+}
+
+.finalScreenVideoFigure {
+  position: relative;
+  line-height: 0;
+  font-size: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.finalScreenVideoFigure .caseStudyVideo {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: fit-content;
+  max-width: min(900px, 100%);
+  line-height: 0;
+  border-radius: 12px;
+  margin-inline: auto;
+}
+
+.finalScreenVideoFigure .caseStudyVideoMedia {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(900px, 100%);
+  max-height: calc(743px - 120px - 28px - var(--body2-line));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  vertical-align: top;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
 }
 
 .finalScreenVideo,

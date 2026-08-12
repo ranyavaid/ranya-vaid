@@ -48,6 +48,35 @@ export function resetRouteScroll(hash: string) {
   resetScrollInstant()
 }
 
+const HOME_RETURN_HASH_KEY = 'portfolio:homeReturnHash'
+const HOME_SECTION_IDS = new Set(['top', 'works', 'playground', 'about', 'contact'])
+
+function normalizePathname(pathname: string) {
+  const normalized = pathname.replace(/\/+$/, '')
+  return normalized.length === 0 ? '/' : normalized
+}
+
+function resolveNextPath(url: string | URL | null | undefined) {
+  if (!url) return null
+
+  try {
+    return normalizePathname(new URL(url.toString(), window.location.href).pathname)
+  } catch {
+    return null
+  }
+}
+
+function captureHomeReturnHash() {
+  const id = window.location.hash.replace(/^#/, '')
+  const hash = id && HOME_SECTION_IDS.has(id) ? `#${id}` : '#works'
+  sessionStorage.setItem(HOME_RETURN_HASH_KEY, hash)
+}
+
+/** Hash to restore when returning home from a case study. */
+export function getHomeReturnHash() {
+  return sessionStorage.getItem(HOME_RETURN_HASH_KEY) ?? '#works'
+}
+
 let historyScrollPatchApplied = false
 
 /**
@@ -61,6 +90,13 @@ export function patchHistoryScrollReset() {
   const { pushState, replaceState } = history
 
   history.pushState = function pushStateWithScrollReset(...args) {
+    const fromPath = normalizePathname(window.location.pathname)
+    const nextPath = resolveNextPath(args[2] as string | URL | null | undefined)
+
+    if (fromPath === '/' && nextPath?.startsWith('/works/')) {
+      captureHomeReturnHash()
+    }
+
     resetScrollInstant()
     return pushState.apply(this, args)
   }

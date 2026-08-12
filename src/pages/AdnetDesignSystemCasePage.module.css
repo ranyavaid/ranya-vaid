@@ -52,10 +52,23 @@
 }
 
 .imageStickyFrame {
+  position: relative;
+  isolation: isolate;
   width: 100%;
   /* Full-bleed cover locked to the 1440:518 design ratio. */
   aspect-ratio: 1440 / 518;
   overflow: hidden;
+}
+
+/* Banner hero must never expose zoom/lightbox affordances. */
+.imageScrollArea .figureZoomButton,
+.imageStickyFrame .figureZoomButton {
+  display: none !important;
+}
+
+.imageStickyFrame .caseVideo,
+.imageStickyFrame .caseImage {
+  cursor: default;
 }
 
 .caseImage {

@@ -4,11 +4,17 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type ChangeEvent,
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react'
 import { Container } from '../components/layout/Container'
+import {
+  CaseStudySectionNav,
+  type CaseStudySection,
+} from '../components/case-study/CaseStudySectionNav'
+import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './TripPlanningCasePage.module.css'
 import fiveWhysImageVersion from 'virtual:public-asset-version/Trip-planning/5-whys.png'
 import primaryResearchImageVersion from 'virtual:public-asset-version/Trip-planning/primary-research.png'
@@ -19,7 +25,37 @@ import userFlowImageVersion from 'virtual:public-asset-version/Trip-planning/use
 import iteration1ImageVersion from 'virtual:public-asset-version/Trip-planning/iteration_1.png'
 import iteration2ImageVersion from 'virtual:public-asset-version/Trip-planning/iteration_2.png'
 import rolloutImageVersion from 'virtual:public-asset-version/Trip-planning/rollout.svg'
+import finals1VideoVersion from 'virtual:public-asset-version/Trip-planning/finals1.mp4'
+import finals2VideoVersion from 'virtual:public-asset-version/Trip-planning/finals2.mp4'
+import finals3VideoVersion from 'virtual:public-asset-version/Trip-planning/finals3.mp4'
+import finals4VideoVersion from 'virtual:public-asset-version/Trip-planning/finals4.mp4'
+import finals5VideoVersion from 'virtual:public-asset-version/Trip-planning/finals5.mp4'
+import finals6VideoVersion from 'virtual:public-asset-version/Trip-planning/finals6.mp4'
+import finals7VideoVersion from 'virtual:public-asset-version/Trip-planning/finals7.mp4'
+import finals8VideoVersion from 'virtual:public-asset-version/Trip-planning/finals8.mp4'
+import finals9VideoVersion from 'virtual:public-asset-version/Trip-planning/finals9.mp4'
+import finals10VideoVersion from 'virtual:public-asset-version/Trip-planning/finals10.mp4'
+import finals11VideoVersion from 'virtual:public-asset-version/Trip-planning/finals11.mp4'
+import finals12VideoVersion from 'virtual:public-asset-version/Trip-planning/finals12.mp4'
+import finals13VideoVersion from 'virtual:public-asset-version/Trip-planning/finals13.mp4'
+import bannerVersion from 'virtual:public-asset-version/Trip-planning/banner.mp4'
 
+const BANNER_VIDEO_SRC = `/Trip-planning/banner.mp4?v=${bannerVersion}`
+
+const TRIP_PLANNING_SECTIONS: CaseStudySection[] = [
+  { id: 'top', label: 'Top' },
+  { id: 'overview', label: 'The Challenge' },
+  { id: 'discovery', label: 'Primary Research' },
+  { id: 'trade-offs', label: 'Digging Deeper: Why Does This Problem Exist?' },
+  { id: 'process', label: 'How is the problem solved currently?' },
+  { id: 'user-persona', label: 'Who we designed for?' },
+  { id: 'defining-features', label: 'Defining & Evaluating Features' },
+  { id: 'user-flow', label: 'User Flow' },
+  { id: 'sketches', label: 'Early concepts & wireframes' },
+  { id: 'finals', label: 'Final Screens' },
+  { id: 'impact', label: 'Impact' },
+  { id: 'next-steps', label: 'Next Steps' },
+]
 const PRIMARY_RESEARCH_IMAGE_SRC = `/Trip-planning/primary-research.png?v=${primaryResearchImageVersion}`
 const PRIMARY_RESEARCH_IMAGE_ALT =
   'Primary research synthesis from Reddit threads and blogs'
@@ -49,11 +85,142 @@ const ITERATION_SLIDES = [
     alt: 'Trip planning iteration 2 wireframe',
   },
 ] as const
+
+type FinalScreenSlide = {
+  src: string
+  caption: string
+}
+
+const FINALS_VIDEO_SRCS = [
+  `/Trip-planning/finals1.mp4?v=${finals1VideoVersion}`,
+  `/Trip-planning/finals2.mp4?v=${finals2VideoVersion}`,
+  `/Trip-planning/finals3.mp4?v=${finals3VideoVersion}`,
+  `/Trip-planning/finals4.mp4?v=${finals4VideoVersion}`,
+  `/Trip-planning/finals5.mp4?v=${finals5VideoVersion}`,
+  `/Trip-planning/finals6.mp4?v=${finals6VideoVersion}`,
+  `/Trip-planning/finals7.mp4?v=${finals7VideoVersion}`,
+  `/Trip-planning/finals8.mp4?v=${finals8VideoVersion}`,
+  `/Trip-planning/finals9.mp4?v=${finals9VideoVersion}`,
+  `/Trip-planning/finals10.mp4?v=${finals10VideoVersion}`,
+  `/Trip-planning/finals11.mp4?v=${finals11VideoVersion}`,
+  `/Trip-planning/finals12.mp4?v=${finals12VideoVersion}`,
+  `/Trip-planning/finals13.mp4?v=${finals13VideoVersion}`,
+] as const
+
+const makeFinalSlides = (indices: readonly number[]): FinalScreenSlide[] =>
+  indices.map((index) => ({
+    src: FINALS_VIDEO_SRCS[index],
+    caption: `Trip planning final screen ${index + 1}`,
+  }))
+
+const FINAL_SCREEN_PHASES = [
+  {
+    id: 'create-trip',
+    heading: 'Creating a shared travel plan',
+    body:
+      'The feature customizes the experience based on whether you are traveling alone or in a group.',
+    slides: makeFinalSlides([0, 1, 2, 3]),
+    carouselLabel: 'Creating a shared travel plan final screen demonstrations',
+    controlsLabel: 'Creating a shared travel plan final screen navigation',
+  },
+  {
+    id: 'plan-with-ai',
+    heading: 'Plan with AI',
+    body:
+      'AI gives users a faster starting point by collecting simple information to provide a structured plan, easing the blank-state anxiety of starting from ground zero.',
+    slides: makeFinalSlides([4, 5, 6]),
+    carouselLabel: 'Plan with AI final screen demonstrations',
+    controlsLabel: 'Plan with AI final screen navigation',
+  },
+  {
+    id: 'plan-overview',
+    heading: 'Plan overview',
+    body:
+      'The overview brought the full trip into one place — dates, collaborators, itinerary highlights, and next steps — so groups could see where planning stood at a glance.',
+    slides: makeFinalSlides([7, 8, 9]),
+    carouselLabel: 'Plan overview final screen demonstrations',
+    controlsLabel: 'Plan overview final screen navigation',
+  },
+  {
+    id: 'tracking-expenses',
+    heading: 'Tracking expenses',
+    body:
+      'Shared expense tracking helped groups split costs, record payments, and stay aligned on what was planned versus what was spent during the trip.',
+    slides: makeFinalSlides([10]),
+    carouselLabel: 'Tracking expenses final screen demonstration',
+    controlsLabel: 'Tracking expenses final screen navigation',
+  },
+  {
+    id: 'explore-boards',
+    heading: 'Explore and create boards',
+    body:
+      'Explore surfaces inspiration from community to build an authentic experience. Boards let groups collect places and ideas so they always have fallbacks and options to choose from.',
+    slides: makeFinalSlides([11, 12]),
+    carouselLabel: 'Explore and create boards final screen demonstrations',
+    controlsLabel: 'Explore and create boards final screen navigation',
+  },
+] as const
+
 const CAROUSEL_AUTO_ADVANCE_MS = 6000
 
 type ZoomedImage = {
   src: string
   alt: string
+}
+
+type ResearchVideoLightboxProps = {
+  video: ZoomedImage
+  onClose: () => void
+}
+
+function ResearchVideoLightbox({ video, onClose }: ResearchVideoLightboxProps) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      onClose()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  return (
+    <div
+      className={styles.researchLightbox}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Video full screen view"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className={styles.researchLightboxClose}
+        aria-label="Close full screen view"
+        onClick={onClose}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path
+            d="M1 1L13 13M13 1L1 13"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+      <div className={styles.researchLightboxVideoStage} onClick={(event) => event.stopPropagation()}>
+        <video
+          key={video.src}
+          src={video.src}
+          className={styles.researchLightboxVideo}
+          controls
+          autoPlay
+          playsInline
+          aria-label={video.alt}
+          {...protectedVideoProps}
+        />
+      </div>
+    </div>
+  )
 }
 
 type ResearchImageLightboxProps = {
@@ -315,6 +482,168 @@ function FigureZoomButton({
   )
 }
 
+type CaseStudyVideoPlayerProps = {
+  src: string
+  ariaLabel: string
+  onVideoRef?: (element: HTMLVideoElement | null) => void
+}
+
+function CaseStudyVideoPlayer({ src, ariaLabel, onVideoRef }: CaseStudyVideoPlayerProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isEnded, setIsEnded] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+
+  const assignVideoRef = useCallback(
+    (element: HTMLVideoElement | null) => {
+      videoRef.current = element
+      onVideoRef?.(element)
+    },
+    [onVideoRef]
+  )
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    video.load()
+  }, [src])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const handlePlay = () => {
+      setIsPlaying(true)
+      setIsEnded(false)
+    }
+    const handlePause = () => setIsPlaying(false)
+    const handleEnded = () => {
+      setIsPlaying(false)
+      setIsEnded(true)
+    }
+    const handleTimeUpdate = () => setCurrentTime(video.currentTime)
+    const handleLoadedMetadata = () => setDuration(video.duration || 0)
+    const handleDurationChange = () => setDuration(video.duration || 0)
+
+    video.addEventListener('play', handlePlay)
+    video.addEventListener('pause', handlePause)
+    video.addEventListener('ended', handleEnded)
+    video.addEventListener('timeupdate', handleTimeUpdate)
+    video.addEventListener('loadedmetadata', handleLoadedMetadata)
+    video.addEventListener('durationchange', handleDurationChange)
+
+    return () => {
+      video.removeEventListener('play', handlePlay)
+      video.removeEventListener('pause', handlePause)
+      video.removeEventListener('ended', handleEnded)
+      video.removeEventListener('timeupdate', handleTimeUpdate)
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata)
+      video.removeEventListener('durationchange', handleDurationChange)
+    }
+  }, [src])
+
+  const handleTogglePlayback = () => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (isEnded) {
+      video.currentTime = 0
+      setIsEnded(false)
+      void video.play().catch(() => {})
+      return
+    }
+
+    if (video.paused) {
+      void video.play().catch(() => {})
+    } else {
+      video.pause()
+    }
+  }
+
+  const handleSeek = (event: ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current
+    if (!video) return
+
+    const nextTime = Number(event.target.value)
+    video.currentTime = nextTime
+    setCurrentTime(nextTime)
+    if (isEnded && nextTime < duration) {
+      setIsEnded(false)
+    }
+  }
+
+  const playbackLabel = isEnded ? 'Replay video' : isPlaying ? 'Pause video' : 'Play video'
+
+  return (
+    <div key={src} className={styles.caseStudyVideo}>
+      <video
+        key={src}
+        ref={assignVideoRef}
+        src={src}
+        className={styles.caseStudyVideoMedia}
+        muted
+        playsInline
+        preload="metadata"
+        aria-label={ariaLabel}
+        {...protectedVideoProps}
+      />
+      <div className={styles.caseStudyVideoControls}>
+        <button
+          type="button"
+          className={styles.caseStudyVideoButton}
+          aria-label={playbackLabel}
+          onClick={handleTogglePlayback}
+        >
+          {isEnded ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M2.5 8a5.5 5.5 0 1 0 1.58-3.86M2.5 3.5V8h4.5"
+                stroke="currentColor"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : isPlaying ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M5.5 4.5V11.5M10.5 4.5V11.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M5.5 4.5L11.5 8L5.5 11.5V4.5Z"
+                stroke="currentColor"
+                strokeWidth="1.25"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
+        <input
+          type="range"
+          className={styles.caseStudyVideoTimeline}
+          min={0}
+          max={duration || 0}
+          step={0.1}
+          value={Math.min(currentTime, duration || 0)}
+          aria-label="Video timeline"
+          aria-valuemin={0}
+          aria-valuemax={duration || 0}
+          aria-valuenow={currentTime}
+          onChange={handleSeek}
+        />
+      </div>
+    </div>
+  )
+}
+
 type CaseCarouselControlsProps = {
   slideCount: number
   activeIndex: number
@@ -322,6 +651,7 @@ type CaseCarouselControlsProps = {
   ariaLabel: string
   advanceDurationMs: number
   showProgressLoader?: boolean
+  showDots?: boolean
   onGoTo: (index: number) => void
   onPrevious: () => void
   onNext: () => void
@@ -334,6 +664,7 @@ function CaseCarouselControls({
   ariaLabel,
   advanceDurationMs,
   showProgressLoader = true,
+  showDots = true,
   onGoTo,
   onPrevious,
   onNext,
@@ -368,38 +699,40 @@ function CaseCarouselControls({
         </svg>
       </button>
 
-      <div className={styles.caseCarouselDots} role="tablist" aria-label={ariaLabel}>
-        {Array.from({ length: slideCount }, (_, index) => (
-          <button
-            key={index}
-            type="button"
-            role="tab"
-            aria-label={`Go to slide ${index + 1}`}
-            aria-selected={activeIndex === index}
-            className={`${styles.caseCarouselDot} ${
-              activeIndex === index ? styles.caseCarouselDotActive : ''
-            }`}
-            onClick={(event) => {
-              onGoTo(index)
-              event.currentTarget.blur()
-            }}
-          >
-            {activeIndex === index ? (
-              showProgressLoader ? (
-                <span className={styles.caseCarouselDotLoader}>
-                  <span key={progressKey} className={styles.caseCarouselDotLoaderFill} />
-                </span>
+      {showDots ? (
+        <div className={styles.caseCarouselDots} role="tablist" aria-label={ariaLabel}>
+          {Array.from({ length: slideCount }, (_, index) => (
+            <button
+              key={index}
+              type="button"
+              role="tab"
+              aria-label={`Go to slide ${index + 1}`}
+              aria-selected={activeIndex === index}
+              className={`${styles.caseCarouselDot} ${
+                activeIndex === index ? styles.caseCarouselDotActive : ''
+              }`}
+              onClick={(event) => {
+                onGoTo(index)
+                event.currentTarget.blur()
+              }}
+            >
+              {activeIndex === index ? (
+                showProgressLoader ? (
+                  <span className={styles.caseCarouselDotLoader}>
+                    <span key={progressKey} className={styles.caseCarouselDotLoaderFill} />
+                  </span>
+                ) : (
+                  <span
+                    className={`${styles.caseCarouselDotMark} ${styles.caseCarouselDotMarkActive}`}
+                  />
+                )
               ) : (
-                <span
-                  className={`${styles.caseCarouselDotMark} ${styles.caseCarouselDotMarkActive}`}
-                />
-              )
-            ) : (
-              <span className={styles.caseCarouselDotMark} />
-            )}
-          </button>
-        ))}
-      </div>
+                <span className={styles.caseCarouselDotMark} />
+              )}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <button
         type="button"
@@ -866,6 +1199,8 @@ const NEXT_STEP_CARDS = [
 ] as const
 
 export function TripPlanningCasePage() {
+  const bannerVideoRef = useRef<HTMLVideoElement | null>(null)
+  const bannerSectionRef = useRef<HTMLElement | null>(null)
   const processFigureRef = useRef<HTMLDivElement | null>(null)
   const processVideoRef = useRef<HTMLVideoElement | null>(null)
   const processFinishedRef = useRef(false)
@@ -875,6 +1210,7 @@ export function TripPlanningCasePage() {
   const foundationsFigureRef = useRef<HTMLDivElement | null>(null)
   const [foundationsStarted, setFoundationsStarted] = useState(false)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
+  const [zoomedVideo, setZoomedVideo] = useState<ZoomedImage | null>(null)
 
   const openZoomedImage = useCallback((image: ZoomedImage) => {
     setZoomedImage(image)
@@ -884,10 +1220,131 @@ export function TripPlanningCasePage() {
     setZoomedImage(null)
   }, [])
 
+  const openZoomedVideo = useCallback((video: ZoomedImage) => {
+    setZoomedVideo(video)
+  }, [])
+
+  const closeZoomedVideo = useCallback(() => {
+    setZoomedVideo(null)
+  }, [])
+
   const iterationCarouselTrigger = useCarouselAutoAdvanceTrigger()
   const iterationCarousel = useCaseCarousel(ITERATION_SLIDES.length, CAROUSEL_AUTO_ADVANCE_MS, {
     isInView: iterationCarouselTrigger.isActive,
   })
+  const finalScreenVideoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
+  const finalScreenBlockObserversRef = useRef<Map<number, IntersectionObserver>>(new Map())
+  const [finalScreenBlockVisible, setFinalScreenBlockVisible] = useState<boolean[]>(() =>
+    FINAL_SCREEN_PHASES.map(() => false)
+  )
+  const finalScreensCarouselPhase0 = useCaseCarousel(FINAL_SCREEN_PHASES[0].slides.length, 0, {
+    autoAdvance: false,
+  })
+  const finalScreensCarouselPhase1 = useCaseCarousel(FINAL_SCREEN_PHASES[1].slides.length, 0, {
+    autoAdvance: false,
+  })
+  const finalScreensCarouselPhase2 = useCaseCarousel(FINAL_SCREEN_PHASES[2].slides.length, 0, {
+    autoAdvance: false,
+  })
+  const finalScreensCarouselPhase3 = useCaseCarousel(FINAL_SCREEN_PHASES[3].slides.length, 0, {
+    autoAdvance: false,
+  })
+  const finalScreensCarouselPhase4 = useCaseCarousel(FINAL_SCREEN_PHASES[4].slides.length, 0, {
+    autoAdvance: false,
+  })
+  const finalScreensCarousels = [
+    finalScreensCarouselPhase0,
+    finalScreensCarouselPhase1,
+    finalScreensCarouselPhase2,
+    finalScreensCarouselPhase3,
+    finalScreensCarouselPhase4,
+  ]
+
+  const registerFinalScreenBlockRef = useCallback((index: number, element: HTMLDivElement | null) => {
+    const existingObserver = finalScreenBlockObserversRef.current.get(index)
+    if (existingObserver) {
+      existingObserver.disconnect()
+      finalScreenBlockObserversRef.current.delete(index)
+    }
+
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setFinalScreenBlockVisible((previous) => {
+          const isIntersecting = entry?.isIntersecting ?? false
+          if (previous[index] === isIntersecting) return previous
+
+          const next = [...previous]
+          next[index] = isIntersecting
+          return next
+        })
+      },
+      { threshold: 0.25 }
+    )
+
+    observer.observe(element)
+    finalScreenBlockObserversRef.current.set(index, observer)
+  }, [])
+
+  const registerFinalScreenVideoRef = useCallback(
+    (phaseIndex: number, slideIndex: number, element: HTMLVideoElement | null) => {
+      const key = `${phaseIndex}-${slideIndex}`
+      if (element) {
+        finalScreenVideoRefs.current[key] = element
+        return
+      }
+
+      delete finalScreenVideoRefs.current[key]
+    },
+    []
+  )
+
+  useEffect(
+    () => () => {
+      finalScreenBlockObserversRef.current.forEach((observer) => observer.disconnect())
+      finalScreenBlockObserversRef.current.clear()
+    },
+    []
+  )
+
+  useEffect(() => {
+    FINAL_SCREEN_PHASES.forEach((phase, phaseIndex) => {
+      const isBlockVisible = finalScreenBlockVisible[phaseIndex]
+      const activeSlideIndex = finalScreensCarousels[phaseIndex]?.activeIndex ?? 0
+
+      phase.slides.forEach((_, slideIndex) => {
+        const video = finalScreenVideoRefs.current[`${phaseIndex}-${slideIndex}`]
+        if (!video) return
+
+        if (isBlockVisible && slideIndex === activeSlideIndex) {
+          void video.play().catch(() => {})
+        } else {
+          video.pause()
+        }
+      })
+    })
+  }, [
+    finalScreenBlockVisible,
+    finalScreensCarouselPhase0.activeIndex,
+    finalScreensCarouselPhase1.activeIndex,
+    finalScreensCarouselPhase2.activeIndex,
+    finalScreensCarouselPhase3.activeIndex,
+    finalScreensCarouselPhase4.activeIndex,
+  ])
+
+  useEffect(() => {
+    const video = bannerVideoRef.current
+    if (!video) return
+
+    const tryPlay = () => {
+      void video.play().catch(() => {})
+    }
+
+    tryPlay()
+    video.addEventListener('loadeddata', tryPlay)
+    return () => video.removeEventListener('loadeddata', tryPlay)
+  }, [])
 
   useEffect(() => {
     const target = processFigureRef.current
@@ -968,8 +1425,12 @@ export function TripPlanningCasePage() {
 
   return (
     <main className={styles.casePage}>
+      <CaseStudySectionNav
+        sections={TRIP_PLANNING_SECTIONS}
+        bannerRef={bannerSectionRef}
+      />
       <Container>
-        <header className={styles.textContainer}>
+        <header id="top" className={styles.textContainer}>
           <span className={`body-3 ${styles.tag}`}>Design Exploration</span>
           <h2 className={styles.heading}>
             Streamlining Trip Collaboration and Making Planning Frictionless
@@ -982,13 +1443,24 @@ export function TripPlanningCasePage() {
         </header>
       </Container>
 
-      <section className={styles.imageScrollArea} aria-label="Case study visual">
+      <section
+        ref={bannerSectionRef}
+        className={styles.imageScrollArea}
+        aria-label="Case study visual"
+      >
         <div className={styles.imageStickyFrame}>
-          <img
-            src="/Adnet/cover.svg"
-            alt="Adnet design system case study visual"
-            className={styles.caseImage}
-            draggable={false}
+          <video
+            ref={bannerVideoRef}
+            key={BANNER_VIDEO_SRC}
+            src={BANNER_VIDEO_SRC}
+            className={styles.caseVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-label="Trip planning case study banner"
+            {...protectedVideoProps}
           />
         </div>
       </section>
@@ -1368,21 +1840,100 @@ export function TripPlanningCasePage() {
                 </section>
 
                 <section id="finals" className={styles.caseSection}>
-                  <h3 className={styles.mainHeading}>Final Screens</h3>
-                  <div className={styles.bodyStack}>
+                  <div className={styles.finalScreenIntro}>
+                    <h3 className={styles.mainHeading}>Final Screens</h3>
                     <p className={`body-2 ${styles.mainBody}`}>
-                    Here is what the feature looked like:
+                      Here is what the feature looked like:
                     </p>
                   </div>
 
-                  <div className={styles.handoffFigure}>
-                    <img
-                      src="/Adnet/documentation.svg"
-                      alt="Badge component documentation showing anatomy, states, and usage notes"
-                      className={styles.handoffImage}
-                      draggable={false}
-                    />
-                  </div>
+                  {FINAL_SCREEN_PHASES.map((phase, phaseIndex) => {
+                    const carousel = finalScreensCarousels[phaseIndex]
+
+                    return (
+                      <div
+                        key={phase.id}
+                        ref={(element) => registerFinalScreenBlockRef(phaseIndex, element)}
+                        className={`${styles.finalScreenBlock} ${
+                          phaseIndex > 0 ? styles.finalScreenBlockRepeat : ''
+                        }`}
+                      >
+                        <div className={styles.finalScreenPhase}>
+                          <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>
+                            {phase.heading}
+                          </p>
+                          <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                            {phase.body}
+                          </p>
+                        </div>
+
+                        <div className={styles.finalScreensCarousel}>
+                          <div className={styles.caseCarouselViewport}>
+                            <div
+                              ref={carousel.trackRef}
+                              className={styles.caseCarouselTrack}
+                              data-loop={carousel.loopEnabled ? 'true' : 'false'}
+                              aria-label={phase.carouselLabel}
+                            >
+                              {getLoopSlideEntries(phase.slides).map((entry, domIndex) => {
+                                const slideIndex = entry.logicalIndex
+
+                                return (
+                                  <div
+                                    key={`${phase.id}-${entry.key}`}
+                                    ref={(element) => carousel.registerSlideRef(domIndex, element)}
+                                    className={styles.caseCarouselSlide}
+                                    aria-hidden={entry.isClone ? true : undefined}
+                                  >
+                                    <div className={styles.finalScreenVideoFigure}>
+                                      <CaseStudyVideoPlayer
+                                        src={entry.item.src}
+                                        ariaLabel={entry.item.caption}
+                                        onVideoRef={
+                                          entry.isClone || slideIndex === null
+                                            ? undefined
+                                            : (element) =>
+                                                registerFinalScreenVideoRef(
+                                                  phaseIndex,
+                                                  slideIndex,
+                                                  element
+                                                )
+                                        }
+                                      />
+                                      {!entry.isClone ? (
+                                        <FigureZoomButton
+                                          label={`View ${entry.item.caption} full screen`}
+                                          onClick={() =>
+                                            openZoomedVideo({
+                                              src: entry.item.src,
+                                              alt: entry.item.caption,
+                                            })
+                                          }
+                                        />
+                                      ) : null}
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+
+                          <CaseCarouselControls
+                            slideCount={phase.slides.length}
+                            activeIndex={carousel.activeIndex}
+                            progressKey={carousel.progressKey}
+                            ariaLabel={phase.controlsLabel}
+                            advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
+                            showProgressLoader={false}
+                            showDots={phase.id !== 'tracking-expenses'}
+                            onGoTo={carousel.goTo}
+                            onPrevious={carousel.goToPrevious}
+                            onNext={carousel.goToNext}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
                 </section>
 
                 <section id="impact" className={styles.caseSection}>
@@ -1442,6 +1993,7 @@ export function TripPlanningCasePage() {
       </Container>
 
       {zoomedImage ? <ResearchImageLightbox image={zoomedImage} onClose={closeZoomedImage} /> : null}
+      {zoomedVideo ? <ResearchVideoLightbox video={zoomedVideo} onClose={closeZoomedVideo} /> : null}
     </main>
   )
 }

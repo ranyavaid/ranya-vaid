@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Container } from '../layout/Container'
+import { getHomeReturnHash } from '../../utils/scrollReset'
 import { NavLink } from './NavLink'
 import styles from './Navbar.module.css'
 import type { MouseEvent } from 'react'
@@ -24,6 +25,7 @@ export function Navbar() {
   const pathname = rawPathname.replace(/\/+$/, '') || '/'
   const isHomePage = pathname === '/'
   const isCaseStudyPage = pathname.startsWith('/works/')
+  const homeReturnHash = getHomeReturnHash().replace(/^#/, '')
   const navItems = NAV_ITEMS.map((item) => ({
     ...item,
     href: isHomePage ? item.href : `/${item.href}`,
@@ -57,7 +59,7 @@ export function Navbar() {
           aria-label="Primary"
         >
           {isCaseStudyPage ? (
-            <Link to="/" className={`h3 ${styles.backHome}`}>
+            <Link to={{ pathname: '/', hash: homeReturnHash }} className={`h3 ${styles.backHome}`}>
               <span className={styles.backHomeIcon} aria-hidden="true">
                 arrow_back_ios
               </span>

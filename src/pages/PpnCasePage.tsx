@@ -10,6 +10,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react'
 import { Container } from '../components/layout/Container'
+import {
+  CaseStudySectionNav,
+  type CaseStudySection,
+} from '../components/case-study/CaseStudySectionNav'
+import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './PpnCasePage.module.css'
 import acceptBusinessVersion from 'virtual:public-asset-version/PPN/accept_business.mp4'
 import assignRepVersion from 'virtual:public-asset-version/PPN/assign_rep.mp4'
@@ -109,6 +114,22 @@ const CATEGORIES_VIDEO_SRC = `/PPN/categories.mp4?v=${categoriesVersion}`
 const ENROLL_SUBSCRIPTION_VIDEO_SRC = `/PPN/enroll_subscription.mp4?v=${enrollSubscriptionVersion}`
 const SUBMIT_REQUEST_VIDEO_SRC = `/PPN/submit_request.mp4?v=${submitRequestVersion}`
 const BANNER_VIDEO_SRC = `/PPN/banner.mp4?v=${bannerVersion}`
+
+const PPN_SECTIONS: CaseStudySection[] = [
+  { id: 'top', label: 'Top' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'Research', label: 'Research' },
+  { id: 'competitor-analysis', label: 'Competitor Benchmarking' },
+  { id: 'Problem', label: 'Defining the Problem' },
+  { id: 'personas', label: 'The 7-persona ecosystem' },
+  { id: 'information-architecture', label: 'Structuring the platform architecture' },
+  { id: 'service-design', label: 'Designing the service blueprint' },
+  { id: 'business-model', label: 'Mapping the business model' },
+  { id: 'iterations', label: 'The forms we almost shipped' },
+  { id: 'finals', label: 'Final Screens' },
+  { id: 'impact', label: 'Impact' },
+  { id: 'learnings', label: 'What I learnt' },
+]
 
 type FinalScreenSlide = {
   src: string
@@ -390,6 +411,61 @@ function ResearchImageLightbox({ image, onClose }: ResearchImageLightboxProps) {
   )
 }
 
+type ResearchVideoLightboxProps = {
+  video: ZoomedImage
+  onClose: () => void
+}
+
+function ResearchVideoLightbox({ video, onClose }: ResearchVideoLightboxProps) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      onClose()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  return (
+    <div
+      className={styles.researchLightbox}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Video full screen view"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className={styles.researchLightboxClose}
+        aria-label="Close full screen view"
+        onClick={onClose}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path
+            d="M1 1L13 13M13 1L1 13"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+      <div className={styles.researchLightboxVideoStage} onClick={(event) => event.stopPropagation()}>
+        <video
+          key={video.src}
+          src={video.src}
+          className={styles.researchLightboxVideo}
+          controls
+          autoPlay
+          playsInline
+          aria-label={video.alt}
+          {...protectedVideoProps}
+        />
+      </div>
+    </div>
+  )
+}
+
 function FigureZoomButton({
   label,
   onClick,
@@ -546,10 +622,8 @@ function CaseStudyVideoPlayer({ src, ariaLabel, onVideoRef }: CaseStudyVideoPlay
         muted
         playsInline
         preload="metadata"
-        disablePictureInPicture
-        controlsList="nodownload nofullscreen noremoteplayback"
         aria-label={ariaLabel}
-        onContextMenu={(event) => event.preventDefault()}
+        {...protectedVideoProps}
       />
       <div className={styles.caseStudyVideoControls}>
         <button
@@ -768,6 +842,8 @@ function logicalToDomIndex(logicalIndex: number, slideCount: number) {
 }
 
 const CAROUSEL_GAP_PX = 24
+/** 1080×708 iteration slides stay pixel-crisp when width is a multiple of 90. */
+const ITERATION_SLIDE_WIDTH_UNIT_PX = 90
 
 function useCarouselAutoAdvanceTrigger() {
   const [root, setRoot] = useState<HTMLDivElement | null>(null)
@@ -823,10 +899,11 @@ function useCarouselAutoAdvanceTrigger() {
 function useCaseCarousel(
   slideCount: number,
   autoAdvanceMs: number,
-  options?: { autoAdvance?: boolean; isInView?: boolean }
+  options?: { autoAdvance?: boolean; isInView?: boolean; slideWidthUnit?: number }
 ) {
   const autoAdvance = options?.autoAdvance ?? true
   const isInView = options?.isInView ?? false
+  const slideWidthUnit = options?.slideWidthUnit
   const loopEnabled = slideCount > 1
   const trackRef = useRef<HTMLDivElement | null>(null)
   const slideRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -844,10 +921,19 @@ function useCaseCarousel(
     return viewport?.clientWidth ?? 0
   }, [])
 
-  const getScrollStep = useCallback(() => {
+  const getSlideWidth = useCallback(() => {
     const viewportWidth = getViewportWidth()
-    return viewportWidth > 0 ? viewportWidth + CAROUSEL_GAP_PX : 0
-  }, [getViewportWidth])
+    if (viewportWidth <= 0) return 0
+
+    if (!slideWidthUnit) return viewportWidth
+
+    return Math.max(slideWidthUnit, Math.floor(viewportWidth / slideWidthUnit) * slideWidthUnit)
+  }, [getViewportWidth, slideWidthUnit])
+
+  const getScrollStep = useCallback(() => {
+    const slideWidth = getSlideWidth()
+    return slideWidth > 0 ? slideWidth + CAROUSEL_GAP_PX : 0
+  }, [getSlideWidth])
 
   const getScrollLeftForDomIndex = useCallback(
     (domIndex: number) => {
@@ -858,15 +944,15 @@ function useCaseCarousel(
   )
 
   const syncSlideWidths = useCallback(() => {
-    const viewportWidth = getViewportWidth()
-    if (viewportWidth <= 0) return
+    const slideWidth = getSlideWidth()
+    if (slideWidth <= 0) return
 
     slideRefs.current.forEach((slide) => {
       if (!slide) return
-      slide.style.flex = `0 0 ${viewportWidth}px`
-      slide.style.width = `${viewportWidth}px`
+      slide.style.flex = `0 0 ${slideWidth}px`
+      slide.style.width = `${slideWidth}px`
     })
-  }, [getViewportWidth])
+  }, [getSlideWidth])
 
   const setLogicalIndex = useCallback((logicalIndex: number) => {
     if (activeIndexRef.current === logicalIndex) return
@@ -1108,6 +1194,7 @@ export function PpnCasePage() {
   const foundationsFigureRef = useRef<HTMLDivElement | null>(null)
   const [foundationsStarted, setFoundationsStarted] = useState(false)
   const bannerVideoRef = useRef<HTMLVideoElement | null>(null)
+  const bannerSectionRef = useRef<HTMLElement | null>(null)
   const finalScreenBlockObserverRef = useRef<IntersectionObserver | null>(null)
   const finalScreenVideoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const [finalScreenBlockVisible, setFinalScreenBlockVisible] = useState(false)
@@ -1120,16 +1207,19 @@ export function PpnCasePage() {
   const researchGoalCardRef = useRef<HTMLElement | null>(null)
   const researchExploreCardRef = useRef<HTMLElement | null>(null)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
+  const [zoomedVideo, setZoomedVideo] = useState<ZoomedImage | null>(null)
   const finalScreensCarousel = useCaseCarousel(FINAL_SCREEN_SLIDES.length, 0, {
     autoAdvance: false,
   })
   const iteration1CarouselTrigger = useCarouselAutoAdvanceTrigger()
   const iteration1Carousel = useCaseCarousel(ITERATION1_SLIDES.length, CAROUSEL_AUTO_ADVANCE_MS, {
     isInView: iteration1CarouselTrigger.isActive,
+    slideWidthUnit: ITERATION_SLIDE_WIDTH_UNIT_PX,
   })
   const iteration2CarouselTrigger = useCarouselAutoAdvanceTrigger()
   const iteration2Carousel = useCaseCarousel(ITERATION2_SLIDES.length, CAROUSEL_AUTO_ADVANCE_MS, {
     isInView: iteration2CarouselTrigger.isActive,
+    slideWidthUnit: ITERATION_SLIDE_WIDTH_UNIT_PX,
   })
 
   const registerIteration1BlockRef = useCallback((element: HTMLDivElement | null) => {
@@ -1214,6 +1304,14 @@ export function PpnCasePage() {
 
   const closeZoomedImage = useCallback(() => {
     setZoomedImage(null)
+  }, [])
+
+  const openZoomedVideo = useCallback((video: ZoomedImage) => {
+    setZoomedVideo(video)
+  }, [])
+
+  const closeZoomedVideo = useCallback(() => {
+    setZoomedVideo(null)
   }, [])
 
   useEffect(() => {
@@ -1341,8 +1439,9 @@ export function PpnCasePage() {
 
   return (
     <main className={styles.casePage}>
+      <CaseStudySectionNav sections={PPN_SECTIONS} bannerRef={bannerSectionRef} />
       <Container>
-        <header className={styles.textContainer}>
+        <header id="top" className={styles.textContainer}>
           <span className={`body-3 ${styles.tag}`}>Product Design</span>
           <h2 className={styles.heading}>
           Building Trust in Local Service Discovery Through a 
@@ -1357,7 +1456,11 @@ export function PpnCasePage() {
         </header>
       </Container>
 
-      <section className={styles.imageScrollArea} aria-label="Case study visual">
+      <section
+        ref={bannerSectionRef}
+        className={styles.imageScrollArea}
+        aria-label="Case study visual"
+      >
         <div className={styles.imageStickyFrame}>
           <video
             ref={bannerVideoRef}
@@ -1370,6 +1473,7 @@ export function PpnCasePage() {
             playsInline
             preload="auto"
             aria-label="PPN case study banner"
+            {...protectedVideoProps}
           />
         </div>
       </section>
@@ -1767,16 +1871,27 @@ export function PpnCasePage() {
 
                     <div className={styles.finalScreensCarousel}>
                       <div className={styles.finalScreenFrame}>
-                        <CaseStudyVideoPlayer
-                          src={ENROLL_SUBSCRIPTION_VIDEO_SRC}
-                          ariaLabel="The final flow for a business enrolling in subscriptions"
-                          onVideoRef={(element) => {
-                            iteration1VideoRef.current = element
-                          }}
-                        />
+                        <div className={styles.finalScreenVideoFigure}>
+                          <CaseStudyVideoPlayer
+                            src={ENROLL_SUBSCRIPTION_VIDEO_SRC}
+                            ariaLabel="The final flow for a business enrolling in subscriptions"
+                            onVideoRef={(element) => {
+                              iteration1VideoRef.current = element
+                            }}
+                          />
+                        </div>
                         <p className={`body-2 ${styles.finalScreenCaption}`}>
                           The final flow for a business enrolling in subscriptions
                         </p>
+                        <FigureZoomButton
+                          label="View enroll subscription flow full screen"
+                          onClick={() =>
+                            openZoomedVideo({
+                              src: ENROLL_SUBSCRIPTION_VIDEO_SRC,
+                              alt: 'The final flow for a business enrolling in subscriptions',
+                            })
+                          }
+                        />
                       </div>
                     </div>
                   </div>
@@ -1866,16 +1981,27 @@ export function PpnCasePage() {
 
                     <div className={styles.finalScreensCarousel}>
                       <div className={styles.finalScreenFrame}>
-                        <CaseStudyVideoPlayer
-                          src={SUBMIT_REQUEST_VIDEO_SRC}
-                          ariaLabel="The final flow for a user to create and submit a request"
-                          onVideoRef={(element) => {
-                            iteration2VideoRef.current = element
-                          }}
-                        />
+                        <div className={styles.finalScreenVideoFigure}>
+                          <CaseStudyVideoPlayer
+                            src={SUBMIT_REQUEST_VIDEO_SRC}
+                            ariaLabel="The final flow for a user to create and submit a request"
+                            onVideoRef={(element) => {
+                              iteration2VideoRef.current = element
+                            }}
+                          />
+                        </div>
                         <p className={`body-2 ${styles.finalScreenCaption}`}>
                           The final flow for a user to create and submit a request
                         </p>
+                        <FigureZoomButton
+                          label="View submit request flow full screen"
+                          onClick={() =>
+                            openZoomedVideo({
+                              src: SUBMIT_REQUEST_VIDEO_SRC,
+                              alt: 'The final flow for a user to create and submit a request',
+                            })
+                          }
+                        />
                       </div>
                     </div>
                   </div>
@@ -1915,19 +2041,32 @@ export function PpnCasePage() {
                                 aria-hidden={entry.isClone ? true : undefined}
                               >
                                 <div className={styles.finalScreenFrame}>
-                                  <CaseStudyVideoPlayer
-                                    src={entry.item.src}
-                                    ariaLabel={entry.item.caption}
-                                    onVideoRef={
-                                      entry.isClone || slideIndex === null
-                                        ? undefined
-                                        : (element) =>
-                                            registerFinalScreenVideoRef(slideIndex, element)
-                                    }
-                                  />
+                                  <div className={styles.finalScreenVideoFigure}>
+                                    <CaseStudyVideoPlayer
+                                      src={entry.item.src}
+                                      ariaLabel={entry.item.caption}
+                                      onVideoRef={
+                                        entry.isClone || slideIndex === null
+                                          ? undefined
+                                          : (element) =>
+                                              registerFinalScreenVideoRef(slideIndex, element)
+                                      }
+                                    />
+                                  </div>
                                   <p className={`body-2 ${styles.finalScreenCaption}`}>
                                     {entry.item.caption}
                                   </p>
+                                  {!entry.isClone ? (
+                                    <FigureZoomButton
+                                      label={`View ${entry.item.caption} full screen`}
+                                      onClick={() =>
+                                        openZoomedVideo({
+                                          src: entry.item.src,
+                                          alt: entry.item.caption,
+                                        })
+                                      }
+                                    />
+                                  ) : null}
                                 </div>
                               </div>
                             )
@@ -2011,6 +2150,7 @@ export function PpnCasePage() {
       </Container>
 
       {zoomedImage ? <ResearchImageLightbox image={zoomedImage} onClose={closeZoomedImage} /> : null}
+      {zoomedVideo ? <ResearchVideoLightbox video={zoomedVideo} onClose={closeZoomedVideo} /> : null}
     </main>
   )
 }

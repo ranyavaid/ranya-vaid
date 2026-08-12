@@ -1,0 +1,182 @@
+.sectionNav {
+  position: fixed;
+  right: clamp(16px, 2.2vw, 36px);
+  top: 50%;
+  z-index: 90;
+  transform: translateY(-50%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 240ms ease,
+    visibility 240ms ease;
+}
+
+.sectionNavVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.sectionNavPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-radius: 16px;
+  transition:
+    background-color 260ms ease,
+    box-shadow 260ms ease,
+    padding 260ms ease;
+}
+
+.sectionNav:hover .sectionNavPanel,
+.sectionNav:focus-within .sectionNavPanel {
+  align-items: stretch;
+  padding: 20px 22px 20px 26px;
+  background: var(--color-white-primary);
+  box-shadow:
+    0 10px 36px rgba(26, 26, 26, 0.08),
+    0 2px 10px rgba(26, 26, 26, 0.04);
+}
+
+.sectionNavList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 25px;
+}
+
+.sectionNav:hover .sectionNavList,
+.sectionNav:focus-within .sectionNavList {
+  align-items: stretch;
+  gap: 8px;
+}
+
+.sectionNavItemWrap {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sectionNavItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  line-height: 0;
+  color: var(--color-black-tertiary);
+  transition:
+    color 160ms ease,
+    transform 120ms ease,
+    opacity 120ms ease;
+}
+
+.sectionNav:hover .sectionNavItem,
+.sectionNav:focus-within .sectionNavItem {
+  justify-content: flex-start;
+  width: 100%;
+  padding: 4px 2px;
+}
+
+.sectionNavItem:hover {
+  color: var(--color-black-primary);
+}
+
+.sectionNavItemActive {
+  color: var(--color-black-primary);
+}
+
+.sectionNavItemPressed {
+  color: var(--color-black-primary);
+  opacity: 0.72;
+  transform: scale(0.985);
+}
+
+.sectionNavTick {
+  flex-shrink: 0;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--color-dot);
+  transition:
+    width 180ms ease,
+    height 180ms ease,
+    background-color 180ms ease,
+    opacity 180ms ease;
+}
+
+.sectionNavTickActive {
+  width: 32px;
+  height: 3px;
+  background: var(--color-black-primary);
+}
+
+.sectionNavItem:hover .sectionNavTick {
+  background: var(--color-black-primary);
+}
+
+.sectionNavItemPressed .sectionNavTick {
+  width: 18px;
+  background: var(--color-black-primary);
+}
+
+.sectionNav:hover .sectionNavTick,
+.sectionNav:focus-within .sectionNavTick {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.sectionNavLabel {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  transition:
+    max-width 280ms ease,
+    opacity 220ms ease;
+}
+
+.sectionNav:hover .sectionNavLabel,
+.sectionNav:focus-within .sectionNavLabel {
+  max-width: 240px;
+  opacity: 1;
+  white-space: normal;
+  line-height: var(--body2-line);
+}
+
+.sectionNavItemActive .sectionNavLabel {
+  color: var(--color-black-primary);
+}
+
+@media (max-width: 1280px) {
+  /* Desktop-only: hide section rail on tablet and mobile. */
+  .sectionNav {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sectionNav {
+    transition: none;
+  }
+
+  .sectionNavPanel,
+  .sectionNavItem,
+  .sectionNavTick,
+  .sectionNavLabel {
+    transition: none;
+  }
+}

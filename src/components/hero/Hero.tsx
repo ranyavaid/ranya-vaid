@@ -1,3 +1,4 @@
+import { protectedVideoProps } from '../../utils/videoProtection'
 import { Button } from '../ui/Button'
 import { Highlight } from '../ui/Highlight'
 import { PhotoFrame } from '../ui/PhotoFrame'
@@ -66,6 +67,7 @@ export function Hero() {
                 preload="auto"
                 poster="/hero-photo.png"
                 aria-hidden="true"
+                {...protectedVideoProps}
               />
             }
           />

@@ -10,6 +10,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react'
 import { Container } from '../components/layout/Container'
+import {
+  CaseStudySectionNav,
+  type CaseStudySection,
+} from '../components/case-study/CaseStudySectionNav'
+import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './OrganizationalHierarchyCasePage.module.css'
 import alignObjKrVersion from 'virtual:public-asset-version/okr Alignment/alignobj_kr.mp4'
 import assignKrObjVersion from 'virtual:public-asset-version/okr Alignment/assignkr_obj.mp4'
@@ -119,6 +124,22 @@ const ALIGNKR_KR_VIDEO_SRC = `/okr%20Alignment/alignkr_kr.mp4?v=${alignKrKrVersi
 const ASSIGNKR_KR_VIDEO_SRC = `/okr%20Alignment/assignkr_kr.mp4?v=${assignKrKrVersion}`
 const ACCEPT_KR_VIDEO_SRC = `/okr%20Alignment/accept_kr.mp4?v=${acceptKrVersion}`
 const BANNER_VIDEO_SRC = `/okr%20Alignment/banner.mp4?v=${bannerVersion}`
+
+const OKR_SECTIONS: CaseStudySection[] = [
+  { id: 'top', label: 'Top' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'Research', label: 'Research' },
+  { id: 'Problem', label: 'The Actual Problem' },
+  { id: 'user-personas', label: 'Who we designed for' },
+  { id: 'roll-out', label: 'How did we decide what to ship first?' },
+  { id: 'rules', label: 'Setting up rules' },
+  { id: 'user-flow', label: 'User Flow' },
+  { id: 'sketches', label: 'Exploring the Design Space' },
+  { id: 'principles', label: 'Principles' },
+  { id: 'finals', label: 'Final Screens' },
+  { id: 'impact', label: 'Impact' },
+  { id: 'learnings', label: 'What I learnt' },
+]
 
 type FinalScreenSlide = {
   src: string
@@ -396,6 +417,61 @@ function ResearchImageLightbox({ image, onClose }: ResearchImageLightboxProps) {
   )
 }
 
+type ResearchVideoLightboxProps = {
+  video: ZoomedImage
+  onClose: () => void
+}
+
+function ResearchVideoLightbox({ video, onClose }: ResearchVideoLightboxProps) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      onClose()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  return (
+    <div
+      className={styles.researchLightbox}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Video full screen view"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className={styles.researchLightboxClose}
+        aria-label="Close full screen view"
+        onClick={onClose}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path
+            d="M1 1L13 13M13 1L1 13"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+      <div className={styles.researchLightboxVideoStage} onClick={(event) => event.stopPropagation()}>
+        <video
+          key={video.src}
+          src={video.src}
+          className={styles.researchLightboxVideo}
+          controls
+          autoPlay
+          playsInline
+          aria-label={video.alt}
+          {...protectedVideoProps}
+        />
+      </div>
+    </div>
+  )
+}
+
 function FigureZoomButton({
   label,
   onClick,
@@ -552,10 +628,8 @@ function CaseStudyVideoPlayer({ src, ariaLabel, onVideoRef }: CaseStudyVideoPlay
         muted
         playsInline
         preload="metadata"
-        disablePictureInPicture
-        controlsList="nodownload nofullscreen noremoteplayback"
         aria-label={ariaLabel}
-        onContextMenu={(event) => event.preventDefault()}
+        {...protectedVideoProps}
       />
       <div className={styles.caseStudyVideoControls}>
         <button
@@ -1141,6 +1215,7 @@ export function OrganizationalHierarchyCasePage() {
   const foundationsFigureRef = useRef<HTMLDivElement | null>(null)
   const [foundationsStarted, setFoundationsStarted] = useState(false)
   const bannerVideoRef = useRef<HTMLVideoElement | null>(null)
+  const bannerSectionRef = useRef<HTMLElement | null>(null)
   const finalScreenVideoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const finalScreenBlockObserversRef = useRef<Map<number, IntersectionObserver>>(new Map())
   const [finalScreenBlockVisible, setFinalScreenBlockVisible] = useState<boolean[]>(() =>
@@ -1149,6 +1224,7 @@ export function OrganizationalHierarchyCasePage() {
   const researchGoalCardRef = useRef<HTMLElement | null>(null)
   const researchExploreCardRef = useRef<HTMLElement | null>(null)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
+  const [zoomedVideo, setZoomedVideo] = useState<ZoomedImage | null>(null)
   const rulesCarouselTrigger = useCarouselAutoAdvanceTrigger()
   const designCarouselTrigger = useCarouselAutoAdvanceTrigger()
   const rulesCarousel = useCaseCarousel(RULE_CARDS.length, CAROUSEL_AUTO_ADVANCE_MS, {
@@ -1219,6 +1295,14 @@ export function OrganizationalHierarchyCasePage() {
 
   const closeZoomedImage = useCallback(() => {
     setZoomedImage(null)
+  }, [])
+
+  const openZoomedVideo = useCallback((video: ZoomedImage) => {
+    setZoomedVideo(video)
+  }, [])
+
+  const closeZoomedVideo = useCallback(() => {
+    setZoomedVideo(null)
   }, [])
 
   useEffect(() => {
@@ -1333,8 +1417,9 @@ export function OrganizationalHierarchyCasePage() {
 
   return (
     <main className={styles.casePage}>
+      <CaseStudySectionNav sections={OKR_SECTIONS} bannerRef={bannerSectionRef} />
       <Container>
-        <header className={styles.textContainer}>
+        <header id="top" className={styles.textContainer}>
           <span className={`body-3 ${styles.tag}`}>Product Design</span>
           <h2 className={styles.heading}>
           Solving organization siloes through Goal Alignment for 2x faster contribution tracking
@@ -1345,7 +1430,11 @@ export function OrganizationalHierarchyCasePage() {
         </header>
       </Container>
 
-      <section className={styles.imageScrollArea} aria-label="Case study visual">
+      <section
+        ref={bannerSectionRef}
+        className={styles.imageScrollArea}
+        aria-label="Case study visual"
+      >
         <div className={styles.imageStickyFrame}>
           <video
             ref={bannerVideoRef}
@@ -1358,6 +1447,7 @@ export function OrganizationalHierarchyCasePage() {
             playsInline
             preload="auto"
             aria-label="Goal alignment case study banner"
+            {...protectedVideoProps}
           />
         </div>
       </section>
@@ -1803,24 +1893,37 @@ export function OrganizationalHierarchyCasePage() {
                                 aria-hidden={entry.isClone ? true : undefined}
                               >
                                 <div className={styles.finalScreenFrame}>
-                                  <CaseStudyVideoPlayer
-                                    src={entry.item.src}
-                                    ariaLabel={entry.item.caption}
-                                    onVideoRef={
-                                      entry.isClone || slideIndex === null
-                                        ? undefined
-                                        : (element) =>
-                                            registerFinalScreenVideoRef(
-                                              phaseIndex,
-                                              slideIndex,
-                                              element
-                                            )
-                                    }
-                                  />
+                                  <div className={styles.finalScreenVideoFigure}>
+                                    <CaseStudyVideoPlayer
+                                      src={entry.item.src}
+                                      ariaLabel={entry.item.caption}
+                                      onVideoRef={
+                                        entry.isClone || slideIndex === null
+                                          ? undefined
+                                          : (element) =>
+                                              registerFinalScreenVideoRef(
+                                                phaseIndex,
+                                                slideIndex,
+                                                element
+                                              )
+                                      }
+                                    />
+                                  </div>
                                   <p className={`body-2 ${styles.finalScreenCaption}`}>
                                     {entry.item.caption}
                                   </p>
-                  </div>
+                                  {!entry.isClone ? (
+                                    <FigureZoomButton
+                                      label={`View ${entry.item.caption} full screen`}
+                                      onClick={() =>
+                                        openZoomedVideo({
+                                          src: entry.item.src,
+                                          alt: entry.item.caption,
+                                        })
+                                      }
+                                    />
+                                  ) : null}
+                                </div>
                               </div>
                               )
                             })}
@@ -1907,6 +2010,7 @@ export function OrganizationalHierarchyCasePage() {
       </Container>
 
       {zoomedImage ? <ResearchImageLightbox image={zoomedImage} onClose={closeZoomedImage} /> : null}
+      {zoomedVideo ? <ResearchVideoLightbox video={zoomedVideo} onClose={closeZoomedVideo} /> : null}
     </main>
   )
 }

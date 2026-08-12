@@ -135,6 +135,11 @@ declare module 'virtual:public-asset-version/PPN/AI.png' {
   export default version
 }
 
+declare module 'virtual:public-asset-version/Trip-planning/banner.mp4' {
+  const version: string
+  export default version
+}
+
 declare module 'virtual:public-asset-version/Trip-planning/primary-research.png' {
   const version: string
   export default version
@@ -176,6 +181,71 @@ declare module 'virtual:public-asset-version/Trip-planning/iteration_2.png' {
 }
 
 declare module 'virtual:public-asset-version/Trip-planning/rollout.svg' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals1.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals2.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals3.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals4.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals5.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals6.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals7.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals8.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals9.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals10.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals11.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals12.mp4' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/Trip-planning/finals13.mp4' {
   const version: string
   export default version
 }

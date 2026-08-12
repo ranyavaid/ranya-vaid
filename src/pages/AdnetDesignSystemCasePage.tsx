@@ -1,6 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import { Container } from '../components/layout/Container'
+import {
+  CaseStudySectionNav,
+  type CaseStudySection,
+} from '../components/case-study/CaseStudySectionNav'
+import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './AdnetDesignSystemCasePage.module.css'
+
+const ADNET_SECTIONS: CaseStudySection[] = [
+  { id: 'top', label: 'Top' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'discovery', label: 'Discovery' },
+  { id: 'trade-offs', label: 'Revamp vs. design system' },
+  { id: 'process', label: 'Process' },
+  { id: 'strategizing-planning', label: 'Strategizing & Planning' },
+  { id: 'token-architecture', label: 'Token Architecture' },
+  { id: 'components', label: 'Components' },
+  { id: 'handoff', label: 'Handoff' },
+  { id: 'impact', label: 'Impact' },
+  { id: 'learnings', label: 'What I learnt' },
+]
 
 const IMPACT_CARDS = [
   {
@@ -30,6 +49,7 @@ const IMPACT_CARDS = [
 ] as const
 
 export function AdnetDesignSystemCasePage() {
+  const bannerSectionRef = useRef<HTMLElement | null>(null)
   const processFigureRef = useRef<HTMLDivElement | null>(null)
   const processVideoRef = useRef<HTMLVideoElement | null>(null)
   const processFinishedRef = useRef(false)
@@ -118,8 +138,9 @@ export function AdnetDesignSystemCasePage() {
 
   return (
     <main className={styles.casePage}>
+      <CaseStudySectionNav sections={ADNET_SECTIONS} bannerRef={bannerSectionRef} />
       <Container>
-        <header className={styles.textContainer}>
+        <header id="top" className={styles.textContainer}>
           <span className={`body-3 ${styles.tag}`}>Design System</span>
           <h2 className={styles.heading}>
             Reducing 50% Design-to-Dev Friction With Adnet&apos;s New Design
@@ -133,7 +154,11 @@ export function AdnetDesignSystemCasePage() {
         </header>
       </Container>
 
-      <section className={styles.imageScrollArea} aria-label="Case study visual">
+      <section
+        ref={bannerSectionRef}
+        className={styles.imageScrollArea}
+        aria-label="Case study visual"
+      >
         <div className={styles.imageStickyFrame}>
           <img
             src="/Adnet/cover.svg"
@@ -262,6 +287,7 @@ export function AdnetDesignSystemCasePage() {
                             onEnded={() => {
                               processFinishedRef.current = true
                             }}
+                            {...protectedVideoProps}
                           />
                         )}
                       </div>
