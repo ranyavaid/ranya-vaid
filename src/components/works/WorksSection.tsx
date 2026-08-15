@@ -8,9 +8,10 @@ type DragState = {
   moved: boolean
   startX: number
   startScrollLeft: number
+  pointerId: number | null
 }
 
-const DRAG_THRESHOLD_PX = 5
+const DRAG_THRESHOLD_PX = 8
 
 /**
  * WorksSection
@@ -23,6 +24,7 @@ export function WorksSection() {
     moved: false,
     startX: 0,
     startScrollLeft: 0,
+    pointerId: null,
   })
   const [canScroll, setCanScroll] = useState(false)
 
@@ -71,10 +73,8 @@ export function WorksSection() {
         moved: false,
         startX: event.clientX,
         startScrollLeft: scroller.scrollLeft,
+        pointerId: event.pointerId,
       }
-
-      scroller.setPointerCapture(event.pointerId)
-      scroller.classList.add(styles.notebooksScrollerDragging)
     },
     [canScroll]
   )
@@ -82,31 +82,38 @@ export function WorksSection() {
   const onPointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     const scroller = scrollerRef.current
     const drag = dragState.current
-    if (!scroller || !drag.active) return
+    if (!scroller || !drag.active || drag.pointerId !== event.pointerId) return
 
     const delta = event.clientX - drag.startX
-    if (Math.abs(delta) > DRAG_THRESHOLD_PX) {
-      if (!drag.moved) {
-        drag.moved = true
-      }
-      event.preventDefault()
+    if (!drag.moved && Math.abs(delta) > DRAG_THRESHOLD_PX) {
+      drag.moved = true
+      scroller.setPointerCapture(event.pointerId)
+      scroller.classList.add(styles.notebooksScrollerDragging)
     }
 
-    if (drag.moved) {
-      scroller.scrollLeft = drag.startScrollLeft - delta
-    }
+    if (!drag.moved) return
+
+    event.preventDefault()
+    scroller.scrollLeft = drag.startScrollLeft - delta
   }, [])
 
   const endDrag = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     const scroller = scrollerRef.current
-    if (!scroller || !dragState.current.active) return
+    const drag = dragState.current
+    if (!scroller || !drag.active || drag.pointerId !== event.pointerId) return
 
-    if (scroller.hasPointerCapture(event.pointerId)) {
+    if (drag.moved && scroller.hasPointerCapture(event.pointerId)) {
       scroller.releasePointerCapture(event.pointerId)
     }
 
     scroller.classList.remove(styles.notebooksScrollerDragging)
-    dragState.current.active = false
+    dragState.current = {
+      active: false,
+      moved: drag.moved,
+      startX: 0,
+      startScrollLeft: 0,
+      pointerId: null,
+    }
   }, [])
 
   const onClickCapture = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
