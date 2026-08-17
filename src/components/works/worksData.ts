@@ -36,7 +36,7 @@ export const FEATURED_CASES: WorkCase[] = [
     backColor: '#b8e6ff',
     frontColor: '#8FD6FF',
     frontShadow: '0 -13px 24px rgba(1, 98, 153, 0.23)',
-    tag: 'Design System',
+    tag: 'B2B • Design System',
     title: "Reducing 50% Design-to-dev Friction With Adnet's Design System",
   },
   {
@@ -52,7 +52,7 @@ export const FEATURED_CASES: WorkCase[] = [
     backColor: '#fff3b0',
     frontColor: '#FFE78F',
     frontShadow: '0 -6px 22px rgba(0, 0, 0, 0.12)',
-    tag: 'Product Design',
+    tag: 'B2B • Feature Development',
     title: 'Solving disconnected goals through Goal Alignment for 2x faster contribution tracking',
   },
   {
@@ -68,7 +68,7 @@ export const FEATURED_CASES: WorkCase[] = [
     backColor: '#FFCCF1',
     frontColor: '#FFB2EA',
     frontShadow: '0 -12px 41px rgba(168, 2, 122, 0.26)',
-    tag: 'Product Design',
+    tag: 'B2B • B2C • Product Design',
     title:
       'Building Trust in Local Service Discovery Through a 7-Role Hybrid B2B2C Ecosystem',
   },
@@ -89,7 +89,7 @@ export const FEATURED_CASES: WorkCase[] = [
     backColor: '#b8e6ff',
     frontColor: '#8FD6FF',
     frontShadow: '0 -13px 24px rgba(1, 98, 153, 0.23)',
-    tag: 'Design Exploration',
+    tag: 'B2C • Design Exploration',
     title: 'Streamlining Trip Collaboration and Making Planning Frictionless',
   },
 ]
