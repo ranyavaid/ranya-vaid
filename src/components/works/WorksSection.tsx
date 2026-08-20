@@ -43,10 +43,31 @@ export function WorksSection() {
 
     updateScrollability()
 
+    const onWheel = (event: WheelEvent) => {
+      if (scroller.scrollWidth <= scroller.clientWidth + 1) return
+
+      const { deltaX, deltaY } = event
+      const isVerticalIntent = Math.abs(deltaY) > Math.abs(deltaX)
+
+      if (isVerticalIntent) {
+        event.preventDefault()
+        window.scrollBy({ top: deltaY, left: 0 })
+        return
+      }
+
+      if (Math.abs(deltaX) > 0) {
+        event.preventDefault()
+        scroller.scrollLeft += deltaX
+      }
+    }
+
+    scroller.addEventListener('wheel', onWheel, { passive: false })
+
     const resizeObserver = new ResizeObserver(updateScrollability)
     resizeObserver.observe(scroller)
 
     return () => {
+      scroller.removeEventListener('wheel', onWheel)
       resizeObserver.disconnect()
     }
   }, [updateScrollability])
