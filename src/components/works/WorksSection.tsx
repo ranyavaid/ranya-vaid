@@ -7,6 +7,7 @@ type DragState = {
   active: boolean
   moved: boolean
   startX: number
+  startY: number
   startScrollLeft: number
   pointerId: number | null
 }
@@ -23,6 +24,7 @@ export function WorksSection() {
     active: false,
     moved: false,
     startX: 0,
+    startY: 0,
     startScrollLeft: 0,
     pointerId: null,
   })
@@ -41,21 +43,10 @@ export function WorksSection() {
 
     updateScrollability()
 
-    const onWheel = (event: WheelEvent) => {
-      if (scroller.scrollWidth <= scroller.clientWidth + 1) return
-      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return
-
-      event.preventDefault()
-      scroller.scrollLeft += event.deltaY
-    }
-
-    scroller.addEventListener('wheel', onWheel, { passive: false })
-
     const resizeObserver = new ResizeObserver(updateScrollability)
     resizeObserver.observe(scroller)
 
     return () => {
-      scroller.removeEventListener('wheel', onWheel)
       resizeObserver.disconnect()
     }
   }, [updateScrollability])
@@ -72,6 +63,7 @@ export function WorksSection() {
         active: true,
         moved: false,
         startX: event.clientX,
+        startY: event.clientY,
         startScrollLeft: scroller.scrollLeft,
         pointerId: event.pointerId,
       }
@@ -84,8 +76,26 @@ export function WorksSection() {
     const drag = dragState.current
     if (!scroller || !drag.active || drag.pointerId !== event.pointerId) return
 
-    const delta = event.clientX - drag.startX
-    if (!drag.moved && Math.abs(delta) > DRAG_THRESHOLD_PX) {
+    const deltaX = event.clientX - drag.startX
+    const deltaY = event.clientY - drag.startY
+
+    if (
+      !drag.moved &&
+      Math.abs(deltaY) > Math.abs(deltaX) &&
+      Math.abs(deltaY) > DRAG_THRESHOLD_PX
+    ) {
+      dragState.current = {
+        active: false,
+        moved: false,
+        startX: 0,
+        startY: 0,
+        startScrollLeft: 0,
+        pointerId: null,
+      }
+      return
+    }
+
+    if (!drag.moved && Math.abs(deltaX) > DRAG_THRESHOLD_PX) {
       drag.moved = true
       scroller.setPointerCapture(event.pointerId)
       scroller.classList.add(styles.notebooksScrollerDragging)
@@ -94,7 +104,7 @@ export function WorksSection() {
     if (!drag.moved) return
 
     event.preventDefault()
-    scroller.scrollLeft = drag.startScrollLeft - delta
+    scroller.scrollLeft = drag.startScrollLeft - deltaX
   }, [])
 
   const endDrag = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
@@ -111,6 +121,7 @@ export function WorksSection() {
       active: false,
       moved: drag.moved,
       startX: 0,
+      startY: 0,
       startScrollLeft: 0,
       pointerId: null,
     }
