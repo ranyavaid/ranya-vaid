@@ -12,7 +12,20 @@ type DragState = {
   pointerId: number | null
 }
 
+type ScrollEdges = {
+  overflow: boolean
+  canScrollLeft: boolean
+  canScrollRight: boolean
+}
+
 const DRAG_THRESHOLD_PX = 8
+
+function getCarouselStep(scroller: HTMLDivElement) {
+  const computed = getComputedStyle(scroller)
+  const cardWidth = parseFloat(computed.getPropertyValue('--works-card-width'))
+  const gap = parseFloat(computed.getPropertyValue('--works-card-gap'))
+  return cardWidth + gap
+}
 
 /**
  * WorksSection
@@ -28,69 +41,57 @@ export function WorksSection() {
     startScrollLeft: 0,
     pointerId: null,
   })
-  const [canScroll, setCanScroll] = useState(false)
+  const [scrollEdges, setScrollEdges] = useState<ScrollEdges>({
+    overflow: false,
+    canScrollLeft: false,
+    canScrollRight: false,
+  })
 
-  const updateScrollability = useCallback(() => {
+  const updateScrollEdges = useCallback(() => {
     const scroller = scrollerRef.current
     if (!scroller) return
 
-    setCanScroll(scroller.scrollWidth > scroller.clientWidth + 1)
+    const overflow = scroller.scrollWidth > scroller.clientWidth + 1
+    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth
+
+    setScrollEdges({
+      overflow,
+      canScrollLeft: overflow && scroller.scrollLeft > 1,
+      canScrollRight: overflow && scroller.scrollLeft < maxScrollLeft - 1,
+    })
   }, [])
 
   useEffect(() => {
     const scroller = scrollerRef.current
     if (!scroller) return
 
-    updateScrollability()
+    updateScrollEdges()
 
-    const onWheel = (event: WheelEvent) => {
-      if (scroller.scrollWidth <= scroller.clientWidth + 1) return
+    scroller.addEventListener('scroll', updateScrollEdges, { passive: true })
 
-      const { deltaX, deltaY } = event
-      const isVerticalIntent = Math.abs(deltaY) > Math.abs(deltaX)
-
-      if (isVerticalIntent) {
-        event.preventDefault()
-        window.scrollBy({ top: deltaY, left: 0 })
-        return
-      }
-
-      if (Math.abs(deltaX) > 0) {
-        event.preventDefault()
-        scroller.scrollLeft += deltaX
-      }
-    }
-
-    scroller.addEventListener('wheel', onWheel, { passive: false })
-
-    const resizeObserver = new ResizeObserver(updateScrollability)
+    const resizeObserver = new ResizeObserver(updateScrollEdges)
     resizeObserver.observe(scroller)
 
     return () => {
-      scroller.removeEventListener('wheel', onWheel)
+      scroller.removeEventListener('scroll', updateScrollEdges)
       resizeObserver.disconnect()
     }
-  }, [updateScrollability])
+  }, [updateScrollEdges])
 
-  const onPointerDownCapture = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
-      if (!canScroll) return
-      if (event.pointerType === 'mouse' && event.button !== 0) return
+  const onPointerDownCapture = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    const scroller = scrollerRef.current
+    if (!scroller || scroller.scrollWidth <= scroller.clientWidth + 1) return
+    if (event.pointerType === 'mouse' && event.button !== 0) return
 
-      const scroller = scrollerRef.current
-      if (!scroller) return
-
-      dragState.current = {
-        active: true,
-        moved: false,
-        startX: event.clientX,
-        startY: event.clientY,
-        startScrollLeft: scroller.scrollLeft,
-        pointerId: event.pointerId,
-      }
-    },
-    [canScroll]
-  )
+    dragState.current = {
+      active: true,
+      moved: false,
+      startX: event.clientX,
+      startY: event.clientY,
+      startScrollLeft: scroller.scrollLeft,
+      pointerId: event.pointerId,
+    }
+  }, [])
 
   const onPointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     const scroller = scrollerRef.current
@@ -146,7 +147,9 @@ export function WorksSection() {
       startScrollLeft: 0,
       pointerId: null,
     }
-  }, [])
+
+    updateScrollEdges()
+  }, [updateScrollEdges])
 
   const onClickCapture = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (!dragState.current.moved) return
@@ -154,6 +157,38 @@ export function WorksSection() {
     event.preventDefault()
     event.stopPropagation()
     dragState.current.moved = false
+  }, [])
+
+  const onKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    const scroller = scrollerRef.current
+    if (!scroller || scroller.scrollWidth <= scroller.clientWidth + 1) return
+
+    const target = event.target as Node
+    if (!scroller.contains(target)) return
+
+    const step = getCarouselStep(scroller)
+    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        event.preventDefault()
+        scroller.scrollBy({ left: -step, behavior: 'smooth' })
+        break
+      case 'ArrowRight':
+        event.preventDefault()
+        scroller.scrollBy({ left: step, behavior: 'smooth' })
+        break
+      case 'Home':
+        event.preventDefault()
+        scroller.scrollTo({ left: 0, behavior: 'smooth' })
+        break
+      case 'End':
+        event.preventDefault()
+        scroller.scrollTo({ left: maxScrollLeft, behavior: 'smooth' })
+        break
+      default:
+        break
+    }
   }, [])
 
   return (
@@ -169,24 +204,43 @@ export function WorksSection() {
         </p>
       </header>
 
-      <div
-        ref={scrollerRef}
-        className={`${styles.notebooksScroller} ${
-          canScroll ? styles.notebooksScrollerScrollable : styles.notebooksScrollerStatic
-        }`}
-        aria-label="Featured case folders"
-        onPointerDownCapture={onPointerDownCapture}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onClickCapture={onClickCapture}
-      >
-        <div className={styles.notebooksTrack}>
-          {FEATURED_CASES.map((workCase) => (
-            <div key={workCase.id} className={styles.notebookItem}>
-              <Notebook {...workCase} />
-            </div>
-          ))}
+      <div className={styles.scrollerWrap}>
+        {scrollEdges.overflow ? (
+          <>
+            <div
+              className={`${styles.edgeFade} ${styles.edgeFadeLeft} ${
+                scrollEdges.canScrollLeft ? '' : styles.edgeFadeHidden
+              }`}
+              aria-hidden="true"
+            />
+            <div
+              className={`${styles.edgeFade} ${styles.edgeFadeRight} ${
+                scrollEdges.canScrollRight ? '' : styles.edgeFadeHidden
+              }`}
+              aria-hidden="true"
+            />
+          </>
+        ) : null}
+
+        <div
+          ref={scrollerRef}
+          className={styles.notebooksScroller}
+          role="region"
+          aria-label="Featured case folders"
+          onPointerDownCapture={onPointerDownCapture}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onClickCapture={onClickCapture}
+          onKeyDown={onKeyDown}
+        >
+          <div className={styles.notebooksTrack}>
+            {FEATURED_CASES.map((workCase) => (
+              <div key={workCase.id} className={styles.notebookItem}>
+                <Notebook {...workCase} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
