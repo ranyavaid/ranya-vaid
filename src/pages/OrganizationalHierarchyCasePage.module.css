@@ -321,6 +321,76 @@
   object-fit: contain;
 }
 
+.carouselLightboxPanel {
+  width: min(1080px, calc(100vw - 96px));
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.carouselLightboxCarousel {
+  margin-top: 0;
+  margin-inline: 0;
+  width: 100%;
+}
+
+.carouselLightboxCarousel .designOptionImage {
+  max-height: min(70vh, 820px);
+}
+
+.carouselLightboxPanel .caseCarouselControls {
+  margin-top: 20px;
+}
+
+.carouselLightboxPanel .caseCarouselArrow {
+  color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselArrow:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.carouselLightboxPanel .caseCarouselArrow:not(:disabled):active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.carouselLightboxPanel .caseCarouselArrow:disabled {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.carouselLightboxPanel .caseCarouselArrow:focus-visible {
+  outline-color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.carouselLightboxPanel .caseCarouselDot:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.carouselLightboxPanel .caseCarouselDot:focus-visible {
+  outline-color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselDotMark {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover .caseCarouselDotMark {
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
+.carouselLightboxPanel .caseCarouselDotMarkActive {
+  background-color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover .caseCarouselDotMarkActive {
+  background-color: #ffffff;
+}
+
 .figureZoomableImage {
   cursor: zoom-in;
 }
@@ -542,10 +612,26 @@
   color: var(--color-black-primary);
 }
 
+.designExplorationBlock > .finalScreenPhase:first-child {
+  margin-top: 34px;
+}
+
+.designExplorationBlock .designOptionsCarousel {
+  margin-top: 0;
+}
+
+.designExplorationBlockRepeat {
+  margin-top: var(--case-block-gap, 64px);
+}
+
+.designExplorationBlockRepeat > .finalScreenPhase:first-child {
+  margin-top: 0;
+}
+
 .designOptionsCarousel {
   margin-top: 34px;
-  width: min(818px, calc(100vw - (2 * var(--page-gutter))));
-  margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
 }
 
 .caseCarouselViewport {
@@ -728,6 +814,11 @@
   width: min(818px, calc(100vw - (2 * var(--page-gutter))));
   margin-inline: calc((100% - min(818px, calc(100vw - (2 * var(--page-gutter))))) / 2);
   line-height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #efefef;
+  border: 1px solid var(--color-stroke);
+  box-sizing: border-box;
 }
 
 .userFlowImage {
@@ -739,7 +830,6 @@
 .designOptionsCarousel .designOptionFigure {
   position: relative;
   width: 100%;
-  aspect-ratio: 818 / 524;
   line-height: 0;
 }
 
@@ -825,6 +915,16 @@
 }
 
 .finalScreenPhaseBody {
+  color: var(--color-black-secondary);
+}
+
+.designExplorationList {
+  margin: 0;
+  padding-left: 28px;
+  list-style: decimal;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   color: var(--color-black-secondary);
 }
 

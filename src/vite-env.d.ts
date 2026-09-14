@@ -40,6 +40,76 @@ declare module 'virtual:public-asset-version/okr Alignment/banner.mp4' {
   export default version
 }
 
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.1.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.2.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.3.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.4.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.5.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.6.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration1.7.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration2.1.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration2.2.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration2.3.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration2.4.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/iteration2.5.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/research.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/okr Alignment/user-flow.png' {
+  const version: string
+  export default version
+}
+
 declare module 'virtual:public-asset-version/PPN/accept_business.mp4' {
   const version: string
   export default version
@@ -70,7 +140,17 @@ declare module 'virtual:public-asset-version/PPN/competitor.png' {
   export default version
 }
 
+declare module 'virtual:public-asset-version/PPN/competitors.png' {
+  const version: string
+  export default version
+}
+
 declare module 'virtual:public-asset-version/PPN/persona.png' {
+  const version: string
+  export default version
+}
+
+declare module 'virtual:public-asset-version/PPN/user_persona.png' {
   const version: string
   export default version
 }

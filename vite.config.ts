@@ -17,7 +17,10 @@ function publicAssetVersion(relativePath: string): Plugin {
       if (id !== resolvedVirtualModuleId) return
 
       const version = fs.existsSync(absolutePath)
-        ? fs.statSync(absolutePath).mtimeMs
+        ? (() => {
+            const { mtimeMs, size } = fs.statSync(absolutePath)
+            return `${mtimeMs}-${size}`
+          })()
         : Date.now()
 
       return `export default ${JSON.stringify(String(version))}`
@@ -49,13 +52,29 @@ export default defineConfig({
     publicAssetVersion('okr Alignment/assignkr_kr.mp4'),
     publicAssetVersion('okr Alignment/accept_kr.mp4'),
     publicAssetVersion('okr Alignment/banner.mp4'),
+    publicAssetVersion('okr Alignment/iteration1.1.png'),
+    publicAssetVersion('okr Alignment/iteration1.2.png'),
+    publicAssetVersion('okr Alignment/iteration1.3.png'),
+    publicAssetVersion('okr Alignment/iteration1.4.png'),
+    publicAssetVersion('okr Alignment/iteration1.5.png'),
+    publicAssetVersion('okr Alignment/iteration1.6.png'),
+    publicAssetVersion('okr Alignment/iteration1.7.png'),
+    publicAssetVersion('okr Alignment/iteration2.1.png'),
+    publicAssetVersion('okr Alignment/iteration2.2.png'),
+    publicAssetVersion('okr Alignment/iteration2.3.png'),
+    publicAssetVersion('okr Alignment/iteration2.4.png'),
+    publicAssetVersion('okr Alignment/iteration2.5.png'),
+    publicAssetVersion('okr Alignment/research.png'),
+    publicAssetVersion('okr Alignment/user-flow.png'),
     publicAssetVersion('PPN/accept_business.mp4'),
     publicAssetVersion('PPN/assign_rep.mp4'),
     publicAssetVersion('PPN/categories.mp4'),
     publicAssetVersion('PPN/enroll_subscription.mp4'),
     publicAssetVersion('PPN/banner.mp4'),
     publicAssetVersion('PPN/competitor.png'),
+    publicAssetVersion('PPN/competitors.png'),
     publicAssetVersion('PPN/persona.png'),
+    publicAssetVersion('PPN/user_persona.png'),
     publicAssetVersion('PPN/problem_1.svg'),
     publicAssetVersion('PPN/problem_2.svg'),
     publicAssetVersion('PPN/problem_3.svg'),

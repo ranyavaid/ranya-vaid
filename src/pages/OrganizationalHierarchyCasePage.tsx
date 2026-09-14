@@ -24,6 +24,20 @@ import alignKrKrVersion from 'virtual:public-asset-version/okr Alignment/alignkr
 import assignKrKrVersion from 'virtual:public-asset-version/okr Alignment/assignkr_kr.mp4'
 import acceptKrVersion from 'virtual:public-asset-version/okr Alignment/accept_kr.mp4'
 import bannerVersion from 'virtual:public-asset-version/okr Alignment/banner.mp4'
+import iteration11Version from 'virtual:public-asset-version/okr Alignment/iteration1.1.png'
+import iteration12Version from 'virtual:public-asset-version/okr Alignment/iteration1.2.png'
+import iteration13Version from 'virtual:public-asset-version/okr Alignment/iteration1.3.png'
+import iteration14Version from 'virtual:public-asset-version/okr Alignment/iteration1.4.png'
+import iteration15Version from 'virtual:public-asset-version/okr Alignment/iteration1.5.png'
+import iteration16Version from 'virtual:public-asset-version/okr Alignment/iteration1.6.png'
+import iteration17Version from 'virtual:public-asset-version/okr Alignment/iteration1.7.png'
+import iteration21Version from 'virtual:public-asset-version/okr Alignment/iteration2.1.png'
+import iteration22Version from 'virtual:public-asset-version/okr Alignment/iteration2.2.png'
+import iteration23Version from 'virtual:public-asset-version/okr Alignment/iteration2.3.png'
+import iteration24Version from 'virtual:public-asset-version/okr Alignment/iteration2.4.png'
+import iteration25Version from 'virtual:public-asset-version/okr Alignment/iteration2.5.png'
+import researchImageVersion from 'virtual:public-asset-version/okr Alignment/research.png'
+import userFlowImageVersion from 'virtual:public-asset-version/okr Alignment/user-flow.png'
 
 const IMPACT_CARDS = [
   {
@@ -105,16 +119,58 @@ const PERSONA_CARDS = [
   },
 ] as const
 
-const DESIGN_OPTIONS = [
-  {
-    src: '/okr%20Alignment/option-1.png',
-    alt: 'Design exploration option 1',
-  },
-  {
-    src: '/okr%20Alignment/option-2.png',
-    alt: 'Design exploration option 2',
-  },
+type DesignCarouselSlide = {
+  src: string
+  alt: string
+  width: number
+  height: number
+}
+
+/** Exported artboard size; carousels display at 1080px wide (1692×1093 ≈ 1.548). */
+const DESIGN_OPTION_IMAGE_WIDTH = 1692
+const DESIGN_OPTION_IMAGE_HEIGHT = 1093
+
+const DESIGN_ITERATION_VERSIONS = [
+  iteration11Version,
+  iteration12Version,
+  iteration13Version,
+  iteration14Version,
+  iteration15Version,
+  iteration16Version,
+  iteration17Version,
 ] as const
+
+const DESIGN_OPTIONS: DesignCarouselSlide[] = DESIGN_ITERATION_VERSIONS.map((version, index) => {
+  const iterationNumber = index + 1
+
+  return {
+    src: `/okr%20Alignment/iteration1.${iterationNumber}.png?v=${version}`,
+    alt: `Goal alignment design exploration iteration 1.${iterationNumber}`,
+    width: DESIGN_OPTION_IMAGE_WIDTH,
+    height: DESIGN_OPTION_IMAGE_HEIGHT,
+  }
+})
+
+const DESIGN_ITERATION_2_VERSIONS = [
+  iteration21Version,
+  iteration22Version,
+  iteration23Version,
+  iteration24Version,
+  iteration25Version,
+] as const
+
+const DESIGN_ITERATION_2_OPTIONS: DesignCarouselSlide[] = DESIGN_ITERATION_2_VERSIONS.map(
+  (version, index) => {
+    const iterationNumber = index + 1
+
+    return {
+      src: `/okr%20Alignment/iteration2.${iterationNumber}.png?v=${version}`,
+      alt: `Goal alignment design exploration iteration 2.${iterationNumber}`,
+      width: DESIGN_OPTION_IMAGE_WIDTH,
+      height: DESIGN_OPTION_IMAGE_HEIGHT,
+    }
+  }
+)
 
 const ALIGNOBJ_KR_VIDEO_SRC = `/okr%20Alignment/alignobj_kr.mp4?v=${alignObjKrVersion}`
 const ASSIGN_KR_OBJ_VIDEO_SRC = `/okr%20Alignment/assignkr_obj.mp4?v=${assignKrObjVersion}`
@@ -201,9 +257,8 @@ const FINAL_SCREEN_PHASES = [
   },
 ] as const
 
-const CAROUSEL_AUTO_ADVANCE_MS = 6000
-const RESEARCH_IMAGE_SRC = '/okr%20Alignment/research.png'
-const USER_FLOW_IMAGE_SRC = '/okr%20Alignment/user-flow.png'
+const RESEARCH_IMAGE_SRC = `/okr%20Alignment/research.png?v=${researchImageVersion}`
+const USER_FLOW_IMAGE_SRC = `/okr%20Alignment/user-flow.png?v=${userFlowImageVersion}`
 
 type ZoomedImage = {
   src: string
@@ -848,57 +903,6 @@ function logicalToDomIndex(logicalIndex: number, slideCount: number) {
 
 const CAROUSEL_GAP_PX = 24
 
-function useCarouselAutoAdvanceTrigger() {
-  const [root, setRoot] = useState<HTMLDivElement | null>(null)
-  const [inViewport, setInViewport] = useState(false)
-  const [engaged, setEngaged] = useState(false)
-
-  useEffect(() => {
-    if (!root) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInViewport(entry?.isIntersecting ?? false)
-      },
-      { threshold: 0 }
-    )
-
-    observer.observe(root)
-    return () => observer.disconnect()
-  }, [root])
-
-  useEffect(() => {
-    if (!root) return
-
-    const handlePointerEnter = () => setEngaged(true)
-    const handlePointerLeave = (event: PointerEvent) => {
-      const relatedTarget = event.relatedTarget
-      if (relatedTarget instanceof Node && root.contains(relatedTarget)) return
-      setEngaged(false)
-    }
-    const handleFocusIn = () => setEngaged(true)
-    const handleFocusOut = (event: FocusEvent) => {
-      const relatedTarget = event.relatedTarget
-      if (relatedTarget instanceof Node && root.contains(relatedTarget)) return
-      setEngaged(false)
-    }
-
-    root.addEventListener('pointerenter', handlePointerEnter)
-    root.addEventListener('pointerleave', handlePointerLeave)
-    root.addEventListener('focusin', handleFocusIn)
-    root.addEventListener('focusout', handleFocusOut)
-
-    return () => {
-      root.removeEventListener('pointerenter', handlePointerEnter)
-      root.removeEventListener('pointerleave', handlePointerLeave)
-      root.removeEventListener('focusin', handleFocusIn)
-      root.removeEventListener('focusout', handleFocusOut)
-    }
-  }, [root])
-
-  return { setRoot, isActive: inViewport || engaged }
-}
-
 function useCaseCarousel(
   slideCount: number,
   autoAdvanceMs: number,
@@ -1181,6 +1185,135 @@ function useCaseCarousel(
   }
 }
 
+type CarouselLightboxSlide = {
+  src: string
+  alt: string
+  width: number
+  height: number
+}
+
+type CarouselImageLightboxProps = {
+  slides: CarouselLightboxSlide[]
+  initialIndex: number
+  ariaLabel: string
+  onClose: () => void
+}
+
+function CarouselImageLightbox({
+  slides,
+  initialIndex,
+  ariaLabel,
+  onClose,
+}: CarouselImageLightboxProps) {
+  const carousel = useCaseCarousel(slides.length, 0, { autoAdvance: false })
+  const hasInitializedRef = useRef(false)
+
+  useLayoutEffect(() => {
+    hasInitializedRef.current = false
+  }, [slides, initialIndex])
+
+  useLayoutEffect(() => {
+    if (hasInitializedRef.current) return
+    if (slides.length === 0) return
+
+    carousel.goTo(initialIndex)
+    hasInitializedRef.current = true
+  }, [carousel.goTo, initialIndex, slides.length])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+        return
+      }
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        carousel.goToNext()
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        carousel.goToPrevious()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [carousel.goToNext, carousel.goToPrevious, onClose])
+
+  return (
+    <div
+      className={styles.researchLightbox}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Carousel full screen view"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className={styles.researchLightboxClose}
+        aria-label="Close full screen view"
+        onClick={onClose}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path
+            d="M1 1L13 13M13 1L1 13"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+      <div className={styles.carouselLightboxPanel} onClick={(event) => event.stopPropagation()}>
+        <div className={`${styles.designOptionsCarousel} ${styles.carouselLightboxCarousel}`}>
+          <div className={styles.caseCarouselViewport}>
+            <div
+              ref={carousel.trackRef}
+              className={styles.caseCarouselTrack}
+              data-loop={carousel.loopEnabled ? 'true' : 'false'}
+              aria-label={ariaLabel}
+            >
+              {getLoopSlideEntries(slides).map((entry, domIndex) => (
+                <div
+                  key={entry.key}
+                  ref={(element) => carousel.registerSlideRef(domIndex, element)}
+                  className={styles.caseCarouselSlide}
+                  aria-hidden={entry.isClone ? true : undefined}
+                >
+                  <div className={styles.designOptionFigure}>
+                    <img
+                      key={entry.item.src}
+                      src={entry.item.src}
+                      alt={entry.item.alt}
+                      className={styles.designOptionImage}
+                      width={entry.item.width}
+                      height={entry.item.height}
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <CaseCarouselControls
+            slideCount={slides.length}
+            activeIndex={carousel.activeIndex}
+            progressKey={carousel.progressKey}
+            ariaLabel={ariaLabel}
+            advanceDurationMs={0}
+            showProgressLoader={false}
+            onGoTo={carousel.goTo}
+            onPrevious={carousel.goToPrevious}
+            onNext={carousel.goToNext}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const RULE_CARDS = [
   {
     eyebrow: 'How should progress dependency work?',
@@ -1224,13 +1357,15 @@ export function OrganizationalHierarchyCasePage() {
   const researchExploreCardRef = useRef<HTMLElement | null>(null)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
   const [zoomedVideo, setZoomedVideo] = useState<ZoomedImage | null>(null)
-  const rulesCarouselTrigger = useCarouselAutoAdvanceTrigger()
-  const designCarouselTrigger = useCarouselAutoAdvanceTrigger()
-  const rulesCarousel = useCaseCarousel(RULE_CARDS.length, CAROUSEL_AUTO_ADVANCE_MS, {
-    isInView: rulesCarouselTrigger.isActive,
-  })
-  const designCarousel = useCaseCarousel(DESIGN_OPTIONS.length, CAROUSEL_AUTO_ADVANCE_MS, {
-    isInView: designCarouselTrigger.isActive,
+  const [zoomedCarousel, setZoomedCarousel] = useState<{
+    slides: CarouselLightboxSlide[]
+    initialIndex: number
+    ariaLabel: string
+  } | null>(null)
+  const rulesCarousel = useCaseCarousel(RULE_CARDS.length, 0, { autoAdvance: false })
+  const designCarousel = useCaseCarousel(DESIGN_OPTIONS.length, 0, { autoAdvance: false })
+  const designIteration2Carousel = useCaseCarousel(DESIGN_ITERATION_2_OPTIONS.length, 0, {
+    autoAdvance: false,
   })
   const finalScreensCarouselPhase1 = useCaseCarousel(FINAL_SCREEN_PHASE_1_SLIDES.length, 0, {
     autoAdvance: false,
@@ -1294,6 +1429,17 @@ export function OrganizationalHierarchyCasePage() {
 
   const closeZoomedImage = useCallback(() => {
     setZoomedImage(null)
+  }, [])
+
+  const openZoomedCarousel = useCallback(
+    (slides: CarouselLightboxSlide[], initialIndex: number, ariaLabel: string) => {
+      setZoomedCarousel({ slides, initialIndex, ariaLabel })
+    },
+    []
+  )
+
+  const closeZoomedCarousel = useCallback(() => {
+    setZoomedCarousel(null)
   }, [])
 
   const openZoomedVideo = useCallback((video: ZoomedImage) => {
@@ -1421,7 +1567,7 @@ export function OrganizationalHierarchyCasePage() {
         <header id="top" className={styles.textContainer}>
           <span className={`body-3 ${styles.tag}`}>Product Design</span>
           <h2 className={styles.heading}>
-          Solving organization siloes through Goal Alignment for 2x faster contribution tracking
+          Making Contribution Tracking 2x Faster With Goal Alignment
           </h2>
           <p className={`body-1 ${styles.body}`}>
           Joy of Performing (JOP) is an enterprise performance and goal management software designed to keep teams aligned and focused. To break down organizational siloes, I designed a core alignment feature to give companies a clear view of how different teams collaborate.
@@ -1478,7 +1624,7 @@ export function OrganizationalHierarchyCasePage() {
                     </article>
                     <article className={styles.overviewCard}>
                       <p className={`body-3 ${styles.cardEyebrow}`}>Team</p>
-                      <p className={`body-2 ${styles.cardText}`}>1 Product Manager, 1 SME, 2 Developers, 1 QA</p>
+                      <p className={`body-2 ${styles.cardText}`}>1 Product Designer, 1 Product Manager, 1 SME, 2 Developers, 1 QA</p>
                     </article>
                     <article className={styles.overviewCard}>
                       <p className={`body-3 ${styles.cardEyebrow}`}>Duration</p>
@@ -1653,7 +1799,7 @@ export function OrganizationalHierarchyCasePage() {
                     </p>
                   </div>
 
-                  <div ref={rulesCarouselTrigger.setRoot} className={styles.rulesCarousel}>
+                  <div className={styles.rulesCarousel}>
                     <div className={styles.caseCarouselViewport}>
                       <div
                         ref={rulesCarousel.trackRef}
@@ -1690,8 +1836,8 @@ export function OrganizationalHierarchyCasePage() {
                       activeIndex={rulesCarousel.activeIndex}
                       progressKey={rulesCarousel.progressKey}
                       ariaLabel="Feature rules navigation"
-                      advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
-                      showProgressLoader={rulesCarouselTrigger.isActive}
+                      advanceDurationMs={0}
+                      showProgressLoader={false}
                       onGoTo={rulesCarousel.goTo}
                       onPrevious={rulesCarousel.goToPrevious}
                       onNext={rulesCarousel.goToNext}
@@ -1747,67 +1893,199 @@ export function OrganizationalHierarchyCasePage() {
                     </p>
                   </div>
 
-                  <div ref={designCarouselTrigger.setRoot} className={styles.designOptionsCarousel}>
-                    <div className={styles.caseCarouselViewport}>
-                      <div
-                        ref={designCarousel.trackRef}
-                        className={styles.caseCarouselTrack}
-                        data-loop={designCarousel.loopEnabled ? 'true' : 'false'}
-                        aria-label="Design exploration options"
-                      >
-                      {getLoopSlideEntries(DESIGN_OPTIONS).map((entry, domIndex) => (
-                        <div
-                          key={entry.key}
-                          ref={(element) => designCarousel.registerSlideRef(domIndex, element)}
-                          className={styles.caseCarouselSlide}
-                          aria-hidden={entry.isClone ? true : undefined}
-                        >
-                          <div className={styles.designOptionFigure}>
-                            <img
-                              src={entry.item.src}
-                              alt={entry.item.alt}
-                              className={`${styles.designOptionImage} ${styles.figureZoomableImage}`}
-                              width={818}
-                              height={524}
-                      draggable={false}
-                              onClick={
-                                entry.isClone
-                                  ? undefined
-                                  : () =>
-                                      openZoomedImage({
-                                        src: entry.item.src,
-                                        alt: entry.item.alt,
-                                      })
-                              }
-                            />
-                            {!entry.isClone ? (
-                              <FigureZoomButton
-                                label={`View ${entry.item.alt} full screen`}
-                                onClick={() =>
-                                  openZoomedImage({
-                                    src: entry.item.src,
-                                    alt: entry.item.alt,
-                                  })
-                                }
-                              />
-                            ) : null}
-                          </div>
-                        </div>
-                      ))}
-                      </div>
+                  <div className={styles.designExplorationBlock}>
+                    <div className={styles.finalScreenPhase}>
+                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>
+                        Iteration 1 inspired by whiteboards
+                      </p>
+                      <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                        While this iteration made linking more intuitive, and effectively
+                        communicated it visually, it uncovered 4 problems-
+                      </p>
+                      <ol className={`body-2 ${styles.designExplorationList}`}>
+                        <li>
+                          Edit mode came with two tabs- alignment and assignment. The copy created
+                          confusion as this pointed to theoretical concept and not what users had
+                          to do.
+                        </li>
+                        <li>
+                          While users could drag and drop connections to build links, it worked
+                          better with a model where every connection was possible.
+                        </li>
+                        <li>
+                          Assigning and aligning came with different interaction models; one utilized
+                          drag and drop, the other select via checkbox. This created inconsistency
+                        </li>
+                        <li>
+                          Drag-and-drop whiteboards don&apos;t scale well; as links grow, the
+                          interaction gets heavy on computers.
+                        </li>
+                      </ol>
                     </div>
 
-                    <CaseCarouselControls
-                      slideCount={DESIGN_OPTIONS.length}
-                      activeIndex={designCarousel.activeIndex}
-                      progressKey={designCarousel.progressKey}
-                      ariaLabel="Design exploration navigation"
-                      advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
-                      showProgressLoader={designCarouselTrigger.isActive}
-                      onGoTo={designCarousel.goTo}
-                      onPrevious={designCarousel.goToPrevious}
-                      onNext={designCarousel.goToNext}
-                    />
+                    <div className={styles.designOptionsCarousel}>
+                      <div className={styles.caseCarouselViewport}>
+                        <div
+                          ref={designCarousel.trackRef}
+                          className={styles.caseCarouselTrack}
+                          data-loop={designCarousel.loopEnabled ? 'true' : 'false'}
+                          aria-label="Design exploration options"
+                        >
+                          {getLoopSlideEntries(DESIGN_OPTIONS).map((entry, domIndex) => (
+                            <div
+                              key={entry.key}
+                              ref={(element) => designCarousel.registerSlideRef(domIndex, element)}
+                              className={styles.caseCarouselSlide}
+                              aria-hidden={entry.isClone ? true : undefined}
+                            >
+                              <div className={styles.designOptionFigure}>
+                                <img
+                                  key={entry.item.src}
+                                  src={entry.item.src}
+                                  alt={entry.item.alt}
+                                  className={`${styles.designOptionImage} ${styles.figureZoomableImage}`}
+                                  width={entry.item.width}
+                                  height={entry.item.height}
+                                  draggable={false}
+                                  onClick={
+                                    entry.isClone || entry.logicalIndex === null
+                                      ? undefined
+                                      : () =>
+                                          openZoomedCarousel(
+                                            DESIGN_OPTIONS,
+                                            entry.logicalIndex as number,
+                                            'Design exploration navigation'
+                                          )
+                                  }
+                                />
+                                {!entry.isClone && entry.logicalIndex !== null ? (
+                                  <FigureZoomButton
+                                    label={`View ${entry.item.alt} full screen`}
+                                    onClick={() =>
+                                      openZoomedCarousel(
+                                        DESIGN_OPTIONS,
+                                        entry.logicalIndex as number,
+                                        'Design exploration navigation'
+                                      )
+                                    }
+                                  />
+                                ) : null}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <CaseCarouselControls
+                        slideCount={DESIGN_OPTIONS.length}
+                        activeIndex={designCarousel.activeIndex}
+                        progressKey={designCarousel.progressKey}
+                        ariaLabel="Design exploration navigation"
+                        advanceDurationMs={0}
+                        showProgressLoader={false}
+                        onGoTo={designCarousel.goTo}
+                        onPrevious={designCarousel.goToPrevious}
+                        onNext={designCarousel.goToNext}
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    className={`${styles.designExplorationBlock} ${styles.designExplorationBlockRepeat}`}
+                  >
+                    <div className={styles.finalScreenPhase}>
+                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>
+                        Iteration 2 inspired by cascades
+                      </p>
+                      <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                        For this I was inspired by how OKR hierarchy is generally represented.
+                        While this was a lighter model because it utilized pop-ups and lighter, it
+                        also uncovered problems such as-
+                      </p>
+                      <ol className={`body-2 ${styles.designExplorationList}`}>
+                        <li>
+                          The user could not reference the actual OKR they were linking to and this
+                          was essential for a corporate userbase already juggling a lot.
+                        </li>
+                        <li>
+                          Cascades scroll, so they lose the top-down view of the whole linking that
+                          a whiteboard gives.
+                        </li>
+                        <li>
+                          Multi-level cascades become overwhelming to look at as they scale.
+                        </li>
+                      </ol>
+                    </div>
+
+                    <div className={styles.designOptionsCarousel}>
+                      <div className={styles.caseCarouselViewport}>
+                        <div
+                          ref={designIteration2Carousel.trackRef}
+                          className={styles.caseCarouselTrack}
+                          data-loop={designIteration2Carousel.loopEnabled ? 'true' : 'false'}
+                          aria-label="Design exploration iteration 2 screens"
+                        >
+                          {getLoopSlideEntries(DESIGN_ITERATION_2_OPTIONS).map(
+                            (entry, domIndex) => (
+                              <div
+                                key={entry.key}
+                                ref={(element) =>
+                                  designIteration2Carousel.registerSlideRef(domIndex, element)
+                                }
+                                className={styles.caseCarouselSlide}
+                                aria-hidden={entry.isClone ? true : undefined}
+                              >
+                                <div className={styles.designOptionFigure}>
+                                  <img
+                                    key={entry.item.src}
+                                    src={entry.item.src}
+                                    alt={entry.item.alt}
+                                    className={`${styles.designOptionImage} ${styles.figureZoomableImage}`}
+                                    width={entry.item.width}
+                                    height={entry.item.height}
+                                    draggable={false}
+                                    onClick={
+                                      entry.isClone || entry.logicalIndex === null
+                                        ? undefined
+                                        : () =>
+                                            openZoomedCarousel(
+                                              DESIGN_ITERATION_2_OPTIONS,
+                                              entry.logicalIndex as number,
+                                              'Design exploration iteration 2 navigation'
+                                            )
+                                    }
+                                  />
+                                  {!entry.isClone && entry.logicalIndex !== null ? (
+                                    <FigureZoomButton
+                                      label={`View ${entry.item.alt} full screen`}
+                                      onClick={() =>
+                                        openZoomedCarousel(
+                                          DESIGN_ITERATION_2_OPTIONS,
+                                          entry.logicalIndex as number,
+                                          'Design exploration iteration 2 navigation'
+                                        )
+                                      }
+                                    />
+                                  ) : null}
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+
+                      <CaseCarouselControls
+                        slideCount={DESIGN_ITERATION_2_OPTIONS.length}
+                        activeIndex={designIteration2Carousel.activeIndex}
+                        progressKey={designIteration2Carousel.progressKey}
+                        ariaLabel="Design exploration iteration 2 navigation"
+                        advanceDurationMs={0}
+                        showProgressLoader={false}
+                        onGoTo={designIteration2Carousel.goTo}
+                        onPrevious={designIteration2Carousel.goToPrevious}
+                        onNext={designIteration2Carousel.goToNext}
+                      />
+                    </div>
                   </div>
                 </section>
 
@@ -1816,7 +2094,7 @@ export function OrganizationalHierarchyCasePage() {
                   </h3>
                   <div className={styles.bodyStack}>
                     <p className={`body-2 ${styles.mainBody}`}>
-                    Three rules every screen would be based on:
+                    Based on the iterations, I set 3 rules for all screens:
                     </p>
                   </div>
 
@@ -1848,8 +2126,26 @@ export function OrganizationalHierarchyCasePage() {
                     <h3 className={styles.mainHeading}>Final Screens
                     </h3>
                     <p className={`body-2 ${styles.mainBody}`}>
-                    Here is what the final screens looked like:
+                      For the final design, I went with the whiteboard-inspired iteration, but kept
+                      the look and simplified the interaction.
                     </p>
+                    <ol className={`body-2 ${styles.designExplorationList}`}>
+                      <li>
+                        Instead of the theoretical &quot;alignment&quot; and &quot;assignment&quot;
+                        tabs, the actions now say what the user is actually doing — &quot;Align
+                        to&quot; and &quot;Assign to.&quot;
+                      </li>
+                      <li>
+                        The final design unifies both assigning and aligning through selection, so
+                        the user learns one pattern and applies it everywhere. No switching mental
+                        models mid-flow.
+                      </li>
+                      <li>
+                        Instead of forcing every connection onto the canvas at once (which created
+                        the scalability problem), the final design lets users reveal links on
+                        demand through a &quot;View all KRs&quot; option.
+                      </li>
+                    </ol>
                   </div>
 
                   {FINAL_SCREEN_PHASES.map((phase, phaseIndex) => {
@@ -1933,7 +2229,7 @@ export function OrganizationalHierarchyCasePage() {
                             activeIndex={carousel.activeIndex}
                             progressKey={carousel.progressKey}
                             ariaLabel={phase.controlsLabel}
-                            advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
+                            advanceDurationMs={0}
                             showProgressLoader={false}
                             onGoTo={carousel.goTo}
                             onPrevious={carousel.goToPrevious}
@@ -2008,6 +2304,14 @@ export function OrganizationalHierarchyCasePage() {
       </Container>
 
       {zoomedImage ? <ResearchImageLightbox image={zoomedImage} onClose={closeZoomedImage} /> : null}
+      {zoomedCarousel ? (
+        <CarouselImageLightbox
+          slides={zoomedCarousel.slides}
+          initialIndex={zoomedCarousel.initialIndex}
+          ariaLabel={zoomedCarousel.ariaLabel}
+          onClose={closeZoomedCarousel}
+        />
+      ) : null}
       {zoomedVideo ? <ResearchVideoLightbox video={zoomedVideo} onClose={closeZoomedVideo} /> : null}
     </main>
   )
