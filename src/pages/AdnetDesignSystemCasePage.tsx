@@ -280,7 +280,6 @@ export function AdnetDesignSystemCasePage() {
                             ref={processVideoRef}
                             src="/Adnet/process.mp4"
                             className={styles.processVideo}
-                            muted
                             playsInline
                             preload="metadata"
                             aria-label="Adnet design system process flow animation"

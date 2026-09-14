@@ -625,7 +625,6 @@ function CaseStudyVideoPlayer({ src, ariaLabel, onVideoRef }: CaseStudyVideoPlay
         ref={assignVideoRef}
         src={src}
         className={styles.caseStudyVideoMedia}
-        muted
         playsInline
         preload="metadata"
         aria-label={ariaLabel}
@@ -1442,7 +1441,6 @@ export function OrganizationalHierarchyCasePage() {
             src={BANNER_VIDEO_SRC}
             className={styles.caseVideo}
             autoPlay
-            muted
             loop
             playsInline
             preload="auto"

@@ -61,7 +61,6 @@ export function Hero() {
             hoverContent={
               <video
                 src="/hero.mp4"
-                muted
                 loop
                 playsInline
                 preload="auto"
