@@ -4,6 +4,7 @@ import {
   CaseStudySectionNav,
   type CaseStudySection,
 } from '../components/case-study/CaseStudySectionNav'
+import { publicUrl } from '../utils/publicUrl'
 import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './AdnetDesignSystemCasePage.module.css'
 
@@ -161,7 +162,7 @@ export function AdnetDesignSystemCasePage() {
       >
         <div className={styles.imageStickyFrame}>
           <img
-            src="/Adnet/cover.svg"
+            src={publicUrl("/Adnet/cover.svg")}
             alt="Adnet design system case study visual"
             className={styles.caseImage}
             draggable={false}
@@ -278,7 +279,7 @@ export function AdnetDesignSystemCasePage() {
                         {processStarted && (
                           <video
                             ref={processVideoRef}
-                            src="/Adnet/process.mp4"
+                            src={publicUrl("/Adnet/process.mp4")}
                             className={styles.processVideo}
                             playsInline
                             preload="metadata"
@@ -319,7 +320,7 @@ export function AdnetDesignSystemCasePage() {
                   </div>
                   <div className={styles.trackerFigure}>
                     <img
-                      src="/Adnet/tracker.jpg"
+                      src={publicUrl("/Adnet/tracker.jpg")}
                       alt="Adnet design system tracker board"
                       className={styles.trackerImage}
                       draggable={false}
@@ -339,7 +340,7 @@ export function AdnetDesignSystemCasePage() {
                   <div className={styles.tokenCards}>
                     <article className={styles.tokenCard}>
                       <img
-                        src="/Adnet/token-1.svg"
+                        src={publicUrl("/Adnet/token-1.svg")}
                         alt="Component token examples"
                         className={styles.tokenCardImage}
                         draggable={false}
@@ -350,7 +351,7 @@ export function AdnetDesignSystemCasePage() {
                       <ul className={styles.tokenPoints}>
                         <li className={styles.tokenPoint}>
                           <img
-                            src="/Adnet/check_circle.svg"
+                            src={publicUrl("/Adnet/check_circle.svg")}
                             alt=""
                             aria-hidden="true"
                             className={styles.pointIcon}
@@ -362,7 +363,7 @@ export function AdnetDesignSystemCasePage() {
                         </li>
                         <li className={styles.tokenPoint}>
                           <img
-                            src="/Adnet/cross_circle.svg"
+                            src={publicUrl("/Adnet/cross_circle.svg")}
                             alt=""
                             aria-hidden="true"
                             className={styles.pointIcon}
@@ -378,7 +379,7 @@ export function AdnetDesignSystemCasePage() {
 
                     <article className={styles.tokenCard}>
                       <img
-                        src="/Adnet/token-2.svg"
+                        src={publicUrl("/Adnet/token-2.svg")}
                         alt="Semantic token examples"
                         className={styles.tokenCardImage}
                         draggable={false}
@@ -389,7 +390,7 @@ export function AdnetDesignSystemCasePage() {
                       <ul className={styles.tokenPoints}>
                         <li className={styles.tokenPoint}>
                           <img
-                            src="/Adnet/check_circle.svg"
+                            src={publicUrl("/Adnet/check_circle.svg")}
                             alt=""
                             aria-hidden="true"
                             className={styles.pointIcon}
@@ -401,7 +402,7 @@ export function AdnetDesignSystemCasePage() {
                         </li>
                         <li className={styles.tokenPoint}>
                           <img
-                            src="/Adnet/cross_circle.svg"
+                            src={publicUrl("/Adnet/cross_circle.svg")}
                             alt=""
                             aria-hidden="true"
                             className={styles.pointIcon}
@@ -427,7 +428,7 @@ export function AdnetDesignSystemCasePage() {
                   <div ref={stateLayerFigureRef} className={styles.stateLayerFigure}>
                     {stateLayerStarted && (
                       <img
-                        src="/Adnet/state-layer.gif"
+                        src={publicUrl("/Adnet/state-layer.gif")}
                         alt="State layer mapping: token tag, arrow, and usage text"
                         className={styles.stateLayerImage}
                         draggable={false}
@@ -456,7 +457,7 @@ export function AdnetDesignSystemCasePage() {
 
                   <div className={styles.tokenArchitectureFigure}>
                     <img
-                      src="/Adnet/token-structure.svg"
+                      src={publicUrl("/Adnet/token-structure.svg")}
                       alt="Token architecture flow from primitive tokens to semantic tokens and state layers"
                       className={styles.tokenArchitectureImage}
                       draggable={false}
@@ -475,7 +476,7 @@ export function AdnetDesignSystemCasePage() {
                   <div ref={foundationsFigureRef} className={styles.foundationsFigure}>
                     {foundationsStarted && (
                       <img
-                        src="/Adnet/foundations.gif"
+                        src={publicUrl("/Adnet/foundations.gif")}
                         alt="Foundations animation"
                         className={styles.foundationsImage}
                         draggable={false}
@@ -508,7 +509,7 @@ export function AdnetDesignSystemCasePage() {
 
                   <div className={styles.componentsFigure}>
                     <img
-                      src="/Adnet/components.gif"
+                      src={publicUrl("/Adnet/components.gif")}
                       alt="Components animation"
                       className={styles.componentsImage}
                       draggable={false}
@@ -541,7 +542,7 @@ export function AdnetDesignSystemCasePage() {
 
                   <div className={styles.handoffFigure}>
                     <img
-                      src="/Adnet/documentation.svg"
+                      src={publicUrl("/Adnet/documentation.svg")}
                       alt="Badge component documentation showing anatomy, states, and usage notes"
                       className={styles.handoffImage}
                       draggable={false}

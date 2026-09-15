@@ -1,3 +1,4 @@
+import { publicUrl } from '../../utils/publicUrl'
 import styles from './StackSection.module.css'
 
 type StackItem = {
@@ -10,43 +11,43 @@ type StackItem = {
 const STACK_ITEMS: StackItem[] = [
   {
     id: 'figma',
-    src: '/Stack/Figma.png',
+    src: publicUrl('/Stack/Figma.png'),
     alt: 'Figma',
     label: 'Design & Collaboration',
   },
   {
     id: 'miro',
-    src: '/Stack/Miro.png',
+    src: publicUrl('/Stack/Miro.png'),
     alt: 'Miro',
     label: 'Brainstorming & Ideating',
   },
   {
     id: 'xd',
-    src: '/Stack/XD.png',
+    src: publicUrl('/Stack/XD.png'),
     alt: 'Adobe XD',
     label: 'Design',
   },
   {
     id: 'loveable',
-    src: '/Stack/loveable.png',
+    src: publicUrl('/Stack/loveable.png'),
     alt: 'Loveable',
     label: 'Concept Testing',
   },
   {
     id: 'notion',
-    src: '/Stack/notion.png',
+    src: publicUrl('/Stack/notion.png'),
     alt: 'Notion',
     label: 'Documentation & Planning',
   },
   {
     id: 'cursor',
-    src: '/Stack/Cursor.png',
+    src: publicUrl('/Stack/Cursor.png'),
     alt: 'Cursor',
     label: 'Development',
   },
   {
     id: 'git',
-    src: '/Stack/git.png',
+    src: publicUrl('/Stack/git.png'),
     alt: 'GitHub',
     label: 'Version Control',
   },

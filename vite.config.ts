@@ -42,6 +42,7 @@ function publicAssetVersion(relativePath: string): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [
     react(),
     publicAssetVersion('okr Alignment/alignobj_kr.mp4'),

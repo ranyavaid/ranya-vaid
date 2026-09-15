@@ -1,3 +1,4 @@
+import { publicUrl } from '../../utils/publicUrl'
 import styles from './HoverLabel.module.css'
 
 /**
@@ -15,7 +16,7 @@ export function HoverLabel() {
       <span className={`handwritten ${styles.text} ${styles.mobileText}`}>
         Try tapping
       </span>
-      <img src="/arrow-curly.svg" alt="" className={styles.arrow} />
+      <img src={publicUrl("/arrow-curly.svg")} alt="" className={styles.arrow} />
     </div>
   )
 }

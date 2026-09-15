@@ -1,3 +1,5 @@
+import { publicUrl } from '../../utils/publicUrl'
+
 export type WorkCase = {
   id: string
   href: string
@@ -20,7 +22,7 @@ export const FEATURED_CASES: WorkCase[] = [
     href: '/works/improving-organizational-hierarchy',
     imageLayers: [
       {
-        src: '/ALignment-1.png',
+        src: publicUrl('/ALignment-1.png'),
         className: 'alignOne',
         alt: 'OKR alignment primary board',
       },
@@ -36,7 +38,7 @@ export const FEATURED_CASES: WorkCase[] = [
     href: '/works/ppn',
     imageLayers: [
       {
-        src: '/PPN/cover_1.svg',
+        src: publicUrl('/PPN/cover_1.svg'),
         className: 'ppnOne',
         alt: 'PPN service discovery primary screen',
       },
@@ -53,16 +55,16 @@ export const FEATURED_CASES: WorkCase[] = [
     href: '/works/adnet-design-system',
     imageLayers: [
       {
-        src: '/Adnet-1.png',
+        src: publicUrl('/Adnet-1.png'),
         className: 'adnetOne',
         alt: 'Adnet component set primary card',
       },
       {
-        src: '/Adnet-2.png',
+        src: publicUrl('/Adnet-2.png'),
         className: 'adnetTwo',
       },
       {
-        src: '/Adnet-3.png',
+        src: publicUrl('/Adnet-3.png'),
         className: 'adnetThree',
       },
     ],
@@ -77,12 +79,12 @@ export const FEATURED_CASES: WorkCase[] = [
     href: '/works/trip-planning',
     imageLayers: [
       {
-        src: '/trip-planning-1.png',
+        src: publicUrl('/trip-planning-1.png'),
         className: 'tripOne',
         alt: 'Trip planning primary app screen',
       },
       {
-        src: '/trip-planning-2.png',
+        src: publicUrl('/trip-planning-2.png'),
         className: 'tripTwo',
       },
     ],

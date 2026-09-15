@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { publicUrl } from '../../utils/publicUrl'
 import { Link } from 'react-router-dom'
 import type { WorkCase } from './worksData'
 import styles from './Notebook.module.css'
@@ -44,7 +45,7 @@ export function Notebook({
       </div>
 
       <img
-        src="/notebook/notebook-spiral.svg"
+        src={publicUrl("/notebook/notebook-spiral.svg")}
         alt=""
         className={styles.spiral}
         draggable={false}

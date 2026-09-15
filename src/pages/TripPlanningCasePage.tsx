@@ -14,6 +14,7 @@ import {
   CaseStudySectionNav,
   type CaseStudySection,
 } from '../components/case-study/CaseStudySectionNav'
+import { publicUrl } from '../utils/publicUrl'
 import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './TripPlanningCasePage.module.css'
 import fiveWhysImageVersion from 'virtual:public-asset-version/Trip-planning/5-whys.png'
@@ -40,7 +41,7 @@ import finals12VideoVersion from 'virtual:public-asset-version/Trip-planning/fin
 import finals13VideoVersion from 'virtual:public-asset-version/Trip-planning/finals13.mp4'
 import bannerVersion from 'virtual:public-asset-version/Trip-planning/banner.mp4'
 
-const BANNER_VIDEO_SRC = `/Trip-planning/banner.mp4?v=${bannerVersion}`
+const BANNER_VIDEO_SRC = publicUrl(`/Trip-planning/banner.mp4?v=${bannerVersion}`)
 
 const TRIP_PLANNING_SECTIONS: CaseStudySection[] = [
   { id: 'top', label: 'Top' },
@@ -56,32 +57,32 @@ const TRIP_PLANNING_SECTIONS: CaseStudySection[] = [
   { id: 'impact', label: 'Impact' },
   { id: 'next-steps', label: 'Next Steps' },
 ]
-const PRIMARY_RESEARCH_IMAGE_SRC = `/Trip-planning/primary-research.png?v=${primaryResearchImageVersion}`
+const PRIMARY_RESEARCH_IMAGE_SRC = publicUrl(`/Trip-planning/primary-research.png?v=${primaryResearchImageVersion}`)
 const PRIMARY_RESEARCH_IMAGE_ALT =
   'Primary research synthesis from Reddit threads and blogs'
-const FIVE_WHYS_IMAGE_SRC = `/Trip-planning/5-whys.png?v=${fiveWhysImageVersion}`
+const FIVE_WHYS_IMAGE_SRC = publicUrl(`/Trip-planning/5-whys.png?v=${fiveWhysImageVersion}`)
 const FIVE_WHYS_IMAGE_ALT =
   'Five whys analysis for group trip planning challenges'
-const ROSE_THORN_IMAGE_SRC = `/Trip-planning/rose-thorn.png?v=${roseThornImageVersion}`
+const ROSE_THORN_IMAGE_SRC = publicUrl(`/Trip-planning/rose-thorn.png?v=${roseThornImageVersion}`)
 const ROSE_THORN_IMAGE_ALT =
   'Rose-Bud-Thorn analysis of trip planning competitors and alternatives'
-const EFFORT_IMPACT_MATRIX_IMAGE_SRC = `/Trip-planning/effort-impact-matrix.png?v=${effortImpactMatrixImageVersion}`
+const EFFORT_IMPACT_MATRIX_IMAGE_SRC = publicUrl(`/Trip-planning/effort-impact-matrix.png?v=${effortImpactMatrixImageVersion}`)
 const EFFORT_IMPACT_MATRIX_IMAGE_ALT =
   'Effort-impact matrix for trip planning features'
-const PERSONA_IMAGE_SRC = `/Trip-planning/persona.png?v=${personaImageVersion}`
+const PERSONA_IMAGE_SRC = publicUrl(`/Trip-planning/persona.png?v=${personaImageVersion}`)
 const PERSONA_IMAGE_ALT = 'User personas for trip planning collaboration'
-const USER_FLOW_IMAGE_SRC = `/Trip-planning/user_flow.png?v=${userFlowImageVersion}`
+const USER_FLOW_IMAGE_SRC = publicUrl(`/Trip-planning/user_flow.png?v=${userFlowImageVersion}`)
 const USER_FLOW_IMAGE_ALT =
   'User flow for creating a vacation, adding collaborators, and building an itinerary'
-const ROLLOUT_IMAGE_SRC = `/Trip-planning/rollout.svg?v=${rolloutImageVersion}`
+const ROLLOUT_IMAGE_SRC = publicUrl(`/Trip-planning/rollout.svg?v=${rolloutImageVersion}`)
 const ROLLOUT_IMAGE_ALT = 'Phased feature rollout plan for trip planning'
 const ITERATION_SLIDES = [
   {
-    src: `/Trip-planning/iteration_1.png?v=${iteration1ImageVersion}`,
+    src: publicUrl(`/Trip-planning/iteration_1.png?v=${iteration1ImageVersion}`),
     alt: 'Trip planning iteration 1 wireframe',
   },
   {
-    src: `/Trip-planning/iteration_2.png?v=${iteration2ImageVersion}`,
+    src: publicUrl(`/Trip-planning/iteration_2.png?v=${iteration2ImageVersion}`),
     alt: 'Trip planning iteration 2 wireframe',
   },
 ] as const
@@ -92,19 +93,19 @@ type FinalScreenSlide = {
 }
 
 const FINALS_VIDEO_SRCS = [
-  `/Trip-planning/finals1.mp4?v=${finals1VideoVersion}`,
-  `/Trip-planning/finals2.mp4?v=${finals2VideoVersion}`,
-  `/Trip-planning/finals3.mp4?v=${finals3VideoVersion}`,
-  `/Trip-planning/finals4.mp4?v=${finals4VideoVersion}`,
-  `/Trip-planning/finals5.mp4?v=${finals5VideoVersion}`,
-  `/Trip-planning/finals6.mp4?v=${finals6VideoVersion}`,
-  `/Trip-planning/finals7.mp4?v=${finals7VideoVersion}`,
-  `/Trip-planning/finals8.mp4?v=${finals8VideoVersion}`,
-  `/Trip-planning/finals9.mp4?v=${finals9VideoVersion}`,
-  `/Trip-planning/finals10.mp4?v=${finals10VideoVersion}`,
-  `/Trip-planning/finals11.mp4?v=${finals11VideoVersion}`,
-  `/Trip-planning/finals12.mp4?v=${finals12VideoVersion}`,
-  `/Trip-planning/finals13.mp4?v=${finals13VideoVersion}`,
+  publicUrl(`/Trip-planning/finals1.mp4?v=${finals1VideoVersion}`),
+  publicUrl(`/Trip-planning/finals2.mp4?v=${finals2VideoVersion}`),
+  publicUrl(`/Trip-planning/finals3.mp4?v=${finals3VideoVersion}`),
+  publicUrl(`/Trip-planning/finals4.mp4?v=${finals4VideoVersion}`),
+  publicUrl(`/Trip-planning/finals5.mp4?v=${finals5VideoVersion}`),
+  publicUrl(`/Trip-planning/finals6.mp4?v=${finals6VideoVersion}`),
+  publicUrl(`/Trip-planning/finals7.mp4?v=${finals7VideoVersion}`),
+  publicUrl(`/Trip-planning/finals8.mp4?v=${finals8VideoVersion}`),
+  publicUrl(`/Trip-planning/finals9.mp4?v=${finals9VideoVersion}`),
+  publicUrl(`/Trip-planning/finals10.mp4?v=${finals10VideoVersion}`),
+  publicUrl(`/Trip-planning/finals11.mp4?v=${finals11VideoVersion}`),
+  publicUrl(`/Trip-planning/finals12.mp4?v=${finals12VideoVersion}`),
+  publicUrl(`/Trip-planning/finals13.mp4?v=${finals13VideoVersion}`),
 ] as const
 
 const makeFinalSlides = (indices: readonly number[]): FinalScreenSlide[] =>

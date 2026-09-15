@@ -14,6 +14,7 @@ import {
   CaseStudySectionNav,
   type CaseStudySection,
 } from '../components/case-study/CaseStudySectionNav'
+import { publicUrl } from '../utils/publicUrl'
 import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './PpnCasePage.module.css'
 import acceptBusinessVersion from 'virtual:public-asset-version/PPN/accept_business.mp4'
@@ -78,15 +79,15 @@ const RESEARCH_BUILT_OUTPUTS = [
 
 const PROBLEM_CARDS = [
   {
-    src: `/PPN/problem_1.svg?v=${problem1Version}`,
+    src: publicUrl(`/PPN/problem_1.svg?v=${problem1Version}`),
     alt: 'Providers struggled to be discovered across fragmented category-specific platforms',
   },
   {
-    src: `/PPN/problem_2.svg?v=${problem2Version}`,
+    src: publicUrl(`/PPN/problem_2.svg?v=${problem2Version}`),
     alt: 'Seekers lacked trust and transparency without consistent pricing, reviews, or reliable information',
   },
   {
-    src: `/PPN/problem_3.svg?v=${problem3Version}`,
+    src: publicUrl(`/PPN/problem_3.svg?v=${problem3Version}`),
     alt: 'No community infrastructure to recognise good deeds or celebrate acts of kindness',
   },
 ] as const
@@ -108,12 +109,12 @@ const BUSINESS_MODEL_CARDS = [
   },
 ] as const
 
-const ACCEPT_BUSINESS_VIDEO_SRC = `/PPN/accept_business.mp4?v=${acceptBusinessVersion}`
-const ASSIGN_REP_VIDEO_SRC = `/PPN/assign_rep.mp4?v=${assignRepVersion}`
-const CATEGORIES_VIDEO_SRC = `/PPN/categories.mp4?v=${categoriesVersion}`
-const ENROLL_SUBSCRIPTION_VIDEO_SRC = `/PPN/enroll_subscription.mp4?v=${enrollSubscriptionVersion}`
-const SUBMIT_REQUEST_VIDEO_SRC = `/PPN/submit_request.mp4?v=${submitRequestVersion}`
-const BANNER_VIDEO_SRC = `/PPN/banner.mp4?v=${bannerVersion}`
+const ACCEPT_BUSINESS_VIDEO_SRC = publicUrl(`/PPN/accept_business.mp4?v=${acceptBusinessVersion}`)
+const ASSIGN_REP_VIDEO_SRC = publicUrl(`/PPN/assign_rep.mp4?v=${assignRepVersion}`)
+const CATEGORIES_VIDEO_SRC = publicUrl(`/PPN/categories.mp4?v=${categoriesVersion}`)
+const ENROLL_SUBSCRIPTION_VIDEO_SRC = publicUrl(`/PPN/enroll_subscription.mp4?v=${enrollSubscriptionVersion}`)
+const SUBMIT_REQUEST_VIDEO_SRC = publicUrl(`/PPN/submit_request.mp4?v=${submitRequestVersion}`)
+const BANNER_VIDEO_SRC = publicUrl(`/PPN/banner.mp4?v=${bannerVersion}`)
 
 const PPN_SECTIONS: CaseStudySection[] = [
   { id: 'top', label: 'Top' },
@@ -152,13 +153,13 @@ const FINAL_SCREEN_SLIDES: FinalScreenSlide[] = [
 ]
 
 const CAROUSEL_AUTO_ADVANCE_MS = 6000
-const COMPETITOR_IMAGE_SRC = `/PPN/competitor.png?v=${competitorImageVersion}`
+const COMPETITOR_IMAGE_SRC = publicUrl(`/PPN/competitor.png?v=${competitorImageVersion}`)
 const COMPETITOR_IMAGE_ALT =
   'Competitor benchmarking matrix across service marketplaces, business discovery, community networks, and volunteer platforms'
-const PERSONA_IMAGE_SRC = `/PPN/persona.png?v=${personaImageVersion}`
+const PERSONA_IMAGE_SRC = publicUrl(`/PPN/persona.png?v=${personaImageVersion}`)
 const PERSONA_IMAGE_ALT =
   'Seven-persona ecosystem map showing how all roles interact with the platform and each other'
-const SERVICE_IMAGE_SRC = `/PPN/service.png?v=${serviceImageVersion}`
+const SERVICE_IMAGE_SRC = publicUrl(`/PPN/service.png?v=${serviceImageVersion}`)
 const SERVICE_IMAGE_ALT =
   'Service blueprint mapping user interactions, platform touchpoints, and supporting processes across the core service journey'
 type Iteration1Slide = {
@@ -168,34 +169,34 @@ type Iteration1Slide = {
 
 const ITERATION1_SLIDES: Iteration1Slide[] = [
   {
-    src: `/PPN/subs_1.png?v=${subs1ImageVersion}`,
+    src: publicUrl(`/PPN/subs_1.png?v=${subs1ImageVersion}`),
     alt: 'Enroll subscription form step 1 showing provider business details',
   },
   {
-    src: `/PPN/subs_2.png?v=${subs2ImageVersion}`,
+    src: publicUrl(`/PPN/subs_2.png?v=${subs2ImageVersion}`),
     alt: 'Enroll subscription form step 2 showing subscription plan selection',
   },
   {
-    src: `/PPN/subs_3.png?v=${subs3ImageVersion}`,
+    src: publicUrl(`/PPN/subs_3.png?v=${subs3ImageVersion}`),
     alt: 'Enroll subscription form step 3 showing enrollment review and confirmation',
   },
 ]
 
 const ITERATION2_SLIDES: Iteration1Slide[] = [
   {
-    src: `/PPN/req_1.png?v=${req1ImageVersion}`,
+    src: publicUrl(`/PPN/req_1.png?v=${req1ImageVersion}`),
     alt: 'Submit request form step 1 showing service category and request details',
   },
   {
-    src: `/PPN/req_2.png?v=${req2ImageVersion}`,
+    src: publicUrl(`/PPN/req_2.png?v=${req2ImageVersion}`),
     alt: 'Submit request form step 2 showing provider preferences and scheduling',
   },
   {
-    src: `/PPN/req_3.png?v=${req3ImageVersion}`,
+    src: publicUrl(`/PPN/req_3.png?v=${req3ImageVersion}`),
     alt: 'Submit request form step 3 showing request review and submission',
   },
 ]
-const ARCHITECTURE_IMAGE_SRC = `/PPN/AI.png?v=${architectureImageVersion}`
+const ARCHITECTURE_IMAGE_SRC = publicUrl(`/PPN/AI.png?v=${architectureImageVersion}`)
 const ARCHITECTURE_IMAGE_ALT =
   'Platform information architecture organized by user roles, features, and workflows'
 

@@ -1,3 +1,4 @@
+import { publicUrl } from '../../utils/publicUrl'
 import { protectedVideoProps } from '../../utils/videoProtection'
 import { Button } from '../ui/Button'
 import { Highlight } from '../ui/Highlight'
@@ -37,7 +38,7 @@ export function Hero() {
             }
             icon={
               <img
-                src="/button-star.svg"
+                src={publicUrl("/button-star.svg")}
                 alt=""
                 width={26}
                 height={24}
@@ -56,11 +57,11 @@ export function Hero() {
         </div>
         <div className={styles.mediaFrame}>
           <PhotoFrame
-            src="/hero-photo.png"
+            src={publicUrl("/hero-photo.png")}
             alt="Portrait of Ranya Vaid"
             hoverContent={
               <video
-                src="/hero.mp4"
+                src={publicUrl("/hero.mp4")}
                 loop
                 playsInline
                 preload="auto"

@@ -1,3 +1,4 @@
+import { publicUrl } from '../../utils/publicUrl'
 import styles from './AboutMeSection.module.css'
 
 /**
@@ -19,7 +20,7 @@ export function AboutMeSection() {
       </header>
 
       <img
-        src="/about-me.png"
+        src={publicUrl("/about-me.png")}
         alt="About me collage"
         className={styles.image}
         draggable={false}

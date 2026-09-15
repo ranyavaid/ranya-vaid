@@ -14,6 +14,7 @@ import {
   CaseStudySectionNav,
   type CaseStudySection,
 } from '../components/case-study/CaseStudySectionNav'
+import { publicUrl } from '../utils/publicUrl'
 import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './OrganizationalHierarchyCasePage.module.css'
 import alignObjKrVersion from 'virtual:public-asset-version/okr Alignment/alignobj_kr.mp4'
@@ -106,15 +107,15 @@ const PRINCIPLE_CARDS = [
 
 const PERSONA_CARDS = [
   {
-    src: '/okr%20Alignment/user-persona-leadership.svg',
+    src: publicUrl('/okr%20Alignment/user-persona-leadership.svg'),
     alt: 'Leadership persona for CEOs, CXOs, Vice Presidents, and Directors',
   },
   {
-    src: '/okr%20Alignment/user-persona-managers.svg',
+    src: publicUrl('/okr%20Alignment/user-persona-managers.svg'),
     alt: 'Managers persona',
   },
   {
-    src: '/okr%20Alignment/user-persona-employees.svg',
+    src: publicUrl('/okr%20Alignment/user-persona-employees.svg'),
     alt: 'Employees persona',
   },
 ] as const
@@ -144,7 +145,7 @@ const DESIGN_OPTIONS: DesignCarouselSlide[] = DESIGN_ITERATION_VERSIONS.map((ver
   const iterationNumber = index + 1
 
   return {
-    src: `/okr%20Alignment/iteration1.${iterationNumber}.png?v=${version}`,
+    src: publicUrl(`/okr%20Alignment/iteration1.${iterationNumber}.png?v=${version}`),
     alt: `Goal alignment design exploration iteration 1.${iterationNumber}`,
     width: DESIGN_OPTION_IMAGE_WIDTH,
     height: DESIGN_OPTION_IMAGE_HEIGHT,
@@ -164,7 +165,7 @@ const DESIGN_ITERATION_2_OPTIONS: DesignCarouselSlide[] = DESIGN_ITERATION_2_VER
     const iterationNumber = index + 1
 
     return {
-      src: `/okr%20Alignment/iteration2.${iterationNumber}.png?v=${version}`,
+      src: publicUrl(`/okr%20Alignment/iteration2.${iterationNumber}.png?v=${version}`),
       alt: `Goal alignment design exploration iteration 2.${iterationNumber}`,
       width: DESIGN_OPTION_IMAGE_WIDTH,
       height: DESIGN_OPTION_IMAGE_HEIGHT,
@@ -172,14 +173,14 @@ const DESIGN_ITERATION_2_OPTIONS: DesignCarouselSlide[] = DESIGN_ITERATION_2_VER
   }
 )
 
-const ALIGNOBJ_KR_VIDEO_SRC = `/okr%20Alignment/alignobj_kr.mp4?v=${alignObjKrVersion}`
-const ASSIGN_KR_OBJ_VIDEO_SRC = `/okr%20Alignment/assignkr_obj.mp4?v=${assignKrObjVersion}`
-const ACCEPT_OBJ_VIDEO_SRC = `/okr%20Alignment/accept_obj.mp4?v=${acceptObjVersion}`
-const EDITING_VIDEO_SRC = `/okr%20Alignment/editing.mp4?v=${editingVersion}`
-const ALIGNKR_KR_VIDEO_SRC = `/okr%20Alignment/alignkr_kr.mp4?v=${alignKrKrVersion}`
-const ASSIGNKR_KR_VIDEO_SRC = `/okr%20Alignment/assignkr_kr.mp4?v=${assignKrKrVersion}`
-const ACCEPT_KR_VIDEO_SRC = `/okr%20Alignment/accept_kr.mp4?v=${acceptKrVersion}`
-const BANNER_VIDEO_SRC = `/okr%20Alignment/banner.mp4?v=${bannerVersion}`
+const ALIGNOBJ_KR_VIDEO_SRC = publicUrl(`/okr%20Alignment/alignobj_kr.mp4?v=${alignObjKrVersion}`)
+const ASSIGN_KR_OBJ_VIDEO_SRC = publicUrl(`/okr%20Alignment/assignkr_obj.mp4?v=${assignKrObjVersion}`)
+const ACCEPT_OBJ_VIDEO_SRC = publicUrl(`/okr%20Alignment/accept_obj.mp4?v=${acceptObjVersion}`)
+const EDITING_VIDEO_SRC = publicUrl(`/okr%20Alignment/editing.mp4?v=${editingVersion}`)
+const ALIGNKR_KR_VIDEO_SRC = publicUrl(`/okr%20Alignment/alignkr_kr.mp4?v=${alignKrKrVersion}`)
+const ASSIGNKR_KR_VIDEO_SRC = publicUrl(`/okr%20Alignment/assignkr_kr.mp4?v=${assignKrKrVersion}`)
+const ACCEPT_KR_VIDEO_SRC = publicUrl(`/okr%20Alignment/accept_kr.mp4?v=${acceptKrVersion}`)
+const BANNER_VIDEO_SRC = publicUrl(`/okr%20Alignment/banner.mp4?v=${bannerVersion}`)
 
 const OKR_SECTIONS: CaseStudySection[] = [
   { id: 'top', label: 'Top' },
@@ -257,8 +258,8 @@ const FINAL_SCREEN_PHASES = [
   },
 ] as const
 
-const RESEARCH_IMAGE_SRC = `/okr%20Alignment/research.png?v=${researchImageVersion}`
-const USER_FLOW_IMAGE_SRC = `/okr%20Alignment/user-flow.png?v=${userFlowImageVersion}`
+const RESEARCH_IMAGE_SRC = publicUrl(`/okr%20Alignment/research.png?v=${researchImageVersion}`)
+const USER_FLOW_IMAGE_SRC = publicUrl(`/okr%20Alignment/user-flow.png?v=${userFlowImageVersion}`)
 
 type ZoomedImage = {
   src: string
@@ -1714,7 +1715,7 @@ export function OrganizationalHierarchyCasePage() {
                   </div>
                   <div className={styles.researchSynthesisFigure}>
                     <img
-                      src="/okr%20Alignment/research-notes.svg"
+                      src={publicUrl("/okr%20Alignment/research-notes.svg")}
                       alt="Research synthesis notes"
                       className={styles.researchSynthesisImage}
                       draggable={false}
@@ -1782,7 +1783,7 @@ export function OrganizationalHierarchyCasePage() {
                   </div>
                   <div className={styles.rolloutFigure}>
                     <img
-                      src="/okr%20Alignment/rollout.svg"
+                      src={publicUrl("/okr%20Alignment/rollout.svg")}
                       alt="Phased rollout plan for OKR alignment feature"
                       className={styles.rolloutImage}
                         draggable={false}
