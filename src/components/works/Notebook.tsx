@@ -25,6 +25,7 @@ export function Notebook({
     '--notebook-back': backColor,
     '--notebook-front': frontColor,
     '--notebook-front-shadow': frontShadow,
+    '--notebook-front-mask': `url(${publicUrl('/notebook/notebook-front.svg')})`,
   } as CSSProperties
   const notebookContent = (
     <>

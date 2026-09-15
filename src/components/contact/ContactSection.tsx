@@ -1,3 +1,4 @@
+import { publicUrl } from '../../utils/publicUrl'
 import styles from './ContactSection.module.css'
 
 type ContactItem = {
@@ -12,16 +13,16 @@ type ContactItem = {
 const CONTACT_ITEMS: ContactItem[] = [
   {
     id: 'email',
-    icon: '/mail.svg',
-    iconHover: '/mail-blue.svg',
+    icon: publicUrl('/mail.svg'),
+    iconHover: publicUrl('/mail-blue.svg'),
     label: 'Email',
     value: 'ranyavaid@gmail.com',
     href: 'mailto:ranyavaid@gmail.com',
   },
   {
     id: 'linkedin',
-    icon: '/linkedin.svg',
-    iconHover: '/linkedin-blue.svg',
+    icon: publicUrl('/linkedin.svg'),
+    iconHover: publicUrl('/linkedin-blue.svg'),
     label: 'LinkedIn',
     value: '/in/ranyavaid',
     href: 'https://www.linkedin.com/in/ranya-vaid-185a8a211/',

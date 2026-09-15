@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { publicUrl } from '../../utils/publicUrl'
 import styles from './DesignQuestsSection.module.css'
 
 type QuestTab = {
@@ -22,14 +23,14 @@ const QUEST_TABS: QuestTab[] = [
 const AI_EXPERIMENT_CARDS: QuestCard[] = [
   {
     id: 'stitchuations',
-    image: '/stitchuations.png',
+    image: publicUrl('/stitchuations.png'),
     imageAlt: 'Stitchuations project preview',
     title: 'Stitchuations: A Creative Playground for Crochet, Knitting, and Sewing Inspiration',
     href: 'https://stitchuations.vercel.app/',
   },
   {
     id: 'yoga-reset',
-    image: '/yoga-reset.png',
+    image: publicUrl('/yoga-reset.png'),
     imageAlt: 'Yoga Reset project preview',
     title: 'Yoga Reset: A Mindful Reset Experience for Busy Workdays',
     href: 'https://yoga-reset.vercel.app/',
@@ -39,25 +40,25 @@ const AI_EXPERIMENT_CARDS: QuestCard[] = [
 const INTERACTION_DESIGN_CARDS: QuestCard[] = [
   {
     id: 'collectibles',
-    image: '/interaction-design/collectibles.gif',
+    image: publicUrl('/interaction-design/collectibles.gif'),
     imageAlt: 'Interaction design collectibles gif',
     title: '',
   },
   {
     id: 'share',
-    image: '/interaction-design/share.gif',
+    image: publicUrl('/interaction-design/share.gif'),
     imageAlt: 'Interaction design share gif',
     title: '',
   },
   {
     id: 'intro',
-    image: '/interaction-design/intro.gif?v=2',
+    image: publicUrl('/interaction-design/intro.gif?v=2'),
     imageAlt: 'Interaction design intro gif',
     title: '',
   },
   {
     id: 'notes',
-    image: '/interaction-design/notes.gif',
+    image: publicUrl('/interaction-design/notes.gif'),
     imageAlt: 'Interaction design notes gif',
     title: '',
   },

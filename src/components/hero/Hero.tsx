@@ -65,7 +65,7 @@ export function Hero() {
                 loop
                 playsInline
                 preload="auto"
-                poster="/hero-photo.png"
+                poster={publicUrl('/hero-photo.png')}
                 aria-hidden="true"
                 {...protectedVideoProps}
               />
