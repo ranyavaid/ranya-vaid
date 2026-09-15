@@ -25,6 +25,58 @@
     </script>
   </head>
   <body>
+    <script>
+      ;(function () {
+        function detectBase() {
+          var el = document.querySelector('script[type="module"][src*="/assets/"]')
+          if (!el || !el.src) return '/'
+          try {
+            var path = new URL(el.src, location.href).pathname
+            var idx = path.indexOf('/assets/')
+            return idx > 0 ? path.slice(0, idx + 1) : '/'
+          } catch (e) {
+            return '/'
+          }
+        }
+
+        var base = detectBase()
+        if (base === '/') return
+
+        function prefixSrc(src) {
+          if (!src || !src.startsWith('/') || src.startsWith('//') || src.startsWith(base)) {
+            return src
+          }
+          return base + src.slice(1)
+        }
+
+        function fixImages(root) {
+          root.querySelectorAll('img[src^="/"]').forEach(function (img) {
+            var current = img.getAttribute('src')
+            var next = prefixSrc(current)
+            if (next && next !== current) img.setAttribute('src', next)
+          })
+        }
+
+        fixImages(document)
+        new MutationObserver(function (mutations) {
+          mutations.forEach(function (m) {
+            if (m.type === 'attributes' && m.target.tagName === 'IMG') {
+              fixImages(m.target.parentNode || document)
+              return
+            }
+            if (m.type !== 'childList') return
+            m.addedNodes.forEach(function (node) {
+              if (node.nodeType === 1) fixImages(node)
+            })
+          })
+        }).observe(document.documentElement, {
+          subtree: true,
+          childList: true,
+          attributes: true,
+          attributeFilter: ['src'],
+        })
+      })()
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
