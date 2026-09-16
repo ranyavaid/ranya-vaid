@@ -60,7 +60,6 @@
   overflow: hidden;
 }
 
-/* Banner hero must never expose zoom/lightbox affordances. */
 .imageScrollArea .figureZoomButton,
 .imageStickyFrame .figureZoomButton {
   display: none !important;
@@ -321,6 +320,154 @@
   object-fit: contain;
 }
 
+.carouselLightboxPanel {
+  width: min(1080px, calc(100vw - 96px));
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.carouselLightboxCarousel {
+  margin-top: 0;
+  margin-inline: 0;
+  width: 100%;
+}
+
+.carouselLightboxImageCarousel,
+.carouselLightboxVideoCarousel {
+  width: 100%;
+}
+
+.carouselLightboxFigure {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.carouselLightboxImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.carouselLightboxCarousel .carouselLightboxImage {
+  max-height: min(70vh, 820px);
+}
+
+.carouselLightboxVideoSlide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.carouselLightboxVideoStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: min(70vh, 820px);
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.carouselLightboxVideoStage .caseStudyVideo {
+  max-width: min(900px, 100%);
+  margin-inline: auto;
+}
+
+.carouselLightboxVideoCaption {
+  margin: 0;
+  text-align: center;
+  color: #ffffff;
+  max-width: 48rem;
+}
+
+.carouselLightboxFinalScreenFrame {
+  position: relative;
+  width: 100%;
+  height: min(743px, calc(100vh - 120px));
+  padding: clamp(32px, 5vw, 60px) clamp(24px, 8vw, 90px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-radius: 12px;
+  background: linear-gradient(
+    120deg,
+    #fff3b0 0%,
+    #ffe0f0 24%,
+    #e8f4ff 52%,
+    #e5ffe8 78%,
+    #fff3b0 100%
+  );
+}
+
+.carouselLightboxFinalScreenFrame .finalScreenVideoFigure .caseStudyVideoMedia {
+  max-height: calc(
+    min(743px, calc(100vh - 120px)) - clamp(32px, 5vw, 60px) * 2 - 28px - var(--body2-line)
+  );
+}
+
+.carouselLightboxPanel .caseCarouselControls {
+  margin-top: 20px;
+}
+
+.carouselLightboxPanel .caseCarouselArrow {
+  color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselArrow:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.carouselLightboxPanel .caseCarouselArrow:not(:disabled):active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.carouselLightboxPanel .caseCarouselArrow:disabled {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.carouselLightboxPanel .caseCarouselArrow:focus-visible {
+  outline-color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.carouselLightboxPanel .caseCarouselDot:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.carouselLightboxPanel .caseCarouselDot:focus-visible {
+  outline-color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselDotMark {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover .caseCarouselDotMark {
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
+.carouselLightboxPanel .caseCarouselDotMarkActive {
+  background-color: #ffffff;
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover .caseCarouselDotMarkActive {
+  background-color: #ffffff;
+}
+
 .figureZoomableImage {
   cursor: zoom-in;
 }
@@ -331,7 +478,7 @@
 
 .researchCards {
   margin-top: 44px;
-  margin-bottom: 44px;
+  margin-bottom: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
@@ -378,15 +525,16 @@
 
 .researchGoalList {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 28px;
   list-style: disc;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .researchGoalListItem {
   color: var(--color-black-primary);
+}
+
+.researchGoalListItem + .researchGoalListItem {
+  margin-top: 8px;
 }
 
 .researchExploreTags {
@@ -460,14 +608,18 @@
   margin-top: 44px;
   margin-bottom: 44px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
-  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  width: min(608px, 100%);
 }
 
 .problemCard {
   transition: transform 220ms ease;
+  min-width: 0;
+}
+
+.problemCardWide {
+  grid-column: 1 / -1;
 }
 
 .problemCard:nth-child(odd):hover,
@@ -480,16 +632,38 @@
   transform: translateY(-6px) rotate(3deg);
 }
 
-.problemCardFrame {
-  width: 100%;
-  border-radius: 8px;
-  line-height: 0;
+.problemCardSurface {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 24px;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  /* Figma drop shadow (filter0_ddd) from problem / sticky-note exports */
+  box-shadow:
+    0 2.5px 2px rgba(26, 26, 26, 0.02),
+    0 3px 5px rgba(26, 26, 26, 0.04),
+    0 8px 10px rgba(26, 26, 26, 0.08);
 }
 
-.problemCardImage {
-  display: block;
-  width: 100%;
-  height: auto;
+.problemCardEyebrow {
+  display: inline-flex;
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-white-primary);
+  color: var(--color-black-primary);
+}
+
+.problemCardHeading {
+  font-weight: var(--weight-medium);
+  color: var(--color-black-primary);
+}
+
+.problemCardBody {
+  margin: 0;
+  color: var(--color-black-secondary);
 }
 
 .problemStatementLead {
@@ -498,7 +672,7 @@
 }
 
 .problemStatementCard {
-  margin-top: 44px;
+  margin-top: 24px;
   padding: 12px 16px;
   border: 1px solid var(--color-blue);
   border-radius: 12px;
@@ -578,6 +752,7 @@
 .rulesCarousel,
 .designOptionsCarousel,
 .iteration1Carousel,
+.personaCarousel,
 .finalScreensCarousel {
   overflow: clip;
 }
@@ -811,37 +986,50 @@
 
 .competitorFigure {
   position: relative;
-  margin-top: 44px;
+  margin-top: var(--case-block-gap, 64px);
   width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
   margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
-  aspect-ratio: 1080 / 922;
   border-radius: 12px;
   overflow: hidden;
   line-height: 0;
+  box-sizing: border-box;
   background-color: #efefef;
-  box-shadow: 0 0 0 1px var(--color-stroke);
+  border: 1px solid var(--color-stroke);
 }
 
 .competitorImage {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: contain;
   object-position: center;
   border-radius: 12px;
 }
 
-.personaFigure {
-  position: relative;
+.personaCarousel {
   margin-top: 44px;
   width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
   margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
-  aspect-ratio: 1080 / 458;
+}
+
+.personaSlideFigure {
+  position: relative;
+  width: 100%;
+  line-height: 0;
   border-radius: 12px;
   overflow: hidden;
-  line-height: 0;
   background-color: #efefef;
-  box-shadow: 0 0 0 1px var(--color-stroke);
+  border: 1px solid var(--color-stroke);
+  box-sizing: border-box;
+}
+
+.personaImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
 }
 
 .serviceFigure {
@@ -858,15 +1046,6 @@
 }
 
 .serviceImage {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  border-radius: 12px;
-}
-
-.personaImage {
   display: block;
   width: 100%;
   height: 100%;
@@ -965,12 +1144,54 @@
   gap: 16px;
 }
 
+.finalScreenIntro + .finalScreenStack {
+  margin-top: 44px;
+}
+
+.finalScreenStack {
+  display: flex;
+  flex-direction: column;
+}
+
+.finalScreenStackEntry + .finalScreenStackEntry {
+  margin-top: 64px;
+}
+
+.finalScreenStackEntry .finalScreenPhase {
+  margin-bottom: 44px;
+}
+
 .finalScreenIntro + .finalScreenBlock {
   margin-top: 44px;
 }
 
 .iterationVideoBlock {
   margin-top: 44px;
+}
+
+.iterationFormLabel + .iterationVideoBlock {
+  margin-top: 32px;
+}
+
+.iterationVideoBlock > .iterationFormLabel + .finalScreenPhase {
+  margin-top: 32px;
+}
+
+.iterationFormLabel {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fff3b0;
+  width: min(608px, 100%);
+}
+
+.iterationFormLabelHeading {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--h4-size);
+  line-height: var(--h4-line);
+  letter-spacing: var(--h4-tracking);
+  font-weight: var(--weight-medium);
+  color: var(--color-black-primary);
 }
 
 .finalScreenBlockRepeat {
@@ -993,6 +1214,30 @@
   color: var(--color-black-secondary);
 }
 
+.finalScreenPhase .finalFlowList,
+.finalScreenPhase .finalFlowListItem {
+  color: var(--color-black-secondary);
+}
+
+.finalFlowList {
+  margin: 0;
+  padding-left: 28px;
+  list-style: decimal;
+}
+
+.finalFlowListItem + .finalFlowListItem {
+  margin-top: 8px;
+}
+
+.finalFlowListItem::marker {
+  color: var(--color-black-primary);
+}
+
+.finalScreenStackEntry .finalScreenFrame {
+  width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
+  margin-inline: calc((100% - min(1080px, calc(100vw - (2 * var(--page-gutter))))) / 2);
+}
+
 .iteration1Carousel {
   margin-bottom: 44px;
   width: min(1080px, calc(100vw - (2 * var(--page-gutter))));
@@ -1002,13 +1247,13 @@
 .iteration1Carousel .iteration1SlideFigure {
   position: relative;
   width: 100%;
-  aspect-ratio: 1080 / 708;
+  aspect-ratio: 2160 / 1415;
   line-height: 0;
+  box-sizing: border-box;
   border-radius: 12px;
   overflow: hidden;
   background-color: #efefef;
-  box-shadow: 0 0 0 1px var(--color-stroke);
-  contain: layout paint;
+  border: 1px solid var(--color-stroke);
 }
 
 .iteration1SlideImage {
@@ -1017,6 +1262,7 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
+  border-radius: 12px;
 }
 
 .finalScreensCarousel {
@@ -1131,6 +1377,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1254,16 +1501,19 @@
   margin-top: 32px;
 }
 
+.tradeOffCalloutHeading {
+  color: var(--color-black-primary);
+}
+
 .overviewCards {
   margin-top: 44px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: auto auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
-.overviewCard:first-child {
-  grid-row: span 2;
+.overviewCardWide {
+  grid-column: 1 / -1;
 }
 
 .overviewCard {
@@ -1499,72 +1749,30 @@
   margin-top: var(--case-block-gap);
 }
 
-.impactCards {
-  margin-top: 32px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+.impactCallout {
+  margin-top: 44px;
+  padding: 24px 28px;
 }
 
-.impactCard {
-  padding: 24px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  transition: transform 220ms ease;
-}
-
-.impactCard:nth-child(odd):hover,
-.impactCard:nth-child(odd):focus-within {
-  transform: translateY(-6px) rotate(-3deg);
-}
-
-.impactCard:nth-child(even):hover,
-.impactCard:nth-child(even):focus-within {
-  transform: translateY(-6px) rotate(3deg);
-}
-
-.impactCardWide {
-  grid-column: 1 / -1;
-}
-
-.impactCardNumber {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  flex-shrink: 0;
-}
-
-.impactCardTitle {
+.impactCalloutBody {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: 18px;
-  line-height: 26px;
-  font-weight: var(--weight-semibold);
-  color: var(--color-black-primary);
-}
-
-.impactCardBody {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: var(--body3-line);
-  font-weight: var(--weight-regular);
   color: var(--color-black-primary);
 }
 
 .learningsList {
-  list-style: disc;
+  list-style: decimal;
   padding-left: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin: 0;
+  display: block;
+  gap: 0;
+}
+
+.learningsListItem + .learningsListItem {
+  margin-top: 8px;
+}
+
+.learningsListItem::marker {
+  color: var(--color-black-primary);
 }
 
 .autoScrollGallery {
@@ -1618,18 +1826,14 @@
     grid-template-columns: 1fr;
   }
 
-  .overviewCard:first-child {
-    grid-row: auto;
+  .overviewCardWide {
+    grid-column: auto;
   }
 
   .researchCards {
     grid-template-columns: 1fr;
     width: 100%;
     margin-inline: 0;
-  }
-
-  .impactCards {
-    grid-template-columns: 1fr;
   }
 
   .tokenCards {
@@ -1645,7 +1849,7 @@
   .handoffFigure,
   .researchSynthesisFigure,
   .competitorFigure,
-  .personaFigure,
+  .personaCarousel,
   .serviceFigure,
   .architectureFigure,
   .iteration1Carousel,
@@ -1656,6 +1860,10 @@
     grid-template-columns: 1fr;
     width: 100%;
     margin-inline: 0;
+  }
+
+  .problemCardWide {
+    grid-column: auto;
   }
 
   .finalScreenFrame {

@@ -1431,7 +1431,7 @@ export function TripPlanningCasePage() {
       />
       <Container>
         <header id="top" className={styles.textContainer}>
-          <span className={`body-3 ${styles.tag}`}>Design Exploration</span>
+          <span className={`body-3 ${styles.tag}`}>B2C • Design Exploration</span>
           <h2 className={styles.heading}>
             Streamlining Trip Collaboration and Making Planning Frictionless
           </h2>

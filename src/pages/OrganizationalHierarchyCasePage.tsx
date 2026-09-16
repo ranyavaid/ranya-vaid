@@ -4,7 +4,6 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  type ChangeEvent,
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
@@ -14,6 +13,11 @@ import {
   CaseStudySectionNav,
   type CaseStudySection,
 } from '../components/case-study/CaseStudySectionNav'
+import { CaseStudyVideoPlayer } from '../components/case-study/CaseStudyVideoPlayer'
+import {
+  LightboxZoomableImage,
+  type LightboxZoomState,
+} from '../components/case-study/LightboxZoomableImage'
 import { publicUrl } from '../utils/publicUrl'
 import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './OrganizationalHierarchyCasePage.module.css'
@@ -461,68 +465,6 @@ function ResearchImageLightbox({ image, onClose }: ResearchImageLightboxProps) {
           draggable={false}
           onLoad={handleImageLoad}
         />
-        {!isExpanded ? (
-          <FigureZoomButton
-            variant="magnify"
-            label="Zoom in further on image"
-            onClick={zoomIn}
-          />
-        ) : null}
-      </div>
-    </div>
-  )
-}
-
-type ResearchVideoLightboxProps = {
-  video: ZoomedImage
-  onClose: () => void
-}
-
-function ResearchVideoLightbox({ video, onClose }: ResearchVideoLightboxProps) {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
-      onClose()
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
-
-  return (
-    <div
-      className={styles.researchLightbox}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Video full screen view"
-      onClick={onClose}
-    >
-      <button
-        type="button"
-        className={styles.researchLightboxClose}
-        aria-label="Close full screen view"
-        onClick={onClose}
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path
-            d="M1 1L13 13M13 1L1 13"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      </button>
-      <div className={styles.researchLightboxVideoStage} onClick={(event) => event.stopPropagation()}>
-        <video
-          key={video.src}
-          src={video.src}
-          className={styles.researchLightboxVideo}
-          controls
-          autoPlay
-          playsInline
-          aria-label={video.alt}
-          {...protectedVideoProps}
-        />
       </div>
     </div>
   )
@@ -577,167 +519,6 @@ function FigureZoomButton({
         </svg>
       )}
     </button>
-  )
-}
-
-type CaseStudyVideoPlayerProps = {
-  src: string
-  ariaLabel: string
-  onVideoRef?: (element: HTMLVideoElement | null) => void
-}
-
-function CaseStudyVideoPlayer({ src, ariaLabel, onVideoRef }: CaseStudyVideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isEnded, setIsEnded] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-
-  const assignVideoRef = useCallback(
-    (element: HTMLVideoElement | null) => {
-      videoRef.current = element
-      onVideoRef?.(element)
-    },
-    [onVideoRef]
-  )
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    video.load()
-  }, [src])
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    const handlePlay = () => {
-      setIsPlaying(true)
-      setIsEnded(false)
-    }
-    const handlePause = () => setIsPlaying(false)
-    const handleEnded = () => {
-      setIsPlaying(false)
-      setIsEnded(true)
-    }
-    const handleTimeUpdate = () => setCurrentTime(video.currentTime)
-    const handleLoadedMetadata = () => setDuration(video.duration || 0)
-    const handleDurationChange = () => setDuration(video.duration || 0)
-
-    video.addEventListener('play', handlePlay)
-    video.addEventListener('pause', handlePause)
-    video.addEventListener('ended', handleEnded)
-    video.addEventListener('timeupdate', handleTimeUpdate)
-    video.addEventListener('loadedmetadata', handleLoadedMetadata)
-    video.addEventListener('durationchange', handleDurationChange)
-
-    return () => {
-      video.removeEventListener('play', handlePlay)
-      video.removeEventListener('pause', handlePause)
-      video.removeEventListener('ended', handleEnded)
-      video.removeEventListener('timeupdate', handleTimeUpdate)
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata)
-      video.removeEventListener('durationchange', handleDurationChange)
-    }
-  }, [src])
-
-  const handleTogglePlayback = () => {
-    const video = videoRef.current
-    if (!video) return
-
-    if (isEnded) {
-      video.currentTime = 0
-      setIsEnded(false)
-      void video.play().catch(() => {})
-      return
-    }
-
-    if (video.paused) {
-      void video.play().catch(() => {})
-    } else {
-      video.pause()
-    }
-  }
-
-  const handleSeek = (event: ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current
-    if (!video) return
-
-    const nextTime = Number(event.target.value)
-    video.currentTime = nextTime
-    setCurrentTime(nextTime)
-    if (isEnded && nextTime < duration) {
-      setIsEnded(false)
-    }
-  }
-
-  const playbackLabel = isEnded ? 'Replay video' : isPlaying ? 'Pause video' : 'Play video'
-
-  return (
-    <div key={src} className={styles.caseStudyVideo}>
-      <video
-        key={src}
-        ref={assignVideoRef}
-        src={src}
-        className={styles.caseStudyVideoMedia}
-        playsInline
-        preload="metadata"
-        aria-label={ariaLabel}
-        {...protectedVideoProps}
-      />
-      <div className={styles.caseStudyVideoControls}>
-        <button
-          type="button"
-          className={styles.caseStudyVideoButton}
-          aria-label={playbackLabel}
-          onClick={handleTogglePlayback}
-        >
-          {isEnded ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M2.5 8a5.5 5.5 0 1 0 1.58-3.86M2.5 3.5V8h4.5"
-                stroke="currentColor"
-                strokeWidth="1.25"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ) : isPlaying ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M5.5 4.5V11.5M10.5 4.5V11.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M5.5 4.5L11.5 8L5.5 11.5V4.5Z"
-                stroke="currentColor"
-                strokeWidth="1.25"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </button>
-        <input
-          type="range"
-          className={styles.caseStudyVideoTimeline}
-          min={0}
-          max={duration || 0}
-          step={0.1}
-          value={Math.min(currentTime, duration || 0)}
-          aria-label="Video timeline"
-          aria-valuemin={0}
-          aria-valuemax={duration || 0}
-          aria-valuenow={currentTime}
-          onChange={handleSeek}
-        />
-      </div>
-    </div>
   )
 }
 
@@ -1208,6 +989,14 @@ function CarouselImageLightbox({
 }: CarouselImageLightboxProps) {
   const carousel = useCaseCarousel(slides.length, 0, { autoAdvance: false })
   const hasInitializedRef = useRef(false)
+  const zoomStateRef = useRef<LightboxZoomState>({
+    isExpanded: false,
+    zoomOut: () => {},
+  })
+
+  const handleZoomStateChange = useCallback((state: LightboxZoomState) => {
+    zoomStateRef.current = state
+  }, [])
 
   useLayoutEffect(() => {
     hasInitializedRef.current = false
@@ -1224,9 +1013,17 @@ function CarouselImageLightbox({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        if (zoomStateRef.current.isExpanded) {
+          event.preventDefault()
+          zoomStateRef.current.zoomOut()
+          return
+        }
+
         onClose()
         return
       }
+
+      if (zoomStateRef.current.isExpanded) return
 
       if (event.key === 'ArrowRight') {
         event.preventDefault()
@@ -1267,7 +1064,7 @@ function CarouselImageLightbox({
         </svg>
       </button>
       <div className={styles.carouselLightboxPanel} onClick={(event) => event.stopPropagation()}>
-        <div className={`${styles.designOptionsCarousel} ${styles.carouselLightboxCarousel}`}>
+        <div className={`${styles.carouselLightboxImageCarousel} ${styles.carouselLightboxCarousel}`}>
           <div className={styles.caseCarouselViewport}>
             <div
               ref={carousel.trackRef}
@@ -1275,26 +1072,32 @@ function CarouselImageLightbox({
               data-loop={carousel.loopEnabled ? 'true' : 'false'}
               aria-label={ariaLabel}
             >
-              {getLoopSlideEntries(slides).map((entry, domIndex) => (
-                <div
-                  key={entry.key}
-                  ref={(element) => carousel.registerSlideRef(domIndex, element)}
-                  className={styles.caseCarouselSlide}
-                  aria-hidden={entry.isClone ? true : undefined}
-                >
-                  <div className={styles.designOptionFigure}>
-                    <img
-                      key={entry.item.src}
-                      src={entry.item.src}
-                      alt={entry.item.alt}
-                      className={styles.designOptionImage}
-                      width={entry.item.width}
-                      height={entry.item.height}
-                      draggable={false}
-                    />
+              {getLoopSlideEntries(slides).map((entry, domIndex) => {
+                const isActiveSlide =
+                  !entry.isClone && entry.logicalIndex === carousel.activeIndex
+
+                return (
+                  <div
+                    key={entry.key}
+                    ref={(element) => carousel.registerSlideRef(domIndex, element)}
+                    className={styles.caseCarouselSlide}
+                    aria-hidden={entry.isClone ? true : undefined}
+                  >
+                    <div className={styles.carouselLightboxFigure}>
+                      <LightboxZoomableImage
+                        src={entry.item.src}
+                        alt={entry.item.alt}
+                        width={entry.item.width}
+                        height={entry.item.height}
+                        layout="carousel"
+                        enabled={isActiveSlide}
+                        resetKey={carousel.activeIndex}
+                        onZoomStateChange={isActiveSlide ? handleZoomStateChange : undefined}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
@@ -1357,7 +1160,6 @@ export function OrganizationalHierarchyCasePage() {
   const researchGoalCardRef = useRef<HTMLElement | null>(null)
   const researchExploreCardRef = useRef<HTMLElement | null>(null)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
-  const [zoomedVideo, setZoomedVideo] = useState<ZoomedImage | null>(null)
   const [zoomedCarousel, setZoomedCarousel] = useState<{
     slides: CarouselLightboxSlide[]
     initialIndex: number
@@ -1441,14 +1243,6 @@ export function OrganizationalHierarchyCasePage() {
 
   const closeZoomedCarousel = useCallback(() => {
     setZoomedCarousel(null)
-  }, [])
-
-  const openZoomedVideo = useCallback((video: ZoomedImage) => {
-    setZoomedVideo(video)
-  }, [])
-
-  const closeZoomedVideo = useCallback(() => {
-    setZoomedVideo(null)
   }, [])
 
   useEffect(() => {
@@ -1566,7 +1360,7 @@ export function OrganizationalHierarchyCasePage() {
       <CaseStudySectionNav sections={OKR_SECTIONS} bannerRef={bannerSectionRef} />
       <Container>
         <header id="top" className={styles.textContainer}>
-          <span className={`body-3 ${styles.tag}`}>Product Design</span>
+          <span className={`body-3 ${styles.tag}`}>B2B • Feature Development</span>
           <h2 className={styles.heading}>
           Making Contribution Tracking 2x Faster With Goal Alignment
           </h2>
@@ -2190,8 +1984,10 @@ export function OrganizationalHierarchyCasePage() {
                                 <div className={styles.finalScreenFrame}>
                                   <div className={styles.finalScreenVideoFigure}>
                                     <CaseStudyVideoPlayer
+                                      key={entry.item.src}
                                       src={entry.item.src}
                                       ariaLabel={entry.item.caption}
+                                      clickToZoom
                                       onVideoRef={
                                         entry.isClone || slideIndex === null
                                           ? undefined
@@ -2207,17 +2003,6 @@ export function OrganizationalHierarchyCasePage() {
                                   <p className={`body-2 ${styles.finalScreenCaption}`}>
                                     {entry.item.caption}
                                   </p>
-                                  {!entry.isClone ? (
-                                    <FigureZoomButton
-                                      label={`View ${entry.item.caption} full screen`}
-                                      onClick={() =>
-                                        openZoomedVideo({
-                                          src: entry.item.src,
-                                          alt: entry.item.caption,
-                                        })
-                                      }
-                                    />
-                                  ) : null}
                                 </div>
                               </div>
                               )
@@ -2313,7 +2098,6 @@ export function OrganizationalHierarchyCasePage() {
           onClose={closeZoomedCarousel}
         />
       ) : null}
-      {zoomedVideo ? <ResearchVideoLightbox video={zoomedVideo} onClose={closeZoomedVideo} /> : null}
     </main>
   )
 }

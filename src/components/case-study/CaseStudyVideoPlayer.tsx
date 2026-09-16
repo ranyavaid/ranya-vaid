@@ -23,18 +23,24 @@ export type CaseStudyVideoPlayerProps = {
   src: string
   ariaLabel: string
   onVideoRef?: (element: HTMLVideoElement | null) => void
+  autoPlay?: boolean
   autoPlayWhenVisible?: boolean
+  loop?: boolean
   clickToZoom?: boolean
   initialPlayback?: InitialPlayback | null
+  className?: string
 }
 
 export function CaseStudyVideoPlayer({
   src,
   ariaLabel,
   onVideoRef,
+  autoPlay = false,
   autoPlayWhenVisible = false,
+  loop = false,
   clickToZoom = false,
   initialPlayback = null,
+  className,
 }: CaseStudyVideoPlayerProps) {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -150,6 +156,21 @@ export function CaseStudyVideoPlayer({
   }, [initialPlayback, src])
 
   useEffect(() => {
+    if (!autoPlay) return
+
+    const video = videoRef.current
+    if (!video) return
+
+    const tryPlay = () => {
+      void video.play().catch(() => {})
+    }
+
+    tryPlay()
+    video.addEventListener('loadeddata', tryPlay)
+    return () => video.removeEventListener('loadeddata', tryPlay)
+  }, [autoPlay, src])
+
+  useEffect(() => {
     if (!autoPlayWhenVisible) {
       setIsInView(false)
       return
@@ -182,7 +203,7 @@ export function CaseStudyVideoPlayer({
     const video = videoRef.current
     if (!video || isZoomed) return
 
-    const shouldAutoPlay = autoPlayWhenVisible && isInView
+    const shouldAutoPlay = autoPlay || (autoPlayWhenVisible && isInView)
 
     if (shouldAutoPlay) {
       if (!userPausedRef.current && video.paused) {
@@ -194,7 +215,7 @@ export function CaseStudyVideoPlayer({
     if (!video.paused) {
       video.pause()
     }
-  }, [autoPlayWhenVisible, isInView, isZoomed, src])
+  }, [autoPlay, autoPlayWhenVisible, isInView, isZoomed, src])
 
   const closeZoom = useCallback(() => {
     const inlineVideo = videoRef.current
@@ -290,7 +311,7 @@ export function CaseStudyVideoPlayer({
     <div
       ref={rootRef}
       key={src}
-      className={`caseStudyVideo ${styles.root}${clickToZoom ? ` ${styles.rootClickZoom}` : ''}`}
+      className={`caseStudyVideo ${styles.root}${clickToZoom ? ` ${styles.rootClickZoom}` : ''}${className ? ` ${className}` : ''}`}
     >
       <video
         key={src}
@@ -300,6 +321,7 @@ export function CaseStudyVideoPlayer({
         playsInline
         preload="metadata"
         aria-label={ariaLabel}
+        loop={loop}
         onClick={clickToZoom ? handleVideoClick : undefined}
         {...protectedVideoProps}
       />
@@ -356,6 +378,28 @@ export function CaseStudyVideoPlayer({
           aria-valuenow={currentTime}
           onChange={handleSeek}
         />
+        {clickToZoom && !initialPlayback ? (
+          <button
+            type="button"
+            className={`caseStudyVideoButton ${styles.button}`}
+            aria-label="Expand video"
+            onClick={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              openZoom()
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M6.5 2.5H3.5C2.94772 2.5 2.5 2.94772 2.5 3.5V6.5M9.5 2.5H12.5C13.0523 2.5 13.5 2.94772 13.5 3.5V6.5M9.5 13.5H12.5C13.0523 13.5 13.5 13.0523 13.5 12.5V9.5M6.5 13.5H3.5C2.94772 13.5 2.5 13.0523 2.5 12.5V9.5"
+                stroke="currentColor"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ) : null}
       </div>
     </div>
   )

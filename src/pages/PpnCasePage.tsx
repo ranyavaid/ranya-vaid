@@ -110,7 +110,7 @@ const PPN_SECTIONS: CaseStudySection[] = [
   { id: 'information-architecture', label: 'Structuring the platform architecture' },
   { id: 'service-design', label: 'Designing the service blueprint' },
   { id: 'business-model', label: 'Mapping the business model' },
-  { id: 'iterations', label: 'The forms we almost shipped' },
+  { id: 'iterations', label: 'The forms I almost shipped' },
   { id: 'finals', label: 'Final Screens' },
   { id: 'impact', label: 'Impact' },
   { id: 'learnings', label: 'What I learnt' },
@@ -131,7 +131,11 @@ const FINAL_SCREEN_SEGMENTS: FinalScreenSegment[] = [
   {
     intro: {
       heading: 'Reviewing and responding to leads',
-      body: 'Businesses use an inbox-style dashboard to view incoming requests and reply to seeker messages in one place.',
+      body: 'For businesses, I used an inbox and a dashboard to view incoming requests and reply to seeker messages. Two major decisions that shaped this design were-',
+      decisionItems: [
+        'The client proposed for the business to have the flexibility to attach reviews themselves when sending a potential lead a message. However, I opted for a system that automatically shares best review from the category of the service requested with the lead.',
+        'I kept all incoming leads distinct from accepted leads. This allowed businesses to have separate areas to see new leads and ones which have been accepted by the requestor. This not only made businesses more organized but also made sure that the requestors were not burdened with too many messages all at once.',
+      ],
     },
     src: ACCEPT_BUSINESS_VIDEO_SRC,
     caption: 'A business views available leads and responds to their messages',
@@ -153,7 +157,7 @@ const FINAL_SCREEN_SEGMENTS: FinalScreenSegment[] = [
       heading: 'Adding category & sub-category',
       decisionItems: [
         'The user must select a category first to edit its sub-category\'s pricing. The alternative was showing every sub-category with filters. I went with entering a category first, because it was more scalable even though it added a click.',
-        'Instead of keeping inline editing like the permissions, I went with menu → edit → pop-up. The pricing table was like many other data-dense tables on the platform, so making this one fully editable would\'ve set an inconsistent pattern. The pop-up also gives a focused experience — since the screen is already dense, letting the user concentrate on one entry at a time.',
+        'Instead of keeping inline editing like the permissions, I went with menu → edit → pop-up. The pricing table was like many other data-dense tables on the platform, so making this one fully editable would\'ve set an inconsistent pattern. Since the screen is already dense, the pop-up also gives a focused experience, letting the user concentrate on one entry at a time.',
       ],
     },
     src: CATEGORIES_VIDEO_SRC,
@@ -1259,7 +1263,7 @@ export function PpnCasePage() {
       <CaseStudySectionNav sections={PPN_SECTIONS} bannerRef={bannerSectionRef} />
       <Container>
         <header id="top" className={styles.textContainer}>
-          <span className={`body-3 ${styles.tag}`}>Product Design</span>
+          <span className={`body-3 ${styles.tag}`}>B2B • B2C • Product Design</span>
           <h2 className={styles.heading}>
           Building Trust in Local Service Discovery Through a 
           7-Role Hybrid B2B2C Ecosystem
@@ -1470,7 +1474,7 @@ export function PpnCasePage() {
                   </div>
 
                   <p className={`body-2 ${styles.problemStatementLead}`}>
-                    the question that we solved for, then, became:
+                    the question that I solved for, then, became:
                   </p>
 
                   <article className={styles.problemStatementCard}>
@@ -1661,11 +1665,11 @@ export function PpnCasePage() {
               </section>
 
                 <section id="iterations" className={styles.caseSection}>
-                  <h3 className={styles.mainHeading}>The forms we almost shipped</h3>
+                  <h3 className={styles.mainHeading}>The forms I almost shipped</h3>
                   <div className={styles.bodyStack}>
                     <p className={`body-2 ${styles.mainBody}`}>
                     There were two flows that held the most significance; the subscription flow and 
-                    the submitting an enquiry flow. Therefore, we iterated on them extensively. 
+                    the submitting an enquiry flow. Therefore I iterated on them extensively. 
                     </p>
                   </div>
 
@@ -1754,7 +1758,7 @@ export function PpnCasePage() {
                     <div className={styles.finalScreenPhase}>
                       <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>Final Flow</p>
                       <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
-                        The final flow accepted more friction in exchange for clearer guidance.
+                        For the final flow, I traded off more fiction for clear guidance.
                         Why it worked:
                       </p>
                       <ol className={styles.finalFlowList}>
@@ -1877,20 +1881,20 @@ export function PpnCasePage() {
                     <div className={styles.finalScreenPhase}>
                       <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>Final Iteration</p>
                       <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
-                        After internal testing, we proposed a restructured flow-
+                        After internal testing, I proposed a restructured flow-
                       </p>
                       <ol className={styles.finalFlowList}>
                         <li className={`body-2 ${styles.finalFlowListItem}`}>
-                          Category and sub-category were separated into distinct steps, making the
-                          hierarchy clearer and easier to scale.
+                          Separated category and sub-category into distinct steps, making the hierarchy
+                          clearer and easier to scale.
                         </li>
                         <li className={`body-2 ${styles.finalFlowListItem}`}>
-                          Forms were reorganized so related fields stayed together. Time slots and
-                          date slots were made more flexible, giving users real options instead of
-                          restrictive presets.
+                          Reorganized the forms so related fields stayed together + added flexible
+                          time slots and date slots, giving users real options instead of restrictive
+                          presets.
                         </li>
                         <li className={`body-2 ${styles.finalFlowListItem}`}>
-                          Addresses were attached to contact details and saved together. Users could
+                          Attached addresses to contact details and saved them together. Users could
                           pick from what was already saved and set a default, instead of the system
                           guessing.
                         </li>

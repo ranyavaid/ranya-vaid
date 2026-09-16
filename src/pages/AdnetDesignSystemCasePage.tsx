@@ -142,7 +142,7 @@ export function AdnetDesignSystemCasePage() {
       <CaseStudySectionNav sections={ADNET_SECTIONS} bannerRef={bannerSectionRef} />
       <Container>
         <header id="top" className={styles.textContainer}>
-          <span className={`body-3 ${styles.tag}`}>Design System</span>
+          <span className={`body-3 ${styles.tag}`}>B2B • Design System</span>
           <h2 className={styles.heading}>
             Reducing 50% Design-to-Dev Friction With Adnet&apos;s New Design
             System

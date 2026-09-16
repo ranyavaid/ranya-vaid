@@ -60,15 +60,45 @@ export function CaseStudySectionNav({
   }, [bannerRef])
 
   useEffect(() => {
-    const sectionElements = sections
-      .filter((section) => section.id !== 'top')
+    const contentSections = sections.filter((section) => section.id !== 'top')
+    const sectionElements = contentSections
       .map((section) => document.getElementById(section.id))
       .filter((element): element is HTMLElement => element !== null)
 
     if (sectionElements.length === 0) return
 
+    const lastSectionId = contentSections[contentSections.length - 1]?.id
+    /** Extra scroll room for footers / bottom padding (all case study pages). */
+    const bottomScrollSlackPx = 200
+
+    const applyEndOfPageSection = () => {
+      const remaining =
+        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight)
+      if (remaining > bottomScrollSlackPx) return false
+
+      // Prefer the lowest section still in view so Impact does not stay active over Learnings / Next steps.
+      for (let i = contentSections.length - 1; i >= 0; i--) {
+        const id = contentSections[i].id
+        const el = document.getElementById(id)
+        if (!el) continue
+        const { top, bottom } = el.getBoundingClientRect()
+        if (bottom > 0 && top < window.innerHeight) {
+          setActiveId(id)
+          return true
+        }
+      }
+
+      if (lastSectionId) {
+        setActiveId(lastSectionId)
+        return true
+      }
+      return false
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
+        if (applyEndOfPageSection()) return
+
         const visibleEntries = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
@@ -89,15 +119,20 @@ export function CaseStudySectionNav({
     const handleScroll = () => {
       if (window.scrollY < 160) {
         setActiveId('top')
+        return
       }
+
+      applyEndOfPageSection()
     }
 
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('resize', handleScroll, { passive: true })
 
     return () => {
       observer.disconnect()
       window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
     }
   }, [sections])
 
