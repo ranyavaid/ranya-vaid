@@ -86,6 +86,8 @@
   border: none;
   outline: none;
   pointer-events: none;
+  background-color: #f3f3f3;
+  transform: translateZ(0);
 }
 
 .textOnlySection {
@@ -951,34 +953,40 @@
 
 .finalScreensCarousel .caseCarouselSlide {
   max-width: none;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .finalScreenVideoFigure {
   position: relative;
   line-height: 0;
   font-size: 0;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 12px;
   isolation: isolate;
   transform: translateZ(0);
-  background: #ffffff;
+  width: min(1080px, 100%);
+  margin-inline: auto;
 }
 
-.finalScreenVideoFigure .caseStudyVideo {
+.finalScreenVideoFigure :global(.caseStudyVideo) {
   position: relative;
   overflow: hidden;
   display: block;
-  width: 100%;
-  max-width: 100%;
+  width: fit-content;
+  max-width: min(1080px, 100%);
   line-height: 0;
   border-radius: 12px;
+  margin-inline: auto;
+  box-shadow: 2px 4px 10px 0 rgba(0, 0, 0, 0.15);
 }
 
-.finalScreenVideoFigure .caseStudyVideoMedia {
+.finalScreenVideoFigure :global(.caseStudyVideoMedia) {
   display: block;
-  width: 100%;
+  width: auto;
   height: auto;
-  max-width: 100%;
+  max-width: min(1080px, 100%);
   max-height: none;
   margin: 0;
   padding: 0;
@@ -1109,6 +1117,42 @@
   outline: 0;
   background: transparent;
   object-fit: contain;
+}
+
+.carouselLightboxPanel {
+  width: min(1080px, calc(100vw - 96px));
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.carouselLightboxCarousel {
+  margin-top: 0;
+  margin-inline: 0;
+  width: 100%;
+}
+
+.carouselLightboxImageCarousel {
+  width: 100%;
+}
+
+.carouselLightboxFigure {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.carouselLightboxPanel .caseCarouselControls {
+  margin-top: 16px;
+}
+
+.carouselLightboxPanel .caseCarouselArrow:not(:disabled):hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.carouselLightboxPanel .caseCarouselDot:hover .caseCarouselDotMark {
+  background-color: rgba(255, 255, 255, 0.55);
 }
 
 .impactCards {
