@@ -4,7 +4,6 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  type ChangeEvent,
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
@@ -14,6 +13,11 @@ import {
   CaseStudySectionNav,
   type CaseStudySection,
 } from '../components/case-study/CaseStudySectionNav'
+import {
+  LightboxZoomableImage,
+  type LightboxZoomState,
+} from '../components/case-study/LightboxZoomableImage'
+import { CaseStudyVideoPlayer } from '../components/case-study/CaseStudyVideoPlayer'
 import { publicUrl } from '../utils/publicUrl'
 import { protectedVideoProps } from '../utils/videoProtection'
 import styles from './PpnCasePage.module.css'
@@ -21,11 +25,9 @@ import acceptBusinessVersion from 'virtual:public-asset-version/PPN/accept_busin
 import assignRepVersion from 'virtual:public-asset-version/PPN/assign_rep.mp4'
 import categoriesVersion from 'virtual:public-asset-version/PPN/categories.mp4'
 import enrollSubscriptionVersion from 'virtual:public-asset-version/PPN/enroll_subscription.mp4'
-import competitorImageVersion from 'virtual:public-asset-version/PPN/competitor.png'
+import competitorsImageVersion from 'virtual:public-asset-version/PPN/competitors.png'
 import personaImageVersion from 'virtual:public-asset-version/PPN/persona.png'
-import problem1Version from 'virtual:public-asset-version/PPN/problem_1.svg'
-import problem2Version from 'virtual:public-asset-version/PPN/problem_2.svg'
-import problem3Version from 'virtual:public-asset-version/PPN/problem_3.svg'
+import userPersonaImageVersion from 'virtual:public-asset-version/PPN/user_persona.png'
 import serviceImageVersion from 'virtual:public-asset-version/PPN/service.png'
 import subs1ImageVersion from 'virtual:public-asset-version/PPN/subs_1.png'
 import subs2ImageVersion from 'virtual:public-asset-version/PPN/subs_2.png'
@@ -36,33 +38,6 @@ import req3ImageVersion from 'virtual:public-asset-version/PPN/req_3.png'
 import submitRequestVersion from 'virtual:public-asset-version/PPN/submit_request.mp4'
 import architectureImageVersion from 'virtual:public-asset-version/PPN/AI.png'
 import bannerVersion from 'virtual:public-asset-version/PPN/banner.mp4'
-
-const IMPACT_CARDS = [
-  {
-    number: '01',
-    title: 'A community built around trust',
-    body: 'We created space to highlight businesses with strong reviews, and give nonprofits and volunteers meaningful opportunities to contribute and make an impact.',
-    color: '#D6F0FF',
-    numberColor: '#0054F3',
-    wide: false,
-  },
-  {
-    number: '02',
-    title: 'Broader discovery for local providers',
-    body: 'Newer businesses often struggled to compete with established providers. By giving all providers the opportunity to pitch their services, we created a more equitable discovery experience.',
-    color: '#fff3b0',
-    numberColor: '#614B00',
-    wide: false,
-  },
-  {
-    number: '03',
-    title: 'Complexity made manageable',
-    body: 'We translated a complex ecosystem into guided workflows, making day-to-day operations easier for admins and local representatives while creating a foundation that could scale.',
-    color: '#FFCCF1',
-    numberColor: '#8A0064',
-    wide: true,
-  },
-] as const
 
 const RESEARCH_CLIENT_DELIVERABLES = [
   'Interview synthesis from 8 synthesized sessions',
@@ -79,16 +54,25 @@ const RESEARCH_BUILT_OUTPUTS = [
 
 const PROBLEM_CARDS = [
   {
-    src: publicUrl(`/PPN/problem_1.svg?v=${problem1Version}`),
-    alt: 'Providers struggled to be discovered across fragmented category-specific platforms',
+    eyebrow: 'Service Providers',
+    title: 'Struggle with Discovery',
+    body: 'Service Provider often struggle to get recognition among more established providers. Consequently, they lose out on chances to connect with potential customers.',
+    backgroundColor: '#fff3b0',
+    layout: 'half' as const,
   },
   {
-    src: publicUrl(`/PPN/problem_2.svg?v=${problem2Version}`),
-    alt: 'Seekers lacked trust and transparency without consistent pricing, reviews, or reliable information',
+    eyebrow: 'Service Seekers',
+    title: 'Lack trust/ transparency',
+    body: 'Without consistent pricing, reviews, or reliable information, seekers had to rely heavily on word of mouth or move conversations and transactions off-platform.',
+    backgroundColor: '#ffccf1',
+    layout: 'half' as const,
   },
   {
-    src: publicUrl(`/PPN/problem_3.svg?v=${problem3Version}`),
-    alt: 'No community infrastructure to recognise good deeds or celebrate acts of kindness',
+    eyebrow: 'Community',
+    title: 'Lack infrastructure',
+    body: 'No dedicated space to recognise good deeds or celebrate acts of kindness. This made it difficult for seekers and providers to build the kind of trust that goes beyond a single service interaction.',
+    backgroundColor: '#d6f0ff',
+    layout: 'wide' as const,
   },
 ] as const
 
@@ -132,36 +116,94 @@ const PPN_SECTIONS: CaseStudySection[] = [
   { id: 'learnings', label: 'What I learnt' },
 ]
 
-type FinalScreenSlide = {
+type FinalScreenSegment = {
   src: string
   caption: string
+  intro?: {
+    heading: string
+    body?: string
+    decisionsLead?: string
+    decisionItems?: string[]
+  }
 }
 
-const FINAL_SCREEN_SLIDES: FinalScreenSlide[] = [
+const FINAL_SCREEN_SEGMENTS: FinalScreenSegment[] = [
   {
+    intro: {
+      heading: 'Reviewing and responding to leads',
+      body: 'Businesses use an inbox-style dashboard to view incoming requests and reply to seeker messages in one place.',
+    },
     src: ACCEPT_BUSINESS_VIDEO_SRC,
     caption: 'A business views available leads and responds to their messages',
   },
   {
+    intro: {
+      heading: 'Assigning County Representatives',
+      decisionsLead: 'There were two major decisions I made for this flow:',
+      decisionItems: [
+        'Backend flagged that even tabs would load all data and filter client-side, straining the server. I researched progressive disclosure and proposed tabbed views (All / Enabled / Disabled / Unassigned) + pagination at 10 rows per screen.',
+        'A checkbox grid per heading felt redundant and hard to scan. So, I switched to an inline editor: "Edit" turns the row into dropdowns for permissions. This kept view/edit modes consistent, and the explicit edit-then-save pattern made high-level permission changes deliberate instead of accidental.',
+      ],
+    },
     src: ASSIGN_REP_VIDEO_SRC,
     caption: 'State representative assigns county representative',
   },
   {
+    intro: {
+      heading: 'Adding category & sub-category',
+      decisionItems: [
+        'The user must select a category first to edit its sub-category\'s pricing. The alternative was showing every sub-category with filters. I went with entering a category first, because it was more scalable even though it added a click.',
+        'Instead of keeping inline editing like the permissions, I went with menu → edit → pop-up. The pricing table was like many other data-dense tables on the platform, so making this one fully editable would\'ve set an inconsistent pattern. The pop-up also gives a focused experience — since the screen is already dense, letting the user concentrate on one entry at a time.',
+      ],
+    },
     src: CATEGORIES_VIDEO_SRC,
     caption: 'Admin adds and edits categories/sub-categories',
   },
 ]
 
-const CAROUSEL_AUTO_ADVANCE_MS = 6000
-const COMPETITOR_IMAGE_SRC = publicUrl(`/PPN/competitor.png?v=${competitorImageVersion}`)
-const COMPETITOR_IMAGE_ALT =
-  'Competitor benchmarking matrix across service marketplaces, business discovery, community networks, and volunteer platforms'
+const COMPETITORS_IMAGE_SRC = publicUrl(`/PPN/competitors.png?v=${competitorsImageVersion}`)
+const COMPETITORS_IMAGE_ALT =
+  "Competitor's strengths, patterns to follow, and differentiators as sticky notes"
+
+const USER_PERSONA_IMAGE_SRC = publicUrl(`/PPN/user_persona.png?v=${userPersonaImageVersion}`)
+const USER_PERSONA_IMAGE_ALT =
+  'Individual user persona profiles for each role in the platform ecosystem'
 const PERSONA_IMAGE_SRC = publicUrl(`/PPN/persona.png?v=${personaImageVersion}`)
 const PERSONA_IMAGE_ALT =
   'Seven-persona ecosystem map showing how all roles interact with the platform and each other'
+
+type PersonaSlide = {
+  src: string
+  alt: string
+  width: number
+  height: number
+}
+
+/** Display frame ratio (1080×582); assets are exported at 1.5× (1620×873). */
+const PERSONA_SLIDE_WIDTH = 1620
+const PERSONA_SLIDE_HEIGHT = 873
+
+const PERSONA_SLIDES: PersonaSlide[] = [
+  {
+    src: USER_PERSONA_IMAGE_SRC,
+    alt: USER_PERSONA_IMAGE_ALT,
+    width: PERSONA_SLIDE_WIDTH,
+    height: PERSONA_SLIDE_HEIGHT,
+  },
+  {
+    src: PERSONA_IMAGE_SRC,
+    alt: PERSONA_IMAGE_ALT,
+    width: PERSONA_SLIDE_WIDTH,
+    height: PERSONA_SLIDE_HEIGHT,
+  },
+]
 const SERVICE_IMAGE_SRC = publicUrl(`/PPN/service.png?v=${serviceImageVersion}`)
 const SERVICE_IMAGE_ALT =
   'Service blueprint mapping user interactions, platform touchpoints, and supporting processes across the core service journey'
+/** Exported at 2× (2160×1415) for crisp display at 1080px carousel width. */
+const ITERATION_SLIDE_WIDTH = 2160
+const ITERATION_SLIDE_HEIGHT = 1415
+
 type Iteration1Slide = {
   src: string
   alt: string
@@ -412,61 +454,6 @@ function ResearchImageLightbox({ image, onClose }: ResearchImageLightboxProps) {
   )
 }
 
-type ResearchVideoLightboxProps = {
-  video: ZoomedImage
-  onClose: () => void
-}
-
-function ResearchVideoLightbox({ video, onClose }: ResearchVideoLightboxProps) {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
-      onClose()
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
-
-  return (
-    <div
-      className={styles.researchLightbox}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Video full screen view"
-      onClick={onClose}
-    >
-      <button
-        type="button"
-        className={styles.researchLightboxClose}
-        aria-label="Close full screen view"
-        onClick={onClose}
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path
-            d="M1 1L13 13M13 1L1 13"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      </button>
-      <div className={styles.researchLightboxVideoStage} onClick={(event) => event.stopPropagation()}>
-        <video
-          key={video.src}
-          src={video.src}
-          className={styles.researchLightboxVideo}
-          controls
-          autoPlay
-          playsInline
-          aria-label={video.alt}
-          {...protectedVideoProps}
-        />
-      </div>
-    </div>
-  )
-}
-
 function FigureZoomButton({
   label,
   onClick,
@@ -516,167 +503,6 @@ function FigureZoomButton({
         </svg>
       )}
     </button>
-  )
-}
-
-type CaseStudyVideoPlayerProps = {
-  src: string
-  ariaLabel: string
-  onVideoRef?: (element: HTMLVideoElement | null) => void
-}
-
-function CaseStudyVideoPlayer({ src, ariaLabel, onVideoRef }: CaseStudyVideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isEnded, setIsEnded] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-
-  const assignVideoRef = useCallback(
-    (element: HTMLVideoElement | null) => {
-      videoRef.current = element
-      onVideoRef?.(element)
-    },
-    [onVideoRef]
-  )
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    video.load()
-  }, [src])
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    const handlePlay = () => {
-      setIsPlaying(true)
-      setIsEnded(false)
-    }
-    const handlePause = () => setIsPlaying(false)
-    const handleEnded = () => {
-      setIsPlaying(false)
-      setIsEnded(true)
-    }
-    const handleTimeUpdate = () => setCurrentTime(video.currentTime)
-    const handleLoadedMetadata = () => setDuration(video.duration || 0)
-    const handleDurationChange = () => setDuration(video.duration || 0)
-
-    video.addEventListener('play', handlePlay)
-    video.addEventListener('pause', handlePause)
-    video.addEventListener('ended', handleEnded)
-    video.addEventListener('timeupdate', handleTimeUpdate)
-    video.addEventListener('loadedmetadata', handleLoadedMetadata)
-    video.addEventListener('durationchange', handleDurationChange)
-
-    return () => {
-      video.removeEventListener('play', handlePlay)
-      video.removeEventListener('pause', handlePause)
-      video.removeEventListener('ended', handleEnded)
-      video.removeEventListener('timeupdate', handleTimeUpdate)
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata)
-      video.removeEventListener('durationchange', handleDurationChange)
-    }
-  }, [src])
-
-  const handleTogglePlayback = () => {
-    const video = videoRef.current
-    if (!video) return
-
-    if (isEnded) {
-      video.currentTime = 0
-      setIsEnded(false)
-      void video.play().catch(() => {})
-      return
-    }
-
-    if (video.paused) {
-      void video.play().catch(() => {})
-    } else {
-      video.pause()
-    }
-  }
-
-  const handleSeek = (event: ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current
-    if (!video) return
-
-    const nextTime = Number(event.target.value)
-    video.currentTime = nextTime
-    setCurrentTime(nextTime)
-    if (isEnded && nextTime < duration) {
-      setIsEnded(false)
-    }
-  }
-
-  const playbackLabel = isEnded ? 'Replay video' : isPlaying ? 'Pause video' : 'Play video'
-
-  return (
-    <div key={src} className={styles.caseStudyVideo}>
-      <video
-        key={src}
-        ref={assignVideoRef}
-        src={src}
-        className={styles.caseStudyVideoMedia}
-        playsInline
-        preload="metadata"
-        aria-label={ariaLabel}
-        {...protectedVideoProps}
-      />
-      <div className={styles.caseStudyVideoControls}>
-        <button
-          type="button"
-          className={styles.caseStudyVideoButton}
-          aria-label={playbackLabel}
-          onClick={handleTogglePlayback}
-        >
-          {isEnded ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M2.5 8a5.5 5.5 0 1 0 1.58-3.86M2.5 3.5V8h4.5"
-                stroke="currentColor"
-                strokeWidth="1.25"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ) : isPlaying ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M5.5 4.5V11.5M10.5 4.5V11.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M5.5 4.5L11.5 8L5.5 11.5V4.5Z"
-                stroke="currentColor"
-                strokeWidth="1.25"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </button>
-        <input
-          type="range"
-          className={styles.caseStudyVideoTimeline}
-          min={0}
-          max={duration || 0}
-          step={0.1}
-          value={Math.min(currentTime, duration || 0)}
-          aria-label="Video timeline"
-          aria-valuemin={0}
-          aria-valuemax={duration || 0}
-          aria-valuenow={currentTime}
-          onChange={handleSeek}
-        />
-      </div>
-    </div>
   )
 }
 
@@ -842,59 +668,6 @@ function logicalToDomIndex(logicalIndex: number, slideCount: number) {
 }
 
 const CAROUSEL_GAP_PX = 24
-/** 1080×708 iteration slides stay pixel-crisp when width is a multiple of 90. */
-const ITERATION_SLIDE_WIDTH_UNIT_PX = 90
-
-function useCarouselAutoAdvanceTrigger() {
-  const [root, setRoot] = useState<HTMLDivElement | null>(null)
-  const [inViewport, setInViewport] = useState(false)
-  const [engaged, setEngaged] = useState(false)
-
-  useEffect(() => {
-    if (!root) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInViewport(entry?.isIntersecting ?? false)
-      },
-      { threshold: 0 }
-    )
-
-    observer.observe(root)
-    return () => observer.disconnect()
-  }, [root])
-
-  useEffect(() => {
-    if (!root) return
-
-    const handlePointerEnter = () => setEngaged(true)
-    const handlePointerLeave = (event: PointerEvent) => {
-      const relatedTarget = event.relatedTarget
-      if (relatedTarget instanceof Node && root.contains(relatedTarget)) return
-      setEngaged(false)
-    }
-    const handleFocusIn = () => setEngaged(true)
-    const handleFocusOut = (event: FocusEvent) => {
-      const relatedTarget = event.relatedTarget
-      if (relatedTarget instanceof Node && root.contains(relatedTarget)) return
-      setEngaged(false)
-    }
-
-    root.addEventListener('pointerenter', handlePointerEnter)
-    root.addEventListener('pointerleave', handlePointerLeave)
-    root.addEventListener('focusin', handleFocusIn)
-    root.addEventListener('focusout', handleFocusOut)
-
-    return () => {
-      root.removeEventListener('pointerenter', handlePointerEnter)
-      root.removeEventListener('pointerleave', handlePointerLeave)
-      root.removeEventListener('focusin', handleFocusIn)
-      root.removeEventListener('focusout', handleFocusOut)
-    }
-  }, [root])
-
-  return { setRoot, isActive: inViewport || engaged }
-}
 
 function useCaseCarousel(
   slideCount: number,
@@ -1188,6 +961,169 @@ function useCaseCarousel(
   }
 }
 
+type CarouselLightboxSlide = {
+  src: string
+  alt: string
+  width: number
+  height: number
+}
+
+function iterationSlidesForLightbox(slides: readonly Iteration1Slide[]): CarouselLightboxSlide[] {
+  return slides.map((slide) => ({
+    ...slide,
+    width: ITERATION_SLIDE_WIDTH,
+    height: ITERATION_SLIDE_HEIGHT,
+  }))
+}
+
+function personaSlidesForLightbox(): CarouselLightboxSlide[] {
+  return PERSONA_SLIDES.map((slide) => ({ ...slide }))
+}
+
+type CarouselImageLightboxProps = {
+  slides: CarouselLightboxSlide[]
+  initialIndex: number
+  ariaLabel: string
+  onClose: () => void
+}
+
+function CarouselImageLightbox({
+  slides,
+  initialIndex,
+  ariaLabel,
+  onClose,
+}: CarouselImageLightboxProps) {
+  const carousel = useCaseCarousel(slides.length, 0, { autoAdvance: false })
+  const hasInitializedRef = useRef(false)
+  const zoomStateRef = useRef<LightboxZoomState>({
+    isExpanded: false,
+    zoomOut: () => {},
+  })
+
+  const handleZoomStateChange = useCallback((state: LightboxZoomState) => {
+    zoomStateRef.current = state
+  }, [])
+
+  useLayoutEffect(() => {
+    hasInitializedRef.current = false
+  }, [slides, initialIndex])
+
+  useLayoutEffect(() => {
+    if (hasInitializedRef.current) return
+    if (slides.length === 0) return
+
+    carousel.goTo(initialIndex)
+    hasInitializedRef.current = true
+  }, [carousel.goTo, initialIndex, slides.length])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (zoomStateRef.current.isExpanded) {
+          event.preventDefault()
+          zoomStateRef.current.zoomOut()
+          return
+        }
+
+        onClose()
+        return
+      }
+
+      if (zoomStateRef.current.isExpanded) return
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        carousel.goToNext()
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        carousel.goToPrevious()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [carousel.goToNext, carousel.goToPrevious, onClose])
+
+  return (
+    <div
+      className={styles.researchLightbox}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Carousel full screen view"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className={styles.researchLightboxClose}
+        aria-label="Close full screen view"
+        onClick={onClose}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path
+            d="M1 1L13 13M13 1L1 13"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+      <div className={styles.carouselLightboxPanel} onClick={(event) => event.stopPropagation()}>
+        <div className={`${styles.carouselLightboxImageCarousel} ${styles.carouselLightboxCarousel}`}>
+          <div className={styles.caseCarouselViewport}>
+            <div
+              ref={carousel.trackRef}
+              className={styles.caseCarouselTrack}
+              data-loop={carousel.loopEnabled ? 'true' : 'false'}
+              aria-label={ariaLabel}
+            >
+              {getLoopSlideEntries(slides).map((entry, domIndex) => {
+                const isActiveSlide =
+                  !entry.isClone && entry.logicalIndex === carousel.activeIndex
+
+                return (
+                  <div
+                    key={entry.key}
+                    ref={(element) => carousel.registerSlideRef(domIndex, element)}
+                    className={styles.caseCarouselSlide}
+                    aria-hidden={entry.isClone ? true : undefined}
+                  >
+                    <div className={styles.carouselLightboxFigure}>
+                      <LightboxZoomableImage
+                        src={entry.item.src}
+                        alt={entry.item.alt}
+                        width={entry.item.width}
+                        height={entry.item.height}
+                        layout="carousel"
+                        enabled={isActiveSlide}
+                        resetKey={carousel.activeIndex}
+                        onZoomStateChange={isActiveSlide ? handleZoomStateChange : undefined}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <CaseCarouselControls
+            slideCount={slides.length}
+            activeIndex={carousel.activeIndex}
+            progressKey={carousel.progressKey}
+            ariaLabel={ariaLabel}
+            advanceDurationMs={0}
+            showProgressLoader={false}
+            onGoTo={carousel.goTo}
+            onPrevious={carousel.goToPrevious}
+            onNext={carousel.goToNext}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function PpnCasePage() {
   const stateLayerFigureRef = useRef<HTMLDivElement | null>(null)
   const [stateLayerStarted, setStateLayerStarted] = useState(false)
@@ -1195,108 +1131,21 @@ export function PpnCasePage() {
   const [foundationsStarted, setFoundationsStarted] = useState(false)
   const bannerVideoRef = useRef<HTMLVideoElement | null>(null)
   const bannerSectionRef = useRef<HTMLElement | null>(null)
-  const finalScreenBlockObserverRef = useRef<IntersectionObserver | null>(null)
-  const finalScreenVideoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
-  const [finalScreenBlockVisible, setFinalScreenBlockVisible] = useState(false)
-  const iteration1BlockObserverRef = useRef<IntersectionObserver | null>(null)
-  const iteration1VideoRef = useRef<HTMLVideoElement | null>(null)
-  const [iteration1BlockVisible, setIteration1BlockVisible] = useState(false)
-  const iteration2BlockObserverRef = useRef<IntersectionObserver | null>(null)
-  const iteration2VideoRef = useRef<HTMLVideoElement | null>(null)
-  const [iteration2BlockVisible, setIteration2BlockVisible] = useState(false)
   const researchGoalCardRef = useRef<HTMLElement | null>(null)
   const researchExploreCardRef = useRef<HTMLElement | null>(null)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
-  const [zoomedVideo, setZoomedVideo] = useState<ZoomedImage | null>(null)
-  const finalScreensCarousel = useCaseCarousel(FINAL_SCREEN_SLIDES.length, 0, {
+  const [zoomedImageCarousel, setZoomedImageCarousel] = useState<{
+    slides: CarouselLightboxSlide[]
+    initialIndex: number
+    ariaLabel: string
+  } | null>(null)
+  const personaCarousel = useCaseCarousel(PERSONA_SLIDES.length, 0, { autoAdvance: false })
+  const iteration1Carousel = useCaseCarousel(ITERATION1_SLIDES.length, 0, {
     autoAdvance: false,
   })
-  const iteration1CarouselTrigger = useCarouselAutoAdvanceTrigger()
-  const iteration1Carousel = useCaseCarousel(ITERATION1_SLIDES.length, CAROUSEL_AUTO_ADVANCE_MS, {
-    isInView: iteration1CarouselTrigger.isActive,
-    slideWidthUnit: ITERATION_SLIDE_WIDTH_UNIT_PX,
+  const iteration2Carousel = useCaseCarousel(ITERATION2_SLIDES.length, 0, {
+    autoAdvance: false,
   })
-  const iteration2CarouselTrigger = useCarouselAutoAdvanceTrigger()
-  const iteration2Carousel = useCaseCarousel(ITERATION2_SLIDES.length, CAROUSEL_AUTO_ADVANCE_MS, {
-    isInView: iteration2CarouselTrigger.isActive,
-    slideWidthUnit: ITERATION_SLIDE_WIDTH_UNIT_PX,
-  })
-
-  const registerIteration1BlockRef = useCallback((element: HTMLDivElement | null) => {
-    iteration1BlockObserverRef.current?.disconnect()
-    iteration1BlockObserverRef.current = null
-
-    if (!element) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIteration1BlockVisible(entry?.isIntersecting ?? false)
-      },
-      { threshold: 0.25 }
-    )
-
-    observer.observe(element)
-    iteration1BlockObserverRef.current = observer
-  }, [])
-
-  const registerIteration2BlockRef = useCallback((element: HTMLDivElement | null) => {
-    iteration2BlockObserverRef.current?.disconnect()
-    iteration2BlockObserverRef.current = null
-
-    if (!element) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIteration2BlockVisible(entry?.isIntersecting ?? false)
-      },
-      { threshold: 0.25 }
-    )
-
-    observer.observe(element)
-    iteration2BlockObserverRef.current = observer
-  }, [])
-
-  const registerFinalScreenBlockRef = useCallback((element: HTMLDivElement | null) => {
-    finalScreenBlockObserverRef.current?.disconnect()
-    finalScreenBlockObserverRef.current = null
-
-    if (!element) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setFinalScreenBlockVisible(entry?.isIntersecting ?? false)
-      },
-      { threshold: 0.25 }
-    )
-
-    observer.observe(element)
-    finalScreenBlockObserverRef.current = observer
-  }, [])
-
-  useEffect(
-    () => () => {
-      finalScreenBlockObserverRef.current?.disconnect()
-      finalScreenBlockObserverRef.current = null
-      iteration1BlockObserverRef.current?.disconnect()
-      iteration1BlockObserverRef.current = null
-      iteration2BlockObserverRef.current?.disconnect()
-      iteration2BlockObserverRef.current = null
-    },
-    []
-  )
-
-  const registerFinalScreenVideoRef = useCallback(
-    (slideIndex: number, element: HTMLVideoElement | null) => {
-      const key = String(slideIndex)
-      if (element) {
-        finalScreenVideoRefs.current[key] = element
-        return
-      }
-
-      delete finalScreenVideoRefs.current[key]
-    },
-    []
-  )
 
   const openZoomedImage = useCallback((image: ZoomedImage) => {
     setZoomedImage(image)
@@ -1306,12 +1155,15 @@ export function PpnCasePage() {
     setZoomedImage(null)
   }, [])
 
-  const openZoomedVideo = useCallback((video: ZoomedImage) => {
-    setZoomedVideo(video)
-  }, [])
+  const openZoomedImageCarousel = useCallback(
+    (slides: CarouselLightboxSlide[], initialIndex: number, ariaLabel: string) => {
+      setZoomedImageCarousel({ slides, initialIndex, ariaLabel })
+    },
+    []
+  )
 
-  const closeZoomedVideo = useCallback(() => {
-    setZoomedVideo(null)
+  const closeZoomedImageCarousel = useCallback(() => {
+    setZoomedImageCarousel(null)
   }, [])
 
   useEffect(() => {
@@ -1326,41 +1178,6 @@ export function PpnCasePage() {
     video.addEventListener('loadeddata', tryPlay)
     return () => video.removeEventListener('loadeddata', tryPlay)
   }, [])
-
-  useEffect(() => {
-    const video = iteration1VideoRef.current
-    if (!video) return
-
-    if (iteration1BlockVisible) {
-      void video.play().catch(() => {})
-    } else {
-      video.pause()
-    }
-  }, [iteration1BlockVisible])
-
-  useEffect(() => {
-    const video = iteration2VideoRef.current
-    if (!video) return
-
-    if (iteration2BlockVisible) {
-      void video.play().catch(() => {})
-    } else {
-      video.pause()
-    }
-  }, [iteration2BlockVisible])
-
-  useEffect(() => {
-    FINAL_SCREEN_SLIDES.forEach((_, slideIndex) => {
-      const video = finalScreenVideoRefs.current[String(slideIndex)]
-      if (!video) return
-
-      if (finalScreenBlockVisible && slideIndex === finalScreensCarousel.activeIndex) {
-        void video.play().catch(() => {})
-      } else {
-        video.pause()
-      }
-    })
-  }, [finalScreenBlockVisible, finalScreensCarousel.activeIndex])
 
   useEffect(() => {
     const goalCard = researchGoalCardRef.current
@@ -1498,14 +1315,20 @@ export function PpnCasePage() {
                     </p>
                   </div>
                   <div className={styles.overviewCards}>
-                    <article className={styles.overviewCard}>
+                    <article className={`${styles.overviewCard} ${styles.overviewCardWide}`}>
                       <p className={`body-3 ${styles.cardEyebrow}`}>Role</p>
-                      <p className={`body-2 ${styles.cardText}`}>End-to-end feature development including research synthesis, 
-                        problem framing, persona development, flows, and final UI.</p>
+                      <p className={`body-2 ${styles.cardText}`}>
+                        End-to-end product design including research synthesis, problem framing,
+                        persona development, flows, and final UI.
+                      </p>
                     </article>
                     <article className={styles.overviewCard}>
                       <p className={`body-3 ${styles.cardEyebrow}`}>Team</p>
                       <p className={`body-2 ${styles.cardText}`}>2 Product Designers, 1 Product Manager, 2 Developers, 1 QA</p>
+                    </article>
+                    <article className={styles.overviewCard}>
+                      <p className={`body-3 ${styles.cardEyebrow}`}>Constraint</p>
+                      <p className={`body-2 ${styles.cardText}`}>No direct access to users</p>
                     </article>
                     <article className={styles.overviewCard}>
                       <p className={`body-3 ${styles.cardEyebrow}`}>Duration</p>
@@ -1518,9 +1341,8 @@ export function PpnCasePage() {
                   <h3 className={styles.mainHeading}>Research</h3>
                   <div className={styles.bodyStack}>
                     <p className={`body-2 ${styles.mainBody}`}>
-                      We had no access to real users at any stage of this project. No
-                      interviews, no usability sessions, no surveys. Every design decision
-                      had to be grounded in client-provided research and our own secondary
+                      We had no access to real users at any stage of this project. So, I grounded every 
+                      design decision in client-provided research notes and our own secondary
                       research.
                     </p>
                   </div>
@@ -1567,34 +1389,48 @@ export function PpnCasePage() {
                   <h3 className={styles.mainHeading}>Competitor Benchmarking</h3>
                   <div className={styles.bodyStack}>
                     <p className={`body-2 ${styles.mainBody}`}>
-                    PPN didn't have a direct competitor, so we benchmarked 
-                    adjacent platforms across service marketplaces, business 
-                    discovery, community networks, and volunteer platforms. 
-                    We looked for patterns worth carrying forward and  gaps 
-                    that could serve as opportunities.
+                      There was no direct competitor to PPN, so I looked into adjacent platforms
+                      this included-
+                    </p>
+                    <ol className={styles.finalFlowList}>
+                      <li className={`body-2 ${styles.finalFlowListItem}`}>
+                        <strong>Service Platforms</strong>: Thumbtack, Angi, Bark
+                      </li>
+                      <li className={`body-2 ${styles.finalFlowListItem}`}>
+                        <strong>Business Discovery</strong>: Yelp, Google Business
+                      </li>
+                      <li className={`body-2 ${styles.finalFlowListItem}`}>
+                        <strong>Community Platforms</strong>: Facebook Groups, Nextdoor
+                      </li>
+                      <li className={`body-2 ${styles.finalFlowListItem}`}>
+                        <strong>Volunteer Platform</strong>: Volunteer Match, Idealist
+                      </li>
+                    </ol>
+                    <p className={`body-2 ${styles.mainBody}`}>
+                      There were three factors on which I based my research:
                     </p>
                   </div>
                   <div className={styles.competitorFigure}>
                     <img
-                      src={COMPETITOR_IMAGE_SRC}
-                      alt={COMPETITOR_IMAGE_ALT}
+                      src={COMPETITORS_IMAGE_SRC}
+                      alt={COMPETITORS_IMAGE_ALT}
                       className={`${styles.competitorImage} ${styles.figureZoomableImage}`}
-                      width={1620}
-                      height={1383}
+                      width={3548}
+                      height={1788}
                       draggable={false}
                       onClick={() =>
                         openZoomedImage({
-                          src: COMPETITOR_IMAGE_SRC,
-                          alt: COMPETITOR_IMAGE_ALT,
+                          src: COMPETITORS_IMAGE_SRC,
+                          alt: COMPETITORS_IMAGE_ALT,
                         })
                       }
                     />
                     <FigureZoomButton
-                      label="View competitor benchmarking image full screen"
+                      label="View competitor benchmarking notes full screen"
                       onClick={() =>
                         openZoomedImage({
-                          src: COMPETITOR_IMAGE_SRC,
-                          alt: COMPETITOR_IMAGE_ALT,
+                          src: COMPETITORS_IMAGE_SRC,
+                          alt: COMPETITORS_IMAGE_ALT,
                         })
                       }
                     />
@@ -1605,36 +1441,43 @@ export function PpnCasePage() {
                   <h3 className={styles.mainHeading}>Defining the Problem</h3>
                   <div className={styles.bodyStack}>
                     <p className={`body-2 ${styles.mainBody}`}>
-                    The research and competitor benchmarking pointed to three connected gaps. 
-                    Existing platforms solved individual parts of the experience, 
-                    but none brought service discovery, provider visibility, 
-                    community resources, and trust into one ecosystem.
+                    The main problem was fragmentation as existing platforms solved individual 
+                    parts of the problem. I, therefore, mapped the problem in relation to 
+                    our 3 primary users.
                     </p>
                   </div>
 
                   <div className={styles.problemCards}>
                     {PROBLEM_CARDS.map((card) => (
-                      <article key={card.src} className={styles.problemCard}>
-                        <div className={styles.problemCardFrame}>
-                          <img
-                            src={card.src}
-                            alt={card.alt}
-                            className={styles.problemCardImage}
-                          />
+                      <article
+                        key={card.title}
+                        className={`${styles.problemCard} ${
+                          card.layout === 'wide' ? styles.problemCardWide : ''
+                        }`}
+                      >
+                        <div
+                          className={styles.problemCardSurface}
+                          style={{ backgroundColor: card.backgroundColor }}
+                        >
+                          <span className={`body-3 ${styles.problemCardEyebrow}`}>
+                            {card.eyebrow}
+                          </span>
+                          <h4 className={`h4 ${styles.problemCardHeading}`}>{card.title}</h4>
+                          <p className={`body-3 ${styles.problemCardBody}`}>{card.body}</p>
                         </div>
                       </article>
                     ))}
                   </div>
 
                   <p className={`body-2 ${styles.problemStatementLead}`}>
-                    Based on our research, the question that we solved for became
+                    the question that we solved for, then, became:
                   </p>
 
                   <article className={styles.problemStatementCard}>
                     <p className={styles.problemStatementEyebrow}>How Might We?</p>
                     <div className={styles.problemStatementInner}>
                       <p className={`body-2 ${styles.problemStatementBody}`}>
-                      Bring service discovery, trust, and a context-specific community 
+                      Bring service discovery, customer satisfaction, and community trust
                       into one connected ecosystem while supporting the different needs, 
                       responsibilities, and permissions of the users within it?
                       </p>
@@ -1646,34 +1489,72 @@ export function PpnCasePage() {
                   <h3 className={styles.mainHeading}>The 7-persona ecosystem </h3>
                   <div className={styles.bodyStack}>
                     <p className={`body-2 ${styles.mainBody}`}>
-                    Rather than treating each persona in isolation, 
-                    we first mapped the full ecosystem This included how 
-                    all 7 roles interact with the platform and with each other. 
+                    It was important to treat personas as a part of a larger ecosystem. 
+                    Thus, after we created the personas, I mapped each persona in relation to the others.
                     </p>
                   </div>
-                  <div className={styles.personaFigure}>
-                    <img
-                      src={PERSONA_IMAGE_SRC}
-                      alt={PERSONA_IMAGE_ALT}
-                      className={`${styles.personaImage} ${styles.figureZoomableImage}`}
-                      width={1620}
-                      height={687}
-                      draggable={false}
-                      onClick={() =>
-                        openZoomedImage({
-                          src: PERSONA_IMAGE_SRC,
-                          alt: PERSONA_IMAGE_ALT,
-                        })
-                      }
-                    />
-                    <FigureZoomButton
-                      label="View persona ecosystem image full screen"
-                      onClick={() =>
-                        openZoomedImage({
-                          src: PERSONA_IMAGE_SRC,
-                          alt: PERSONA_IMAGE_ALT,
-                        })
-                      }
+                  <div className={styles.personaCarousel}>
+                    <div className={styles.caseCarouselViewport}>
+                      <div
+                        ref={personaCarousel.trackRef}
+                        className={styles.caseCarouselTrack}
+                        data-loop={personaCarousel.loopEnabled ? 'true' : 'false'}
+                        aria-label="Persona ecosystem images"
+                      >
+                        {getLoopSlideEntries(PERSONA_SLIDES).map((entry, domIndex) => (
+                          <div
+                            key={entry.key}
+                            ref={(element) => personaCarousel.registerSlideRef(domIndex, element)}
+                            className={styles.caseCarouselSlide}
+                            aria-hidden={entry.isClone ? true : undefined}
+                          >
+                            <div className={styles.personaSlideFigure}>
+                              <img
+                                src={entry.item.src}
+                                alt={entry.item.alt}
+                                className={`${styles.personaImage} ${styles.figureZoomableImage}`}
+                                width={entry.item.width}
+                                height={entry.item.height}
+                                draggable={false}
+                                onClick={
+                                  entry.isClone || entry.logicalIndex === null
+                                    ? undefined
+                                    : () =>
+                                        openZoomedImageCarousel(
+                                          personaSlidesForLightbox(),
+                                          entry.logicalIndex as number,
+                                          'Persona ecosystem navigation'
+                                        )
+                                }
+                              />
+                              {!entry.isClone && entry.logicalIndex !== null ? (
+                                <FigureZoomButton
+                                  label={`View ${entry.item.alt} full screen`}
+                                  onClick={() =>
+                                    openZoomedImageCarousel(
+                                      personaSlidesForLightbox(),
+                                      entry.logicalIndex as number,
+                                      'Persona ecosystem navigation'
+                                    )
+                                  }
+                                />
+                              ) : null}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <CaseCarouselControls
+                      slideCount={PERSONA_SLIDES.length}
+                      activeIndex={personaCarousel.activeIndex}
+                      progressKey={personaCarousel.progressKey}
+                      ariaLabel="Persona ecosystem navigation"
+                      advanceDurationMs={0}
+                      showProgressLoader={false}
+                      onGoTo={personaCarousel.goTo}
+                      onPrevious={personaCarousel.goToPrevious}
+                      onNext={personaCarousel.goToNext}
                     />
                   </div>
                 </section>
@@ -1682,9 +1563,9 @@ export function PpnCasePage() {
                 <h3 className={styles.mainHeading}>Structuring the platform architecture</h3>
                 <div className={styles.bodyStack}>
                   <p className={`body-2 ${styles.mainBody}`}>
-                  We structured the information architecture by first separating the 
-                  platform into distinct user roles, then mapping the features and 
-                  workflows relevant to each role.
+                  My team and I structured the information architecture together ensuring
+                  everyone was on the same page. I lead the process by separating the platform 
+                  into distinct user roles, then mapping the features and workflows relevant to them.
                   </p>
                 </div>
                 <div className={styles.architectureFigure}>
@@ -1718,9 +1599,9 @@ export function PpnCasePage() {
                 <h3 className={styles.mainHeading}>Designing the service blueprint</h3>
                 <div className={styles.bodyStack}>
                   <p className={`body-2 ${styles.mainBody}`}>
-                    We mapped the wider user ecosystem first, then zoomed into the platform's
-                    core service journey. This helped us understand the simultaneous interactions
-                    between users, the platform, and supporting processes at each stage.
+                    Since there were 7 different user roles interacting within the platform,
+                    it was essential to zoom into the core service journey. Consequently, I built the service 
+                    blueprint to understand just that.
                   </p>
                 </div>
                 <div className={styles.serviceFigure}>
@@ -1788,22 +1669,22 @@ export function PpnCasePage() {
                     </p>
                   </div>
 
-                  <div ref={registerIteration1BlockRef} className={styles.iterationVideoBlock}>
+                  <div className={`${styles.iterationFormLabel} ${styles.tradeOffCalloutGap32}`}>
+                    <h4 className={styles.iterationFormLabelHeading}>Form 1: Enroll Subscription</h4>
+                  </div>
+
+                  <div className={styles.iterationVideoBlock}>
                     <div className={styles.finalScreenPhase}>
-                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>
-                        Flow 1: Enroll Subscription
-                      </p>
+                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>Initial Iteration</p>
                       <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
-                        The initial flow that we had designed required less clicks, but it made the
-                        process more complex. The main problem was that the process did not feel
-                        guided.
+                        The initial iteration condensed the flow into three simple steps, but it
+                        assumed users could navigate a complex interface. While this reduced step
+                        count, the interface became too complicated and unsuitable for
+                        non-technical users.
                       </p>
                     </div>
 
-                    <div
-                      ref={iteration1CarouselTrigger.setRoot}
-                      className={styles.iteration1Carousel}
-                    >
+                    <div className={styles.iteration1Carousel}>
                       <div className={styles.caseCarouselViewport}>
                         <div
                           ref={iteration1Carousel.trackRef}
@@ -1825,27 +1706,29 @@ export function PpnCasePage() {
                                   src={entry.item.src}
                                   alt={entry.item.alt}
                                   className={`${styles.iteration1SlideImage} ${styles.figureZoomableImage}`}
-                                  width={1080}
-                                  height={708}
+                                  width={ITERATION_SLIDE_WIDTH}
+                                  height={ITERATION_SLIDE_HEIGHT}
                                   draggable={false}
                                   onClick={
-                                    entry.isClone
+                                    entry.isClone || entry.logicalIndex === null
                                       ? undefined
                                       : () =>
-                                          openZoomedImage({
-                                            src: entry.item.src,
-                                            alt: entry.item.alt,
-                                          })
+                                          openZoomedImageCarousel(
+                                            iterationSlidesForLightbox(ITERATION1_SLIDES),
+                                            entry.logicalIndex as number,
+                                            'Enroll subscription iteration 1 navigation'
+                                          )
                                   }
                                 />
-                                {!entry.isClone ? (
+                                {!entry.isClone && entry.logicalIndex !== null ? (
                                   <FigureZoomButton
                                     label={`View ${entry.item.alt} full screen`}
                                     onClick={() =>
-                                      openZoomedImage({
-                                        src: entry.item.src,
-                                        alt: entry.item.alt,
-                                      })
+                                      openZoomedImageCarousel(
+                                        iterationSlidesForLightbox(ITERATION1_SLIDES),
+                                        entry.logicalIndex as number,
+                                        'Enroll subscription iteration 1 navigation'
+                                      )
                                     }
                                   />
                                 ) : null}
@@ -1860,60 +1743,71 @@ export function PpnCasePage() {
                         activeIndex={iteration1Carousel.activeIndex}
                         progressKey={iteration1Carousel.progressKey}
                         ariaLabel="Enroll subscription iteration 1 navigation"
-                        advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
-                        showProgressLoader={iteration1CarouselTrigger.isActive}
+                        advanceDurationMs={0}
+                        showProgressLoader={false}
                         onGoTo={iteration1Carousel.goTo}
                         onPrevious={iteration1Carousel.goToPrevious}
                         onNext={iteration1Carousel.goToNext}
                       />
                     </div>
 
+                    <div className={styles.finalScreenPhase}>
+                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>Final Flow</p>
+                      <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                        The final flow accepted more friction in exchange for clearer guidance.
+                        Why it worked:
+                      </p>
+                      <ol className={styles.finalFlowList}>
+                        <li className={`body-2 ${styles.finalFlowListItem}`}>
+                          The steps followed a familiar subscription pattern: select subscription →
+                          customize → pay.
+                        </li>
+                        <li className={`body-2 ${styles.finalFlowListItem}`}>
+                          Users interacted with the screen more often, but each step felt more
+                          intuitive and guided.
+                        </li>
+                        <li className={`body-2 ${styles.finalFlowListItem}`}>
+                          The system automatically attached relevant documents and acted on the
+                          user&apos;s behalf, avoiding duplicate work
+                        </li>
+                      </ol>
+                    </div>
+
                     <div className={styles.finalScreensCarousel}>
                       <div className={styles.finalScreenFrame}>
                         <div className={styles.finalScreenVideoFigure}>
                           <CaseStudyVideoPlayer
+                            key={ENROLL_SUBSCRIPTION_VIDEO_SRC}
                             src={ENROLL_SUBSCRIPTION_VIDEO_SRC}
                             ariaLabel="The final flow for a business enrolling in subscriptions"
-                            onVideoRef={(element) => {
-                              iteration1VideoRef.current = element
-                            }}
+                            autoPlayWhenVisible
+                            clickToZoom
                           />
                         </div>
                         <p className={`body-2 ${styles.finalScreenCaption}`}>
                           The final flow for a business enrolling in subscriptions
                         </p>
-                        <FigureZoomButton
-                          label="View enroll subscription flow full screen"
-                          onClick={() =>
-                            openZoomedVideo({
-                              src: ENROLL_SUBSCRIPTION_VIDEO_SRC,
-                              alt: 'The final flow for a business enrolling in subscriptions',
-                            })
-                          }
-                        />
                       </div>
                     </div>
                   </div>
 
                   <div
-                    ref={registerIteration2BlockRef}
                     className={`${styles.iterationVideoBlock} ${styles.finalScreenBlockRepeat}`}
                   >
+                    <div className={`${styles.iterationFormLabel} ${styles.tradeOffCalloutGap32}`}>
+                      <h4 className={styles.iterationFormLabelHeading}>Form 2: Submit Inquiry</h4>
+                    </div>
+
                     <div className={styles.finalScreenPhase}>
-                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>
-                        Flow 2: Submit Request
-                      </p>
+                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>Initial Iteration</p>
                       <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
-                        The point where the iteration lacked was scalibility. While it was nice to
-                        have the user select category and sub-category in one go. As categories
-                        scaled, this would cause a problem
+                        The point where the iteration lacked was scalability. While it was nice to
+                        have the user select category and sub-category in one go, as categories
+                        scaled, this would cause a problem.
                       </p>
                     </div>
 
-                    <div
-                      ref={iteration2CarouselTrigger.setRoot}
-                      className={styles.iteration1Carousel}
-                    >
+                    <div className={styles.iteration1Carousel}>
                       <div className={styles.caseCarouselViewport}>
                         <div
                           ref={iteration2Carousel.trackRef}
@@ -1935,27 +1829,29 @@ export function PpnCasePage() {
                                   src={entry.item.src}
                                   alt={entry.item.alt}
                                   className={`${styles.iteration1SlideImage} ${styles.figureZoomableImage}`}
-                                  width={1080}
-                                  height={708}
+                                  width={ITERATION_SLIDE_WIDTH}
+                                  height={ITERATION_SLIDE_HEIGHT}
                                   draggable={false}
                                   onClick={
-                                    entry.isClone
+                                    entry.isClone || entry.logicalIndex === null
                                       ? undefined
                                       : () =>
-                                          openZoomedImage({
-                                            src: entry.item.src,
-                                            alt: entry.item.alt,
-                                          })
+                                          openZoomedImageCarousel(
+                                            iterationSlidesForLightbox(ITERATION2_SLIDES),
+                                            entry.logicalIndex as number,
+                                            'Submit request iteration 2 navigation'
+                                          )
                                   }
                                 />
-                                {!entry.isClone ? (
+                                {!entry.isClone && entry.logicalIndex !== null ? (
                                   <FigureZoomButton
                                     label={`View ${entry.item.alt} full screen`}
                                     onClick={() =>
-                                      openZoomedImage({
-                                        src: entry.item.src,
-                                        alt: entry.item.alt,
-                                      })
+                                      openZoomedImageCarousel(
+                                        iterationSlidesForLightbox(ITERATION2_SLIDES),
+                                        entry.logicalIndex as number,
+                                        'Submit request iteration 2 navigation'
+                                      )
                                     }
                                   />
                                 ) : null}
@@ -1970,37 +1866,51 @@ export function PpnCasePage() {
                         activeIndex={iteration2Carousel.activeIndex}
                         progressKey={iteration2Carousel.progressKey}
                         ariaLabel="Submit request iteration 2 navigation"
-                        advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
-                        showProgressLoader={iteration2CarouselTrigger.isActive}
+                        advanceDurationMs={0}
+                        showProgressLoader={false}
                         onGoTo={iteration2Carousel.goTo}
                         onPrevious={iteration2Carousel.goToPrevious}
                         onNext={iteration2Carousel.goToNext}
                       />
                     </div>
 
+                    <div className={styles.finalScreenPhase}>
+                      <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>Final Iteration</p>
+                      <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                        After internal testing, we proposed a restructured flow-
+                      </p>
+                      <ol className={styles.finalFlowList}>
+                        <li className={`body-2 ${styles.finalFlowListItem}`}>
+                          Category and sub-category were separated into distinct steps, making the
+                          hierarchy clearer and easier to scale.
+                        </li>
+                        <li className={`body-2 ${styles.finalFlowListItem}`}>
+                          Forms were reorganized so related fields stayed together. Time slots and
+                          date slots were made more flexible, giving users real options instead of
+                          restrictive presets.
+                        </li>
+                        <li className={`body-2 ${styles.finalFlowListItem}`}>
+                          Addresses were attached to contact details and saved together. Users could
+                          pick from what was already saved and set a default, instead of the system
+                          guessing.
+                        </li>
+                      </ol>
+                    </div>
+
                     <div className={styles.finalScreensCarousel}>
                       <div className={styles.finalScreenFrame}>
                         <div className={styles.finalScreenVideoFigure}>
                           <CaseStudyVideoPlayer
+                            key={SUBMIT_REQUEST_VIDEO_SRC}
                             src={SUBMIT_REQUEST_VIDEO_SRC}
                             ariaLabel="The final flow for a user to create and submit a request"
-                            onVideoRef={(element) => {
-                              iteration2VideoRef.current = element
-                            }}
+                            autoPlayWhenVisible
+                            clickToZoom
                           />
                         </div>
                         <p className={`body-2 ${styles.finalScreenCaption}`}>
                           The final flow for a user to create and submit a request
                         </p>
-                        <FigureZoomButton
-                          label="View submit request flow full screen"
-                          onClick={() =>
-                            openZoomedVideo({
-                              src: SUBMIT_REQUEST_VIDEO_SRC,
-                              alt: 'The final flow for a user to create and submit a request',
-                            })
-                          }
-                        />
                       </div>
                     </div>
                   </div>
@@ -2015,76 +1925,53 @@ export function PpnCasePage() {
                     </p>
                   </div>
 
-                  <div
-                    ref={registerFinalScreenBlockRef}
-                    className={styles.finalScreenBlock}
-                  >
-                    <div className={styles.finalScreensCarousel}>
-                      <div className={styles.caseCarouselViewport}>
-                        <div
-                          ref={finalScreensCarousel.trackRef}
-                          className={styles.caseCarouselTrack}
-                          data-loop={finalScreensCarousel.loopEnabled ? 'true' : 'false'}
-                          aria-label="Final screen demonstrations"
-                        >
-                          {getLoopSlideEntries(FINAL_SCREEN_SLIDES).map((entry, domIndex) => {
-                            const slideIndex = entry.logicalIndex
+                  <div className={styles.finalScreenStack}>
+                    {FINAL_SCREEN_SEGMENTS.map((segment) => (
+                      <div key={segment.caption} className={styles.finalScreenStackEntry}>
+                        {segment.intro ? (
+                          <div className={styles.finalScreenPhase}>
+                            <p className={`body-1 ${styles.finalScreenPhaseHeading}`}>
+                              {segment.intro.heading}
+                            </p>
+                            {segment.intro.body ? (
+                              <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                                {segment.intro.body}
+                              </p>
+                            ) : null}
+                            {segment.intro.decisionsLead ? (
+                              <p className={`body-2 ${styles.finalScreenPhaseBody}`}>
+                                {segment.intro.decisionsLead}
+                              </p>
+                            ) : null}
+                            {segment.intro.decisionItems?.length ? (
+                              <ol className={styles.finalFlowList}>
+                                {segment.intro.decisionItems.map((item) => (
+                                  <li
+                                    key={item}
+                                    className={`body-2 ${styles.finalFlowListItem}`}
+                                  >
+                                    {item}
+                                  </li>
+                                ))}
+                              </ol>
+                            ) : null}
+                          </div>
+                        ) : null}
 
-                            return (
-                              <div
-                                key={entry.key}
-                                ref={(element) =>
-                                  finalScreensCarousel.registerSlideRef(domIndex, element)
-                                }
-                                className={styles.caseCarouselSlide}
-                                aria-hidden={entry.isClone ? true : undefined}
-                              >
-                                <div className={styles.finalScreenFrame}>
-                                  <div className={styles.finalScreenVideoFigure}>
-                                    <CaseStudyVideoPlayer
-                                      src={entry.item.src}
-                                      ariaLabel={entry.item.caption}
-                                      onVideoRef={
-                                        entry.isClone || slideIndex === null
-                                          ? undefined
-                                          : (element) =>
-                                              registerFinalScreenVideoRef(slideIndex, element)
-                                      }
-                                    />
-                                  </div>
-                                  <p className={`body-2 ${styles.finalScreenCaption}`}>
-                                    {entry.item.caption}
-                                  </p>
-                                  {!entry.isClone ? (
-                                    <FigureZoomButton
-                                      label={`View ${entry.item.caption} full screen`}
-                                      onClick={() =>
-                                        openZoomedVideo({
-                                          src: entry.item.src,
-                                          alt: entry.item.caption,
-                                        })
-                                      }
-                                    />
-                                  ) : null}
-                                </div>
-                              </div>
-                            )
-                          })}
+                        <div className={styles.finalScreenFrame}>
+                          <div className={styles.finalScreenVideoFigure}>
+                            <CaseStudyVideoPlayer
+                              key={segment.src}
+                              src={segment.src}
+                              ariaLabel={segment.caption}
+                              autoPlayWhenVisible
+                              clickToZoom
+                            />
+                          </div>
+                          <p className={`body-2 ${styles.finalScreenCaption}`}>{segment.caption}</p>
                         </div>
                       </div>
-
-                      <CaseCarouselControls
-                        slideCount={FINAL_SCREEN_SLIDES.length}
-                        activeIndex={finalScreensCarousel.activeIndex}
-                        progressKey={finalScreensCarousel.progressKey}
-                        ariaLabel="Final screen navigation"
-                        advanceDurationMs={CAROUSEL_AUTO_ADVANCE_MS}
-                        showProgressLoader={false}
-                        onGoTo={finalScreensCarousel.goTo}
-                        onPrevious={finalScreensCarousel.goToPrevious}
-                        onNext={finalScreensCarousel.goToNext}
-                      />
-                    </div>
+                    ))}
                   </div>
                 </section>
 
@@ -2098,49 +1985,38 @@ export function PpnCasePage() {
                     </p>
                   </div>
 
-                  <div className={styles.impactCards}>
-                    {IMPACT_CARDS.map((card) => (
-                      <article
-                        key={card.number}
-                        className={`${styles.impactCard} ${card.wide ? styles.impactCardWide : ''}`}
-                        style={{ backgroundColor: card.color }}
-                      >
-                        <span
-                          className={`body-2 ${styles.impactCardNumber}`}
-                          style={{ color: card.numberColor }}
-                        >
-                          {card.number}
-                        </span>
-                        <h4 className={styles.impactCardTitle}>{card.title}</h4>
-                        <p className={styles.impactCardBody}>{card.body}</p>
-                      </article>
-                    ))}
-                  </div>
+                  <aside className={`${styles.tradeOffCallout} ${styles.impactCallout}`}>
+                    <p className={`body-2 ${styles.impactCalloutBody}`}>
+                      At launch, the clients told us about three wins. Businesses received every lead
+                      as it came in, which put them on equal footing with larger competitors. They
+                      had easy access to chat, and their dashboards were simple to read. Platform
+                      admins found their controls immediately, and the organized data made initial
+                      setup easier. Users found creating requests effortless. They could, now, get
+                      local prices with the same familiarity as other service models.
+                    </p>
+                  </aside>
                 </section>
 
                 <section id="learnings" className={styles.caseSection}>
                   <h3 className={styles.mainHeading}>What I learnt</h3>
                   <div className={styles.bodyStack}>
-                    <ul className={styles.learningsList}>
-                      <li className={`body-2 ${styles.mainBody}`}>
-                      With multiple roles interacting with one another, understanding who does what,
-                      when, and why became the foundation for the design. I spent significant time
-                      mapping roles, relationships, and dependencies before moving into individual
-                      experiences.
+                    <ol className={styles.learningsList}>
+                      <li className={`body-2 ${styles.mainBody} ${styles.learningsListItem}`}>
+                        When dealing with multiple role, understanding who does what, when, and why
+                        became the foundation for the design.
                       </li>
-                      <li className={`body-2 ${styles.mainBody}`}>
-                      Service blueprints, information architecture, and ecosystem maps weren&apos;t
-                      always easy for clients to interpret as UX artefacts. But they helped us turn
-                      complex discussions into concrete decisions, uncover friction points, and create
-                      a shared reference point for collaboration.
+                      <li className={`body-2 ${styles.mainBody} ${styles.learningsListItem}`}>
+                        Clients do not understand service blueprints, information architecture, and
+                        other UX artefacts a lot of time. However, they helped establish a reference
+                        point for collaboration.
                       </li>
-                      <li className={`body-2 ${styles.mainBody}`}>
-                      PPN taught me to think beyond the end user. Admins and local representatives
-                      were also users of the product, and their ability to manage the ecosystem
-                      directly affected the experience of everyone else. Designing their workflows
-                      was therefore just as important as designing the customer journey.
+                      <li className={`body-2 ${styles.mainBody} ${styles.learningsListItem}`}>
+                        PPN taught me to think of ecosystems where different users interacted. Thus,
+                        admin&apos;s and local representative&apos;s role in managing the platform
+                        directly became a significant point of deliberation rather than an
+                        afterthought.
                       </li>
-                    </ul>
+                    </ol>
                   </div>
                 </section>
               </div>
@@ -2149,7 +2025,14 @@ export function PpnCasePage() {
       </Container>
 
       {zoomedImage ? <ResearchImageLightbox image={zoomedImage} onClose={closeZoomedImage} /> : null}
-      {zoomedVideo ? <ResearchVideoLightbox video={zoomedVideo} onClose={closeZoomedVideo} /> : null}
+      {zoomedImageCarousel ? (
+        <CarouselImageLightbox
+          slides={zoomedImageCarousel.slides}
+          initialIndex={zoomedImageCarousel.initialIndex}
+          ariaLabel={zoomedImageCarousel.ariaLabel}
+          onClose={closeZoomedImageCarousel}
+        />
+      ) : null}
     </main>
   )
 }
