@@ -253,9 +253,9 @@ const FINAL_SCREEN_PHASES = [
   },
   {
     id: 'phase-2',
-    heading: 'Phase 2: Objective → Parent KR',
+    heading: 'Phase 2: KR → KR',
     body:
-      'Phase 2 allowed users to understand how linking takes place. Initially, users could align their objectives to parent KR and assign KRs as an objective.',
+      'Phase 2 expanded the alignment model to support KR-to-KR relationships. This allowed Key Results to act as both contributors and dependencies, creating longer goal chains and making cross-team dependencies and ownership easier to manage.',
     slides: FINAL_SCREEN_PHASE_2_SLIDES,
     carouselLabel: 'Phase 2 final screen demonstrations',
     controlsLabel: 'Phase 2 final screen navigation',
